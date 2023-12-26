@@ -1,9 +1,13 @@
 import jwt from "jsonwebtoken"
 import { verifyConfig, type SDKBaseConfig } from "../utils"
 import { isIdentityJwtPayload, type IdentityPayload } from "./id"
+import { isAdJwtPayload, type AdPayload } from "./ads"
 import type { VerifyOptions } from "jsonwebtoken"
 
 export type { IdentityPayload } from "./id"
+
+const IdentityTokenScope = "auth"
+const AdTokenScope = "ads"
 
 /**
  * token 验证器
@@ -34,7 +38,7 @@ export class TokenVerifier {
       if (!payload || !isIdentityJwtPayload(payload) || !payload.sub) {
         return new Error("verifyIdentityToken: token 格式化失败 " + JSON.stringify(payload))
       }
-      if (payload.scope !== "auth") {
+      if (payload.scope !== IdentityTokenScope) {
         return new Error("verifyIdentityToken: 无效的 Scope")
       }
       return {
@@ -46,6 +50,30 @@ export class TokenVerifier {
       }
     } catch (error: unknown) {
       return new Error(`IdentityToken 验证失败: ${error instanceof Error ? error.message : String(error)}`)
+    }
+  }
+
+  /**
+   * verifyAdToken 对 AdToken 进行验证
+   *
+   * 验证失败会返回 Error 对象
+   */
+  verifyAdToken(token: string): AdPayload | Error {
+    try {
+      const payload = jwt.verify(token, this.privateKey, { ...this.baseOption, complete: false })
+      if (!payload || !isAdJwtPayload(payload) || !payload.sub) {
+        return new Error("verifyAdToken: token 格式化失败 " + JSON.stringify(payload))
+      }
+      if (payload.scope !== AdTokenScope) {
+        return new Error("verifyAdToken: 无效的 Scope")
+      }
+      return {
+        combo_id: payload.sub,
+        placement_id: payload.placement_id,
+        impression_id: payload.impression_id,
+      }
+    } catch (error: unknown) {
+      return new Error(`AdToken 验证失败: ${error instanceof Error ? error.message : String(error)}`)
     }
   }
 }

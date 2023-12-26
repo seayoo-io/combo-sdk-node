@@ -129,5 +129,14 @@ if(result instanceof Error) {
 } else {
     // got Id info: { combo_id, idp, external_id, external_name, weixin_unionid }
 }
+
+// verifyAdToken 对 AdToken 进行验证
+// 返回 AdPayload 数据，如果解析出错则返回 Error 对象
+const adInfo = vierfier.verifyAdToken(token)
+if(result instanceof Error) {
+    console.error(result.message)
+} else {
+    // got ad info: { combo_id, idp, placement_id, impression_id }
+}
 ```
 
