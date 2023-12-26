@@ -31,7 +31,7 @@ const client = new ApiClient({
     maxRetry: 1, // 失败后自动重试次数，默认 1
     retryInterval: 100 // 重试间隔，默认是 100，单位 ms，可以传递函数动态设置间隔
     logger: function(log) {} // 请求日志函数，log 类型参见源码类型定义
-	timeout: 5000, // 超时等待时长，单位 ms，默认 5000
+    timeout: 5000, // 超时等待时长，单位 ms，默认 5000
 })
 
 // 创建订单
@@ -113,7 +113,7 @@ app.post("/path/to/your/notify/url", expressHandler)
 ## Verify
 
 ```js
-import { TokenVerifier } from "@seayoo-io/combo"
+import { TokenVerifier, Endpoint } from "@seayoo-io/combo"
 
 const verifier = new TokenVerifier({
     game: "<GameId>",
@@ -127,7 +127,7 @@ const result = verifier.verifyIdentityToken(token)
 if(result instanceof Error) {
     console.error(result.message)
 } else {
-    // Got Id info: { combo_id, idp, external_id, external_name, weixin_unionid }
+    // got Id info: { combo_id, idp, external_id, external_name, weixin_unionid }
 }
 ```
 
