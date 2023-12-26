@@ -25,8 +25,7 @@
     "pub": "pnpm lint:fix && pnpm build && npm publish"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm run lint",
-    "commit-msg": "node scripts/verifyCommit.mjs $1"
+    "pre-commit": "pnpm run lint"
   },
   "repository": "https://github.com/seayoo-io/combo-sdk-js",
   "keywords": [
