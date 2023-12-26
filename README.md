@@ -1,6 +1,6 @@
 # Combo SDK for NodeJs
 
-`@seayoo/combo` 是世游核心系统 (Combo) 为 NodeJs 提供的 SDK。
+`@seayoo-io/combo-sdk-node-sdk-node` 是世游核心系统 (Combo) 为 Node.js 提供的 SDK。
 
 提供以下**服务端**功能，供游戏侧使用：
 
@@ -12,26 +12,26 @@
 
 ```js
 // 使用 npm 安装
-npm install @seayoo-io/combo
+npm install @seayoo-io/combo-sdk-node
 
 // 使用 pnpm 安装
-pnpm add @seayoo-io/combo
+pnpm add @seayoo-io/combo-sdk-node
 ```
 
 ## ApiClient
 
 ```js
-import { ApiClient, Endpoint } from "@seayoo-io/combo"
+import { ApiClient, Endpoint } from "@seayoo-io/combo-sdk-node"
 
 const client = new ApiClient({
     game: "<GameId>",
     secret: "<SecretKey>",
     endpoint: Endpoint.China
     // 以下参数可选
-    maxRetry: 1, // 失败后自动重试次数，默认 1
+    maxRetry: 1,       // 失败后自动重试次数，默认 1
     retryInterval: 100 // 重试间隔，默认是 100，单位 ms，可以传递函数动态设置间隔
     logger: function(log) {} // 请求日志函数，log 类型参见源码类型定义
-    timeout: 5000, // 超时等待时长，单位 ms，默认 5000
+    timeout: 5000,           // 超时等待时长，单位 ms，默认 5000
 })
 
 // 创建订单
@@ -73,7 +73,7 @@ await client.leaveGame({ combo_id: "<ComboID>", session_id: "<SessionID>" });
 ## Notify
 
 ```js
-import { NotificationType, Endpoint } from "@seayoo-io/combo"
+import { NotificationType, Endpoint } from "@seayoo-io/combo-sdk-node"
 
 // Step 1 准备参数
 // 1.1 定义消息处理函数，类型定义参见源码 INotificationHandler
@@ -93,7 +93,7 @@ const config = {
 
 // Step 2 获取 Request 请求处理函数
 // 方法1：使用底层 http 模块的处理函数
-import { getNotificationRequestHandler } from "@seayoo-io/combo"
+import { getNotificationRequestHandler } from "@seayoo-io/combo-sdk-node"
 const notifyHandler = getNotificationRequestHandler(config, notificationHandler)
 http.createServer(async function(req, res){
     if(req.url === "<YourNotifyUrl>" && req.method === "POST") {
@@ -101,11 +101,11 @@ http.createServer(async function(req, res){
     }
 })
 // 方法2：使用 Express 插件
-import { getNotificationHandlerForExpress } from "@seayoo-io/combo"
+import { getNotificationHandlerForExpress } from "@seayoo-io/combo-sdk-node"
 const expressHandler = getNotificationHandlerForExpress(config, notificationHandler)
 app.post("/path/to/your/notify/url", expressHandler)
 // 方法3：使用 Koa 插件
-import { getNotificationHandlerForKoa } from "@seayoo-io/combo"
+import { getNotificationHandlerForKoa } from "@seayoo-io/combo-sdk-node"
 const expressHandler = getNotificationHandlerForKoa(config, notificationHandler)
 app.post("/path/to/your/notify/url", expressHandler)
 ```
@@ -113,7 +113,7 @@ app.post("/path/to/your/notify/url", expressHandler)
 ## Verify
 
 ```js
-import { TokenVerifier, Endpoint } from "@seayoo-io/combo"
+import { TokenVerifier, Endpoint } from "@seayoo-io/combo-sdk-node"
 
 const verifier = new TokenVerifier({
     game: "<GameId>",

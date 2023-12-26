@@ -1,4 +1,4 @@
-import { verifyConfig, checkHttpAuthInfo, isObject, parseJSON, readBody, done, type ISDKConfig } from "../utils"
+import { verifyConfig, AuthorizationField, checkHttpAuthInfo, isObject, parseJSON, readBody, done, type ISDKConfig } from "../utils"
 import { messageDataGuards, NotificationType, type ENotificationPayload, type INotificationHandler } from "./types"
 import type { ParameterizedContext } from "koa"
 import type { IncomingMessage, ServerResponse } from "node:http"
@@ -26,8 +26,7 @@ function isNotificationRequestBody(data: unknown): data is INotificationRequestB
     "data" in data &&
     typeof data.version === "string" &&
     typeof data.notification_id === "string" &&
-    typeof data.notification_type === "string" &&
-    isObject(data.data)
+    typeof data.notification_type === "string"
   )
 }
 
@@ -39,7 +38,6 @@ function isNotificationRequestBody(data: unknown): data is INotificationRequestB
 export function getNotificationRequestHandler(config: ISDKConfig, handler: INotificationHandler) {
   verifyConfig(config)
   return async function (req: IncomingMessage, res: ServerResponse) {
-    req.url
     if (req.method !== "POST") {
       done(res, 405)
       return
@@ -50,7 +48,16 @@ export function getNotificationRequestHandler(config: ISDKConfig, handler: INoti
       return
     }
     const body = await readBody(req)
-    if (!checkHttpAuthInfo(config.game, config.secret, `http://${req.headers.host}`, req.url || "", req.headers, body)) {
+    if (
+      !checkHttpAuthInfo(`${req.headers[AuthorizationField]}`, {
+        game: config.game,
+        secret: config.secret,
+        method: "POST",
+        endpoint: `http://${req.headers.host}`,
+        url: req.url || "",
+        data: body,
+      })
+    ) {
       done(res, 401)
       return
     }
