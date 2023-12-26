@@ -35,7 +35,7 @@ const client = new ApiClient({
 })
 
 // 创建订单
-const creatOrderResult = await client.createOrder({
+const createOrderResult = await client.createOrder({
   /** 用于标识创建订单请求的唯一 ID */
   reference_id: "<游戏订单ID>",
   /** 发起购买的用户的唯一标识 */
