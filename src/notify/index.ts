@@ -4,7 +4,6 @@ import type { ParameterizedContext } from "koa"
 import type { IncomingMessage, ServerResponse } from "node:http"
 import type { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
-export type { ISDKConfig } from "../utils"
 export type { NotificationType, INotificationHandler } from "./types"
 
 interface INotificationRequestBody {

@@ -1,4 +1,4 @@
-interface ICreateOrderOption {
+export interface ICreateOrderOption {
   /** 用于标识创建订单请求的唯一 ID */
   reference_id: string
   /** 发起购买的用户的唯一标识 */
@@ -26,7 +26,7 @@ interface ICreateOrderOption {
   meta?: IOrderMeta
 }
 
-interface IOrderMeta {
+export interface IOrderMeta {
   /** 游戏大区 ID */
   zone_id?: string
   /** 游戏服务器 ID */
@@ -43,7 +43,7 @@ interface IOrderMeta {
   weixin_openid?: string
 }
 
-interface CreateOrderResponse {
+export interface ICreateOrderResponse {
   /** 世游服务端创建的，标识订单的唯一 ID。 */
   order_id: string
   /** 世游服务端创建的订单 token，用于后续支付流程。 */
@@ -52,7 +52,7 @@ interface CreateOrderResponse {
   expires_at: number
 }
 
-interface IEnterOrLeaveGameOption {
+export interface IEnterOrLeaveGameOption {
   /** 聚合用户标识 */
   combo_id: string
   /**

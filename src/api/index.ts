@@ -2,6 +2,9 @@ import { getUserAgent } from "./userAgent"
 import { ApiPrefix, Platform } from "../const"
 import { NetRequest, type IRequestGlobalConfig } from "../request"
 import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isFullURL, isObject, type ISDKConfig } from "../utils"
+import type { ICreateOrderOption, IEnterOrLeaveGameOption, ICreateOrderResponse } from "./types"
+
+export * from "./types"
 
 /** Api Client Config */
 export interface IApiClientConfig extends ISDKConfig {
@@ -57,7 +60,7 @@ export class ApiClient {
   /**
    * 创建订单
    */
-  async createOrder(option: ICreateOrderOption): Promise<CreateOrderResponse> {
+  async createOrder(option: ICreateOrderOption): Promise<ICreateOrderResponse> {
     if (!option.combo_id || !option.notify_url || !option.product_id || !option.reference_id) {
       throw new Error("createOrder: 必要参数缺失")
     }
@@ -103,7 +106,7 @@ export class ApiClient {
   }
 }
 
-function isCreateOrderResponse(data: unknown): data is CreateOrderResponse {
+function isCreateOrderResponse(data: unknown): data is ICreateOrderResponse {
   return (
     isObject(data) &&
     ["order_id", "order_token"].every((field) => field in data) &&
