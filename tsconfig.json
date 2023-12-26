@@ -1,0 +1,14 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "target": "ESNext"
+  },
+  "include": ["src/**/*.ts"]
+}

@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+src/
+scripts/
+index.ts
+.**
+pnpm-lock.**
+*.html
+*.json
+__tests__
