@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { verifyConfig, type ISDKConfig } from "../utils"
+import { verifyConfig, type SDKBaseConfig } from "../utils"
 import { isIdentityJwtPayload, type IdentityPayload } from "./id"
 import type { VerifyOptions } from "jsonwebtoken"
 
@@ -11,7 +11,7 @@ export type { IdentityPayload } from "./id"
 export class TokenVerifier {
   private privateKey: string
   private baseOption: VerifyOptions
-  constructor(config: ISDKConfig) {
+  constructor(config: SDKBaseConfig) {
     verifyConfig(config)
     this.privateKey = config.secret
     this.baseOption = {

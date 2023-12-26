@@ -1,4 +1,4 @@
-import { isShipOrderPayload, type IShipOrderNotification } from "./msgShipOrder"
+import { isShipOrderPayload, type ShipOrderNotification } from "./msgShipOrder"
 
 /**
  * 通知类型枚举
@@ -19,7 +19,7 @@ export const enum NotificationType {
  * 通知类型对应的 payload
  */
 export interface ENotificationPayload {
-  [NotificationType.ShipOrder]: IShipOrderNotification
+  [NotificationType.ShipOrder]: ShipOrderNotification
 }
 
 /**
@@ -27,7 +27,7 @@ export interface ENotificationPayload {
  *
  * 每种消息类型对应不同的 payload 以及返回值具体可以查看类型定义
  */
-export type INotificationHandler = {
+export type NotificationHandler = {
   <T extends NotificationType>(type: T, payload: ENotificationPayload[T]): MaybePromise<void>
 }
 

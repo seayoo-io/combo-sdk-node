@@ -1,13 +1,13 @@
+import { ApiPrefix } from "../const"
 import { getUserAgent } from "./userAgent"
-import { ApiPrefix, Platform } from "../const"
 import { NetRequest, type IRequestGlobalConfig } from "../request"
-import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isFullURL, isObject, type ISDKConfig } from "../utils"
-import type { ICreateOrderOption, IEnterOrLeaveGameOption, ICreateOrderResponse } from "./types"
+import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isObject, type SDKBaseConfig } from "../utils"
+import type { CreateOrderOption, IEnterOrLeaveGameOption, ICreateOrderResponse } from "./types"
 
 export * from "./types"
 
 /** Api Client Config */
-export interface IApiClientConfig extends ISDKConfig {
+export interface IApiClientConfig extends SDKBaseConfig {
   /** 自动重试次数，默认重试 1 次 */
   maxRetry?: IRequestGlobalConfig["maxRetry"]
   /** 重试间隔，可以使用函数设定不同的间隔 */
@@ -29,7 +29,6 @@ export class ApiClient {
     this.req = NetRequest({
       baseURL: `${config.endpoint.replace(/\/$/, "")}${ApiPrefix}`,
       maxRetry: config.maxRetry,
-      retryResolve: "network",
       retryInterval: config.retryInterval,
       responseRule: {
         ok: {
@@ -60,15 +59,9 @@ export class ApiClient {
   /**
    * 创建订单
    */
-  async createOrder(option: ICreateOrderOption): Promise<ICreateOrderResponse> {
+  async createOrder(option: CreateOrderOption): Promise<ICreateOrderResponse> {
     if (!option.combo_id || !option.notify_url || !option.product_id || !option.reference_id) {
       throw new Error("createOrder: 必要参数缺失")
-    }
-    if (!isFullURL(option.notify_url)) {
-      throw new Error("createOrder: notify_url 需要是一个完整的 url 地址")
-    }
-    if (option.platform === Platform.Weixin && (!option.meta || !option.meta.weixin_appid || !option.meta.weixin_openid)) {
-      throw new Error("createOrder: 微信下单需要提供 meta { weixin_appid, weixin_openid } 字段")
     }
     // 检查购买数量
     option.quantity = Math.min(Math.max(1, Math.ceil(option.quantity)), Number.MAX_SAFE_INTEGER)

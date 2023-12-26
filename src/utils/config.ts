@@ -2,8 +2,8 @@ import { Endpoint } from "../const"
 import { isObject, isFullURL } from "./base"
 
 /** 通用初始化配置 */
-export interface ISDKConfig {
-  /** 服务地址，内置 SeayooEndpoint 枚举可选 */
+export interface SDKBaseConfig {
+  /** 服务地址，内置 Endpoint 枚举可选 */
   endpoint: `http://${string}` | `https://${string}`
   /** 游戏 Game ID */
   game: string
@@ -14,7 +14,7 @@ export interface ISDKConfig {
 /**
  * 校验通用配置，如果有错误，则直接 throw Error
  */
-export function verifyConfig(config: ISDKConfig) {
+export function verifyConfig(config: SDKBaseConfig) {
   if (!isObject(config)) {
     throw Error("Config Missing")
   }

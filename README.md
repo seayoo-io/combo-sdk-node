@@ -76,7 +76,7 @@ await client.leaveGame({ combo_id: "<ComboID>", session_id: "<SessionID>" });
 import { NotificationType, Endpoint } from "@seayoo-io/combo-sdk-node"
 
 // Step 1 准备参数
-// 1.1 定义消息处理函数，类型定义参见源码 INotificationHandler
+// 1.1 定义消息处理函数，类型定义参见源码 NotificationHandler
 function notificationHandler(type, payload) {
     switch(type) {
         case NotificationType.ShipOrder:
@@ -84,7 +84,7 @@ function notificationHandler(type, payload) {
             break;
     }
 }
-// 1.2 创建配置，类型定义参见源码 ISDKConfig
+// 1.2 创建配置，类型定义参见源码 SDKBaseConfig
 const config = {
     game: "<GameId>",
     secret: "<SecretKey>",

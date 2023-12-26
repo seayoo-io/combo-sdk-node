@@ -1,5 +1,5 @@
 /** SDK 名称 */
-export const SDKName = "combo-sdk-js"
+export const SDKName = "combo-sdk-node"
 
 /**
  * Api 路由前缀
@@ -41,7 +41,7 @@ export const enum IdP {
   /** Google Account */
   Google = "google",
   /** Facebook Login */
-  FaceBook = "facebook",
+  Facebook = "facebook",
   /** 小米账号 */
   Xiaomi = "xiaomi",
   /** 微信登录 */
@@ -50,6 +50,5 @@ export const enum IdP {
 
 declare global {
   type EPlatform = Platform
-  type EEndpoint = Endpoint
   type EIdP = IdP
 }

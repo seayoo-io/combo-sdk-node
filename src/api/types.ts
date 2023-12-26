@@ -1,4 +1,4 @@
-export interface ICreateOrderOption {
+export interface CreateOrderOption {
   /** 用于标识创建订单请求的唯一 ID */
   reference_id: string
   /** 发起购买的用户的唯一标识 */

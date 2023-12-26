@@ -1,7 +1,7 @@
 import { isObject } from "../utils"
 
 /**  ShipOrderNotification 是订单发货通知的数据结构，包含了订单的详细信息 */
-export interface IShipOrderNotification {
+export interface ShipOrderNotification {
   /** 世游服务端创建的，标识订单的唯一 ID */
   order_id: string
   /** 游戏侧用于标识创建订单请求的唯一 ID */
@@ -17,10 +17,10 @@ export interface IShipOrderNotification {
   /** 订单金额，单位为分，如果币种为美元，则单位为美分。 */
   amount: number
   /** 游戏侧创建订单时提供的订单上下文，透传回游戏 */
-  context: string
+  context?: string
 }
 
-export function isShipOrderPayload(data: unknown): data is IShipOrderNotification {
+export function isShipOrderPayload(data: unknown): data is ShipOrderNotification {
   return (
     isObject(data) &&
     "order_id" in data &&
@@ -30,7 +30,6 @@ export function isShipOrderPayload(data: unknown): data is IShipOrderNotificatio
     "quantity" in data &&
     "currency" in data &&
     "amount" in data &&
-    "context" in data &&
     typeof data.order_id === "string" &&
     typeof data.combo_id === "string" &&
     typeof data.quantity === "number" &&

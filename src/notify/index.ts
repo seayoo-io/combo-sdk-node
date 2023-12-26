@@ -1,12 +1,12 @@
-import { verifyConfig, AuthorizationField, checkHttpAuthInfo, isObject, parseJSON, readBody, done, type ISDKConfig } from "../utils"
-import { messageDataGuards, NotificationType, type ENotificationPayload, type INotificationHandler } from "./types"
+import { verifyConfig, AuthorizationField, checkHttpAuthInfo, isObject, parseJSON, readBody, done, type SDKBaseConfig } from "../utils"
+import { messageDataGuards, NotificationType, type ENotificationPayload, type NotificationHandler } from "./types"
 import type { ParameterizedContext } from "koa"
 import type { IncomingMessage, ServerResponse } from "node:http"
 import type { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
-export type { NotificationType, INotificationHandler } from "./types"
+export type { NotificationType, NotificationHandler } from "./types"
 
-interface INotificationRequestBody {
+interface NotificationRequestBody {
   /** 世游服务端通知的版本号 */
   version: string
   /** 每次通知的唯一 ID。游戏侧可用此值来对通知进行去重 */
@@ -17,7 +17,7 @@ interface INotificationRequestBody {
   data: ENotificationPayload[NotificationType]
 }
 
-function isNotificationRequestBody(data: unknown): data is INotificationRequestBody {
+function isNotificationRequestBody(data: unknown): data is NotificationRequestBody {
   return (
     isObject(data) &&
     "version" in data &&
@@ -35,7 +35,7 @@ function isNotificationRequestBody(data: unknown): data is INotificationRequestB
  *
  * 另有 express 和 koa2 版本的处理函数可以使用
  */
-export function getNotificationRequestHandler(config: ISDKConfig, handler: INotificationHandler) {
+export function getNotificationRequestHandler(config: SDKBaseConfig, handler: NotificationHandler) {
   verifyConfig(config)
   return async function (req: IncomingMessage, res: ServerResponse) {
     if (req.method !== "POST") {
@@ -90,7 +90,7 @@ export function getNotificationRequestHandler(config: ISDKConfig, handler: INoti
  *
  * 如需自定义处理，可以使用 getNotificationRequestHandler 方法
  */
-export function getNotificationHandlerForExpress(config: ISDKConfig, handler: INotificationHandler) {
+export function getNotificationHandlerForExpress(config: SDKBaseConfig, handler: NotificationHandler) {
   const func = getNotificationRequestHandler(config, handler)
   return async function (req: ExpressRequest, res: ExpressResponse) {
     await func(req, res)
@@ -102,7 +102,7 @@ export function getNotificationHandlerForExpress(config: ISDKConfig, handler: IN
  *
  * 如需自定义处理，可以使用 getNotificationRequestHandler 方法
  */
-export function getNotificationHandlerForKoa(config: ISDKConfig, handler: INotificationHandler) {
+export function getNotificationHandlerForKoa(config: SDKBaseConfig, handler: NotificationHandler) {
   const func = getNotificationRequestHandler(config, handler)
   return async function (ctx: ParameterizedContext) {
     await func(ctx.req, ctx.res)
