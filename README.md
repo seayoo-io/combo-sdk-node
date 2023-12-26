@@ -1,12 +1,12 @@
 # Combo SDK for NodeJs
 
-`@seayoo-io/combo-sdk-node-sdk-node` 是世游核心系统 (Combo) 为 Node.js 提供的 SDK。
+`@seayoo-io/combo-sdk-node` 是世游核心系统 (Combo) 为 Node.js 提供的 SDK。
 
 提供以下**服务端**功能，供游戏侧使用：
 
 - 请求 Server REST API 并解析响应
 - 接收 Server Notifications 并回复响应
-- 验证世游服务端签发的 Identity Token
+- 验证世游服务端签发的 Identity Token 和 Ads Token
 
 ## 安装
 
@@ -42,31 +42,31 @@ const creatOrderResult = await client.createOrder({
   combo_id: "<ComboID>",
   /** 要购买的商品 ID */
   product_id: "<ProductID>",
-  /** 平台，支持类型见源码类型定义 */
-  platform: "iOS", 
+  /** 平台，支持类型见源码类型定义 Platform */
+  platform: Platform.iOS, 
   /**
    * 游戏侧接收发货通知的服务端地址
    * 这个地址对应的服务端应该通过 Notify 模块实现路由处理
    */
   notify_url: "https://<YourSite>/<YourPath>"
-  /** 要购买的商品的数量 */
+  /** 要购买的商品的数量，最小为 1 */
   quantity: 1,
   /** [可选]订单上下文，在发货通知中透传回游戏 */
   context: "",
   /**
-   * 订单的元数据，详细定义参看源码
+   * 订单的元数据，详细定义参看源码 OrderMetaData
    *
    * 大部分元数据用于数据分析与查询，游戏侧应当尽量提供
    * 某些元数据在特定的支付场景下是必须的，例如微信小游戏的 iOS 支付场景
    */
-  meta: IOrderMeta
+  meta: { ... }
 })
 
 // 进入游戏
-await client.enterGame({ combo_id: "<ComboID>", session_id: "<SessionID>" });
+await client.enterGame("<ComboID>", "<SessionID>");
 
 // 离开游戏
-await client.leaveGame({ combo_id: "<ComboID>", session_id: "<SessionID>" });
+await client.leaveGame("<ComboID>", "<SessionID>");
 
 ```
 

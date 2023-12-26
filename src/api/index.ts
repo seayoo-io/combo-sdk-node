@@ -2,12 +2,12 @@ import { ApiPrefix } from "../const"
 import { getUserAgent } from "./userAgent"
 import { NetRequest, type IRequestGlobalConfig } from "../request"
 import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isObject, type SDKBaseConfig } from "../utils"
-import type { CreateOrderOption, IEnterOrLeaveGameOption, ICreateOrderResponse } from "./types"
+import type { CreateOrderOption, CreateOrderResponse } from "./types"
 
 export * from "./types"
 
 /** Api Client Config */
-export interface IApiClientConfig extends SDKBaseConfig {
+export interface ApiClientConfig extends SDKBaseConfig {
   /** 自动重试次数，默认重试 1 次 */
   maxRetry?: IRequestGlobalConfig["maxRetry"]
   /** 重试间隔，可以使用函数设定不同的间隔 */
@@ -23,7 +23,7 @@ export interface IApiClientConfig extends SDKBaseConfig {
 export class ApiClient {
   private req: ReturnType<typeof NetRequest>
 
-  constructor(config: IApiClientConfig) {
+  constructor(config: ApiClientConfig) {
     verifyConfig(config)
     const ua = getUserAgent(config.game)
     this.req = NetRequest({
@@ -59,7 +59,7 @@ export class ApiClient {
   /**
    * 创建订单
    */
-  async createOrder(option: CreateOrderOption): Promise<ICreateOrderResponse> {
+  async createOrder(option: CreateOrderOption): Promise<CreateOrderResponse> {
     if (!option.combo_id || !option.notify_url || !option.product_id || !option.reference_id) {
       throw new Error("createOrder: 必要参数缺失")
     }
@@ -76,12 +76,18 @@ export class ApiClient {
    * 通知世游服务端玩家进入游戏世界（上线）
    *
    * 此接口仅用于中宣部防沉迷系统的上下线数据上报
+   *
+   * @param comboId 聚合用户标识
+   * @param sessionId 游戏会话标识，单次游戏会话的上下线动作必须使用同一会话标识上报
    */
-  async enterGame(option: IEnterOrLeaveGameOption): Promise<boolean> {
-    if (!option.combo_id || !option.session_id) {
+  async enterGame(comboId: string, sessionId: string): Promise<boolean> {
+    if (!comboId || !sessionId) {
       throw new Error("enterGame: 必要参数缺失")
     }
-    const { ok } = await this.req.post("enter-game", option)
+    const { ok } = await this.req.post("enter-game", {
+      combo_id: comboId,
+      session_id: sessionId,
+    })
     return ok
   }
 
@@ -89,17 +95,23 @@ export class ApiClient {
    * 通知世游服务端玩家离开游戏世界（下线）
    *
    * 此接口仅用于中宣部防沉迷系统的上下线数据上报
+   *
+   * @param comboId 聚合用户标识
+   * @param sessionId 游戏会话标识，单次游戏会话的上下线动作必须使用同一会话标识上报
    */
-  async leaveGame(option: IEnterOrLeaveGameOption): Promise<boolean> {
-    if (!option.combo_id || !option.session_id) {
-      throw new Error("leaveGame: 必要参数缺失")
+  async leaveGame(comboId: string, sessionId: string): Promise<boolean> {
+    if (!comboId || !sessionId) {
+      throw new Error("enterGame: 必要参数缺失")
     }
-    const { ok } = await this.req.post("leave-game", option)
+    const { ok } = await this.req.post("leave-game", {
+      combo_id: comboId,
+      session_id: sessionId,
+    })
     return ok
   }
 }
 
-function isCreateOrderResponse(data: unknown): data is ICreateOrderResponse {
+function isCreateOrderResponse(data: unknown): data is CreateOrderResponse {
   return (
     isObject(data) &&
     ["order_id", "order_token"].every((field) => field in data) &&

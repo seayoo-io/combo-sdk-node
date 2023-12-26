@@ -10,7 +10,7 @@ export interface CreateOrderOption {
   /**
    * 游戏侧接收发货通知的服务端地址
    *
-   * 这个地址对应的服务端应该通过 notify 模块实现基础的验证接口
+   * 这个地址对应的服务端应该通过 Notify 模块实现基础的验证接口
    */
   notify_url: string
   /** 要购买的商品的数量 */
@@ -23,10 +23,10 @@ export interface CreateOrderOption {
    * 大部分元数据用于数据分析与查询，游戏侧应当尽量提供
    * 某些元数据在特定的支付场景下是必须的，例如微信小游戏的 iOS 支付场景
    */
-  meta?: IOrderMeta
+  meta?: OrderMetaData
 }
 
-export interface IOrderMeta {
+export interface OrderMetaData {
   /** 游戏大区 ID */
   zone_id?: string
   /** 游戏服务器 ID */
@@ -43,22 +43,11 @@ export interface IOrderMeta {
   weixin_openid?: string
 }
 
-export interface ICreateOrderResponse {
+export interface CreateOrderResponse {
   /** 世游服务端创建的，标识订单的唯一 ID。 */
   order_id: string
   /** 世游服务端创建的订单 token，用于后续支付流程。 */
   order_token: string
   /** 订单失效时间。Unix timestamp in seconds。 */
   expires_at: number
-}
-
-export interface IEnterOrLeaveGameOption {
-  /** 聚合用户标识 */
-  combo_id: string
-  /**
-   * 游戏会话标识
-   *
-   * 单次游戏会话的上下线动作必须使用同一会话标识上报
-   */
-  session_id: string
 }
