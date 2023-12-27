@@ -2,15 +2,14 @@
   "compileOnSave": false,
   "compilerOptions": {
     "strict": true,
-    "noEmit": false,
+    "noEmit": true,
     "declaration": true,
     "emitDeclarationOnly": false,
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "module": "ESNext",
-    "target": "ESNext",
-    "ignoreDeprecations": "5.0",
+    "target": "ES2022"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["playground", "playground-js"]
+  "exclude": ["playground-ts", "playground-js"]
 }
