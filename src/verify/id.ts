@@ -1,4 +1,5 @@
 import type { JwtPayload } from "jsonwebtoken"
+import type { IdP } from "../const"
 import { isObject } from "../utils"
 
 export interface IdentityPayload {
@@ -13,7 +14,7 @@ export interface IdentityPayload {
    *
    * 游戏侧可以使用 IdP 做业务辅助判断，例如判定用户是否使用了某个特定的登录方式。
    */
-  idp: EIdP
+  idp: IdP
   /**
    * external_id 是用户在外部 IdP 中的唯一标识
    *

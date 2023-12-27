@@ -47,8 +47,3 @@ export const enum IdP {
   /** 微信登录 */
   Weixin = "weixin",
 }
-
-declare global {
-  type EPlatform = Platform
-  type EIdP = IdP
-}

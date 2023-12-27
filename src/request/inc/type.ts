@@ -1,4 +1,5 @@
 import type { RequestGlobalConfig } from "./config"
+import type { MaybePromise, TypeGuard, TypeGuardFn } from "../../utils"
 
 export type IBaseRequestBody = Blob | ArrayBuffer | FormData | URLSearchParams | string
 

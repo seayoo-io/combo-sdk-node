@@ -1,3 +1,5 @@
+import type { Platform } from "../const"
+
 export interface CreateOrderOption {
   /** 用于标识创建订单请求的唯一 ID */
   reference_id: string
@@ -6,7 +8,7 @@ export interface CreateOrderOption {
   /** 要购买的商品 ID */
   product_id: string
   /** 平台 */
-  platform: EPlatform
+  platform: Platform
   /**
    * 游戏侧接收发货通知的服务端地址
    *

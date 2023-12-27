@@ -1,4 +1,5 @@
 import { isShipOrderPayload, type ShipOrderNotification } from "./msgShipOrder"
+import type { MaybePromise, TypeGuard } from "../utils"
 
 /**
  * 通知类型枚举

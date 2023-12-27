@@ -1,4 +1,4 @@
-import { isFullURL, getFullURL } from "../../utils"
+import { isFullURL, getFullURL, type SomeRequired } from "../../utils"
 import type { IRequestGlobalConfig } from "./type"
 
 export class RequestGlobalConfig {

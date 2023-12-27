@@ -1,13 +1,9 @@
-declare global {
-  type MaybePromise<T> = T extends Promise<infer P> ? P | T : T | Promise<T>
-  type SomePartial<T, K extends keyof T> = Omit<T, K> & { [P in K]?: T[P] }
-  type SomeRequired<T, K extends keyof T> = Omit<T, K> & { [F in K]-?: T[F] }
-  type TypeGuardFn<T> = (data: unknown) => data is T
-  type TypeGuard<T> = {
-    guard: TypeGuardFn<T>
-    message: string
-  }
-  type TypeConvertFn<T> = (data: unknown) => T | Error
+export type MaybePromise<T> = T extends Promise<infer P> ? P | T : T | Promise<T>
+export type SomeRequired<T, K extends keyof T> = Omit<T, K> & { [F in K]-?: T[F] }
+export type TypeGuardFn<T> = (data: unknown) => data is T
+export type TypeGuard<T> = {
+  guard: TypeGuardFn<T>
+  message: string
 }
 
 export function getTypeGuard<T>(typeGuard: TypeGuardFn<T> | TypeGuard<T>, defaultMessage: string = "数据未能正确识别"): TypeGuard<T> {
