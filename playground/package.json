@@ -1,0 +1,34 @@
+{
+  "name": "playground",
+  "main": "index.ts",
+  "types": "index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "rimraf ./dist & microbundle --sourcemap false --format cjs,es --target node -o ./dist",
+    "play": "nodemon --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm index.ts",
+    "clear": "rimraf dist && rimraf node_modules",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint ./src/**/*.ts",
+    "lint:fix": "eslint ./src/**/*.{ts,js} --fix"
+  },
+  "author": "seayoo.io",
+  "license": "MIT",
+  "devDependencies": {
+    "@seayoo-web/utils": "^1.12.3",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.2",
+    "microbundle": "^0.15.1",
+    "nodemon": "^3.0.2",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  }
+}

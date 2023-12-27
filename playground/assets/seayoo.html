@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playground</title>
+    <link rel="stylesheet" href="/assets/base.css" />
+  </head>
+  <body>
+    <h1>Seayoo Mock Server</h1>
+    <div id="app">
+      <form class="api-form" action="/seayoo/notify/ship-order" method="post">
+        <h2>发送通知 ShipOrder</h2>
+        <div class="input-group">
+          <input type="text" name="order_id" placeholder="order_id" />
+        </div>
+        <div class="input-group">
+          <input type="text" name="reference_id" placeholder="reference_id" />
+        </div>
+        <div class="input-group">
+          <input type="text" name="combo_id" placeholder="combo_id" />
+        </div>
+        <div class="input-group">
+          <input type="text" name="product_id" placeholder="product_id" />
+        </div>
+        <div class="input-group">
+          <input type="number" name="quantity" placeholder="quantity" />
+        </div>
+        <div class="input-group">
+          <input type="text" name="currency" placeholder="currency" value="CNY" />
+        </div>
+        <div class="input-group">
+          <input type="number" name="amount" placeholder="amount"" />
+        </div>
+        <div class="input-group">
+          <input type="text" name="context" placeholder="context"" />
+        </div>
+        <div>
+          <button class="button" type="submit">提交</button>
+        </div>
+      </form>
+    </div>
+    
+  </body>
+</html>

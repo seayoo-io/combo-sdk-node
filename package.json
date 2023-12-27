@@ -20,14 +20,15 @@
     "build": "rimraf ./dist & microbundle --sourcemap false --format cjs,es --target node",
     "dev": "microbundle watch --target node",
     "clear": "rimraf dist && rimraf node_modules",
+    "type-check": "tsc --noEmit",
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.{ts,js} --fix",
-    "pub": "pnpm lint:fix && pnpm build && npm publish"
+    "pub": "pnpm type-check && pnpm lint:fix && pnpm build && npm publish"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm run lint"
+    "pre-commit": "pnpm lint && pnpm type-check"
   },
-  "repository": "https://github.com/seayoo-io/combo-sdk-js",
+  "repository": "https://github.com/seayoo-io/combo-sdk-node",
   "keywords": [
     "combo",
     "seayoo",

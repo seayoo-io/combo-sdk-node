@@ -8,7 +8,8 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "module": "ESNext",
-    "target": "ESNext"
+    "target": "ESNext",
+    "ignoreDeprecations": "5.0",
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
 }

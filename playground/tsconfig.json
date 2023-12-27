@@ -1,0 +1,22 @@
+{
+  "compileOnSave": false,
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "include": [
+    "**/*.ts",
+  ],
+  "exclude": [
+    "dist/**/*",
+  ],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "ignoreDeprecations": "5.0",
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "composite": true,
+    "types": ["node"]
+  }
+}

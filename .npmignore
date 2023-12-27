@@ -2,9 +2,9 @@ node_modules/
 .DS_Store
 src/
 scripts/
-index.ts
+playground
 .**
 pnpm-lock.**
-*.html
 *.json
 __tests__
+tsconfig*
