@@ -2,7 +2,8 @@ node_modules/
 .DS_Store
 src/
 scripts/
-playground
+playground-js
+playground-ts
 .**
 pnpm-lock.**
 *.json

@@ -1,6 +1,6 @@
-import * as fs from "node:fs"
-import * as http from "node:http"
-import { basename, extname } from "node:path"
+import { existsSync, readFileSync, createReadStream } from "node:fs"
+import { createServer } from "node:http"
+import { join, basename, extname } from "node:path"
 import { readBody } from "./utils"
 import type { IncomingMessage, ServerResponse } from "node:http"
 
@@ -60,11 +60,11 @@ export class Server {
   }
 
   loadHtml(file: string) {
-    const filePath = new URL(file.endsWith(".html") ? file : `${file}.html`, import.meta.url)
-    if (!fs.existsSync(filePath)) {
+    const filePath = join(__dirname, file.endsWith(".html") ? file : `${file}.html`)
+    if (!existsSync(filePath)) {
       throw new Error(`File ${filePath} not found`)
     }
-    this.files[basename(filePath.toString())] = fs.readFileSync(filePath, "utf-8")
+    this.files[basename(filePath)] = readFileSync(filePath, "utf-8")
     return this
   }
 
@@ -78,10 +78,9 @@ export class Server {
       return
     }
     const files = this.files
-    const baseURL = import.meta.url
     const middlewares = this.middlewares
     const routes = this.routes
-    const server = http.createServer(async (req, res) => {
+    const server = createServer(async (req, res) => {
       const { method } = req
       // make request
       const bodyString = await readBody(req)
@@ -93,11 +92,11 @@ export class Server {
       const response: ResponseMessage = new CustomServerResponse(res, files)
       // find assets
       if (this.assetsDir && url.pathname.startsWith(this.assetsDir)) {
-        const assetsFile = new URL(url.pathname.replace(/^\//, ""), baseURL)
-        const ext = extname(assetsFile.pathname).toLowerCase().slice(1)
-        if (fs.existsSync(assetsFile)) {
+        const assetsFile = join(__dirname, url.pathname.replace(/^\//, ""))
+        const ext = extname(assetsFile).toLowerCase().slice(1)
+        if (existsSync(assetsFile)) {
           res.setHeader("Content-Type", mineTypeMap[ext] || "")
-          fs.createReadStream(assetsFile).pipe(res)
+          createReadStream(assetsFile).pipe(res)
           return
         }
       }

@@ -1,15 +1,15 @@
 {
   "name": "@seayoo-io/combo-sdk-node",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "description": "Combo SDK for Node.js",
   "type": "module",
-  "main": "dist/index.mjs",
+  "main": "dist/index.cjs",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
+  "module": "dist/index.esm.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.mjs",
+      "import": "./dist/index.esm.js",
       "require": "./dist/index.cjs"
     }
   },
