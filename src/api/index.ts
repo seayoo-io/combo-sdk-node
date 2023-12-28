@@ -64,8 +64,9 @@ export class ApiClient {
     }
     // 检查购买数量
     option.quantity = Math.min(Math.max(1, Math.ceil(option.quantity)), Number.MAX_SAFE_INTEGER)
-    const { ok, data } = await this.req.post("create-order", option, isCreateOrderResponse)
+    const { ok, data, status, message } = await this.req.post("create-order", option, isCreateOrderResponse)
     if (!ok || !data) {
+      console.error({ type: "createOrder Error", status, message })
       throw new Error("createOrder: 服务器返回的数据未能正确识别")
     }
     return data

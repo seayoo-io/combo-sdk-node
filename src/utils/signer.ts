@@ -62,7 +62,10 @@ const SigningDefinitions = {
  */
 export function parseAuthorizationHeader(authString: string, version: keyof typeof SigningDefinitions = "HS256") {
   if (!version || !SigningDefinitions[version]) {
-    console.error(`parseAuthorizationHeader: invalid version ${version}, support ${Object.keys(SigningDefinitions).join(", ")}`)
+    console.error({
+      type: "parseAuthorizationHeader Error",
+      message: `invalid version ${version}, support ${Object.keys(SigningDefinitions).join(", ")}`,
+    })
     return null
   }
   return parseRawAuthHeader(authString, SigningDefinitions[version].prefix)
@@ -73,7 +76,10 @@ export function parseAuthorizationHeader(authString: string, version: keyof type
  */
 export function calcAuthorizationHeader(option: SignDataOption, onlySignature = false, version: keyof typeof SigningDefinitions = "HS256") {
   if (!version || !SigningDefinitions[version]) {
-    console.error(`calcAuthorizationHeader: invalid version ${version}, support ${Object.keys(SigningDefinitions).join(", ")}`)
+    console.error({
+      type: "calcAuthorizationHeader Error",
+      message: `invalid version ${version}, support ${Object.keys(SigningDefinitions).join(", ")}`,
+    })
     return "ErrorSigningVersion"
   }
   return SigningDefinitions[version].sign(option, onlySignature)
