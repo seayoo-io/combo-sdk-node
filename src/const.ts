@@ -2,12 +2,12 @@
 export const SDKName = "combo-sdk-node"
 
 /** SDK 版本，在编译前会被动态替换 */
-export const SDKVersion = "0.0.7"
+export const SDKVersion = "0.0.8"
 
 /**
  * 世游支持的服务端点列表
  */
-export const enum Endpoint {
+export enum Endpoint {
   /** 中国大陆 API 端点，用于国内发行 */
   China = "https://api.seayoo.com",
   /** 全球的 API 端点，用于海外发行  */
@@ -15,7 +15,7 @@ export const enum Endpoint {
 }
 
 /** 支持的系统平台 */
-export const enum Platform {
+export enum Platform {
   /** 安卓平台，包括华为鸿蒙系统、小米澎湃 OS 等基于 Android 的操作系统 */
   Android = "android",
   /** 苹果的 iOS 和 iPadOS */
@@ -29,7 +29,7 @@ export const enum Platform {
 }
 
 /** 支持的登录提供方 */
-export const enum IdP {
+export enum IdP {
   /** 设备登录（游客） */
   Device = "device",
   /** 世游通行证 */

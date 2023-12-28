@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+import { verify } from "jsonwebtoken"
 import { verifyConfig, type SDKBaseConfig } from "../utils"
 import { isIdentityJwtPayload, type IdentityPayload } from "./id"
 import { isAdJwtPayload, type AdPayload } from "./ads"
@@ -32,7 +32,7 @@ export class TokenVerifier {
    */
   verifyIdentityToken(token: string): IdentityPayload | Error {
     try {
-      const payload = jwt.verify(token, this.privateKey, { ...this.baseOption, complete: false })
+      const payload = verify(token, this.privateKey, { ...this.baseOption, complete: false })
       if (!payload || !isIdentityJwtPayload(payload) || !payload.sub) {
         return new Error("verifyIdentityToken: token 格式化失败 " + JSON.stringify(payload))
       }
@@ -58,7 +58,7 @@ export class TokenVerifier {
    */
   verifyAdToken(token: string): AdPayload | Error {
     try {
-      const payload = jwt.verify(token, this.privateKey, { ...this.baseOption, complete: false })
+      const payload = verify(token, this.privateKey, { ...this.baseOption, complete: false })
       if (!payload || !isAdJwtPayload(payload) || !payload.sub) {
         return new Error("verifyAdToken: token 格式化失败 " + JSON.stringify(payload))
       }
