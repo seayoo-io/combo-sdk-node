@@ -1,5 +1,5 @@
 import { createHash, createHmac } from "crypto"
-import type { IRequestOptions } from "../request"
+import { IBaseRequestBody } from "../request"
 
 export const AuthorizationField = "Authorization"
 const MaxTimeDiff = 5 * 60 * 1000
@@ -12,7 +12,7 @@ interface SignDataOption {
   endpoint: string
   method: string
   url: string
-  data: IRequestOptions["body"]
+  data: IBaseRequestBody
   timestamp?: string
 }
 type SignDataOptionForVerify = Omit<SignDataOption, "game" | "timestamp"> & { game?: string }

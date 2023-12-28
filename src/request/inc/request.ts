@@ -17,11 +17,9 @@ export const nodeRequest: NetRequestAgent = async function (url, config, options
 
 const coreNodeRequest: NetRequestCoreFn = async function (url, config, options) {
   const opt = await convertOptions(url, config, options)
-  const fixedUrl = config.getFullUrl(opt.url || url)
-
-  if (!isFullURL(fixedUrl)) {
+  if (!isFullURL(opt.url)) {
     return {
-      url: fixedUrl,
+      url: opt.url,
       method: opt.method,
       status: -2,
       statusText: "URLFormatError",
@@ -29,8 +27,8 @@ const coreNodeRequest: NetRequestCoreFn = async function (url, config, options) 
       body: "",
     }
   }
-  const client = /^https:\/\//i.test(fixedUrl) ? https : http
-  const iURL = new URL(fixedUrl)
+  const client = /^https:\/\//i.test(opt.url) ? https : http
+  const iURL = new URL(opt.url)
   const params = opt.params
   if (params instanceof Object) {
     Object.keys(params).forEach((key) => iURL.searchParams.set(key, params[key]))

@@ -60,7 +60,7 @@ export type IRequestGlobalConfig = {
         params: Record<string, string>
         method: string
         url: string
-        body?: IBaseRequestOptions["body"]
+        body?: IBaseRequestBody
       }) => MaybePromise<void | string>)
   /** 全局错误处理函数，仅仅在 statusCode 错误时触发 */
   errorHandler?: null | ((status: number, method: string, url: string) => void)

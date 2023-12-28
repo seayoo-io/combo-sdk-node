@@ -47,7 +47,7 @@ export class ApiClient {
           endpoint: config.endpoint,
           method,
           url,
-          data: body,
+          data: body || "",
         })
       },
       logHandler: config.logger,

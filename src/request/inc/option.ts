@@ -2,7 +2,7 @@ import type { IBaseRequestOptions, IBaseRequestBody } from "./type"
 import type { RequestGlobalConfig } from "./config"
 
 type FixedRequestOptions = Omit<Required<IBaseRequestOptions>, "params" | "body"> & {
-  url?: string
+  url: string
   params: Record<string, string>
   body: ReturnType<typeof convertBody>
 }
@@ -36,12 +36,14 @@ export async function convertOptions(
       params[key] = convertParam(p[key])
     }
   })
+  const fullUrl = config.getFullUrl(url)
+  const body = convertBody(opt.body)
   // 全局请求干预函数，可以修改 headers 和 params 并返回新的 url 地址
-  const newURL = await config.get("requestHandler")?.({ headers, params, method, url, body: opt.body })
+  const newURL = await config.get("requestHandler")?.({ headers, params, method, url: fullUrl, body })
   return {
-    url: typeof newURL === "string" && newURL ? newURL : undefined,
+    url: typeof newURL === "string" && newURL ? newURL : fullUrl,
     method,
-    body: convertBody(opt.body),
+    body,
     params,
     headers,
     timeout: opt.timeout || config.get("timeout"),
