@@ -4,9 +4,6 @@ import type { ParameterizedContext } from "koa"
 import type { IncomingMessage, ServerResponse } from "node:http"
 import type { Request as ExpressRequest, Response as ExpressResponse } from "express"
 
-export { NotificationType } from "./types"
-export type { NotificationHandler } from "./types"
-
 interface NotificationRequestBody {
   /** 世游服务端通知的版本号 */
   version: string

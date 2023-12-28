@@ -4,8 +4,6 @@ import { isIdentityJwtPayload, type IdentityPayload } from "./id"
 import { isAdJwtPayload, type AdPayload } from "./ads"
 import type { VerifyOptions } from "jsonwebtoken"
 
-export type { IdentityPayload } from "./id"
-
 const IdentityTokenScope = "auth"
 const AdTokenScope = "ads"
 
