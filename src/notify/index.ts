@@ -33,7 +33,7 @@ function isNotificationRequestBody(data: unknown): data is NotificationRequestBo
  *
  * 另有 express 和 koa2 版本的处理函数可以使用
  */
-export function getNotificationRequestHandler(config: SDKBaseConfig, handler: NotificationHandler) {
+export function getNotificationHandler(config: SDKBaseConfig, handler: NotificationHandler) {
   verifyConfig(config)
   return async function (req: IncomingMessage, res: ServerResponse) {
     if (req.method !== "POST") {
@@ -86,10 +86,10 @@ export function getNotificationRequestHandler(config: SDKBaseConfig, handler: No
 /**
  * 获取基于 express 的处理函数用于接收 Seayoo Server 推送过来的消息通知
  *
- * 如需自定义处理，可以使用 getNotificationRequestHandler 方法
+ * 如需自定义处理，可以使用 getNotificationHandler 方法
  */
 export function getNotificationHandlerForExpress(config: SDKBaseConfig, handler: NotificationHandler) {
-  const func = getNotificationRequestHandler(config, handler)
+  const func = getNotificationHandler(config, handler)
   return async function (req: ExpressRequest, res: ExpressResponse) {
     await func(req, res)
   }
@@ -98,10 +98,10 @@ export function getNotificationHandlerForExpress(config: SDKBaseConfig, handler:
 /**
  * 获取基于 koa2 的处理函数用于接收 Seayoo Server 推送过来的消息通知
  *
- * 如需自定义处理，可以使用 getNotificationRequestHandler 方法
+ * 如需自定义处理，可以使用 getNotificationHandler 方法
  */
 export function getNotificationHandlerForKoa(config: SDKBaseConfig, handler: NotificationHandler) {
-  const func = getNotificationRequestHandler(config, handler)
+  const func = getNotificationHandler(config, handler)
   return async function (ctx: ParameterizedContext) {
     await func(ctx.req, ctx.res)
   }

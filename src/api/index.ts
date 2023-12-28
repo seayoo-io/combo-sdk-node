@@ -27,7 +27,7 @@ export class ApiClient {
     const ua = getUserAgent(config.game)
     this.req = NetRequest({
       baseURL: `${config.endpoint.replace(/\/$/, "")}${ApiPrefix}`,
-      maxRetry: config.maxRetry,
+      maxRetry: config.maxRetry ?? 1,
       retryInterval: config.retryInterval,
       responseRule: {
         ok: {
@@ -39,7 +39,7 @@ export class ApiClient {
           messageField: "message",
         },
       },
-      requestHandler({ headers, method, url, body }) {
+      requestTransformer({ headers, method, url, body }) {
         headers["User-Agent"] = ua
         headers[AuthorizationField] = calcAuthorizationHeader({
           game: config.game,
@@ -64,10 +64,10 @@ export class ApiClient {
     }
     // 检查购买数量
     option.quantity = Math.min(Math.max(1, Math.ceil(option.quantity)), Number.MAX_SAFE_INTEGER)
-    const { ok, data, status, message } = await this.req.post("create-order", option, isCreateOrderResponse)
+    const { ok, data, code, status, message, headers } = await this.req.post("create-order", option, isCreateOrderResponse)
     if (!ok || !data) {
-      console.error({ type: "createOrder Error", status, message })
-      throw new Error("createOrder: 服务器返回的数据未能正确识别")
+      console.error({ type: "createOrder Error", status, code, message, traceId: headers["x-trace-id"] })
+      throw new Error(`createOrder: ${message || code || status}`)
     }
     return data
   }
@@ -84,10 +84,13 @@ export class ApiClient {
     if (!comboId || !sessionId) {
       throw new Error("enterGame: 必要参数缺失")
     }
-    const { ok } = await this.req.post("enter-game", {
+    const { ok, status, code, message, headers } = await this.req.post("enter-game", {
       combo_id: comboId,
       session_id: sessionId,
     })
+    if (!ok) {
+      console.error({ type: "enterGame Error", status, code, message, traceId: headers["x-trace-id"] })
+    }
     return ok
   }
 
@@ -103,10 +106,13 @@ export class ApiClient {
     if (!comboId || !sessionId) {
       throw new Error("enterGame: 必要参数缺失")
     }
-    const { ok } = await this.req.post("leave-game", {
+    const { ok, status, code, message, headers } = await this.req.post("leave-game", {
       combo_id: comboId,
       session_id: sessionId,
     })
+    if (!ok) {
+      console.error({ type: "leaveGame Error", status, code, message, traceId: headers["x-trace-id"] })
+    }
     return ok
   }
 }

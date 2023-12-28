@@ -38,16 +38,15 @@ export async function convertOptions(
   })
   const fullUrl = config.getFullUrl(url)
   const body = convertBody(opt.body)
+  const timeout = opt.timeout || config.get("timeout")
   // 全局请求干预函数，可以修改 headers 和 params 并返回新的 url 地址
-  const newURL = await config.get("requestHandler")?.({ headers, params, method, url: fullUrl, body })
-  return {
-    url: typeof newURL === "string" && newURL ? newURL : fullUrl,
-    method,
-    body,
-    params,
-    headers,
-    timeout: opt.timeout || config.get("timeout"),
-  }
+  const newURL = await config.get("requestTransformer")?.({ headers, params, method, url: fullUrl, body })
+  const finalUrl = typeof newURL === "string" && newURL ? newURL : fullUrl
+  // 打印日志
+  const logger = config.get("logHandler")
+  logger && logger({ type: "ready", url: finalUrl, method, headers, timeout, body })
+  // 返回
+  return { url: finalUrl, method, body, params, headers, timeout }
 }
 
 /** 将数据转成 string 格式表示，仅仅特殊处理 array 为 item,item... */

@@ -8,7 +8,7 @@ export class RequestGlobalConfig {
     "baseURL" | "maxRetry" | "cacheTTL" | "responseRule" | "retryInterval" | "timeout" | "retryResolve"
   > = {
     baseURL: "",
-    maxRetry: 1,
+    maxRetry: 0,
     retryInterval: 1000,
     retryResolve: "network",
     timeout: 5000,

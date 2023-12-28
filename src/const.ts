@@ -2,7 +2,7 @@
 export const SDKName = "combo-sdk-node"
 
 /** SDK 版本，在编译前会被动态替换 */
-export const SDKVersion = "0.0.12"
+export const SDKVersion = "0.0.13"
 
 /**
  * 世游支持的服务端点列表

@@ -93,8 +93,8 @@ const config = {
 
 // Step 2 获取 Request 请求处理函数
 // 方法1：使用底层 http 模块的处理函数
-import { getNotificationRequestHandler } from "@seayoo-io/combo-sdk-node"
-const notifyHandler = getNotificationRequestHandler(config, notificationHandler)
+import { getNotificationHandler } from "@seayoo-io/combo-sdk-node"
+const notifyHandler = getNotificationHandler(config, notificationHandler)
 http.createServer(async function(req, res){
     if(req.url === "<YourNotifyUrl>" && req.method === "POST") {
        await notifyHandler(req, res)

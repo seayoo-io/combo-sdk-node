@@ -13,7 +13,6 @@ export function checkTypedDataResult<T>(
     if (guard.guard(result.data)) {
       return <IResponseResult<T>>result
     }
-    console.error("ResponseCheckFaild", url, result.data)
     config.showMessage(true, `${url} ${guard.message}`)
     result.data = null
     return <IResponseResult<null>>result

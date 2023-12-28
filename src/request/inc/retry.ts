@@ -11,7 +11,7 @@ export async function retryRequest(
   _try?: number
 ): ReturnType<NetRequestCoreFn> {
   const currentTryCount = _try || 0
-  const maxRetry = Math.min(10, options?.maxRetry ?? config.get("maxRetry"))
+  const maxRetry = Math.min(10, options?.maxRetry ?? config.get("maxRetry") ?? 0)
   const retryResolve = options?.retryResolve ?? config.get("retryResolve")
   const logger = config.get("logHandler") || noop
   logger({

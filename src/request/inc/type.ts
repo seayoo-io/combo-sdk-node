@@ -53,7 +53,7 @@ export type IRequestGlobalConfig = {
   /** 用于 get 请求的缓存时长，单位 ms，建议不小于 100 */
   cacheTTL?: number
   /** 全局 request 处理函数，headers 和 params 为引用型数据可直接修改，如果返回字符串，则替换原来的 url 进行请求 */
-  requestHandler?:
+  requestTransformer?:
     | null
     | ((request: {
         headers: Record<string, string>
@@ -149,6 +149,8 @@ export interface IResponseResult<T = unknown> {
   headers: Record<string, string | undefined>
   /**
    * 成功时返回的数据，如果网络错误/服务器没有响应内容（比如 http status 202/204）/类型守卫检查失败则是 null
+   *
+   * 如果需要检查返回的内容，可以访问 body 属性
    */
   data: T
 }
@@ -164,23 +166,44 @@ export interface NetRequestAgent {
   (url: string, config: RequestGlobalConfig, options?: IRequestOptions): Promise<IResponseResult>
 }
 
-export type IRequestLog = { method: string; url: string; retry: number; maxRetry: number; message: string } & (
-  | {
-      type: "prepear"
-      /** 请求的参数 */
-      options?: IRequestOptions
-      /** 自定义追加的请求 header 头 */
-      headers?: Record<string, string>
-    }
-  | {
-      type: "finished"
-      /** 请求消耗的时间，单位 ms */
-      cost: number
-      /** 请求响应的内容 */
-      response: IRequestBaseResponse
-      /** 请求响应的 header */
-      headers?: Record<string, string | undefined>
-    }
-)
+interface LogBase {
+  method: string
+  url: string
+}
+interface RetryCount extends LogBase {
+  retry: number
+  maxRetry: number
+  message: string
+}
+
+interface LogPrepear extends RetryCount {
+  type: "prepear"
+  /** 请求的参数 */
+  options?: IRequestOptions
+  /** 自定义追加的请求 header 头 */
+  headers?: Record<string, string>
+}
+
+interface LogReady extends LogBase {
+  type: "ready"
+  /** 实际发送的请求 header 头 */
+  headers: Record<string, string>
+  /** 实际发送的数据 */
+  body?: IBaseRequestBody
+  /** 实际发送设定的 timeout */
+  timeout?: number
+}
+
+interface LogFinished extends RetryCount {
+  type: "finished"
+  /** 请求消耗的时间，单位 ms */
+  cost: number
+  /** 请求响应的内容 */
+  response: IRequestBaseResponse
+  /** 请求响应的 header */
+  headers?: Record<string, string | undefined>
+}
+
+export type IRequestLog = LogPrepear | LogReady | LogFinished
 
 export type TypeGuardParam<T> = TypeGuard<T> | TypeGuardFn<T>
