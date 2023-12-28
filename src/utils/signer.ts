@@ -1,4 +1,4 @@
-import { createHash, createHmac } from "crypto"
+import { createHash, createHmac, type BinaryLike } from "crypto"
 import { IBaseRequestBody } from "../request"
 
 export const AuthorizationField = "Authorization"
@@ -22,7 +22,7 @@ const SigningDefinitions = {
   HS256: {
     prefix: "SEAYOO-HMAC-SHA256",
     sign({ game, secret, endpoint, method, url, data, timestamp }, onlySignature = false) {
-      const payloadHash = !data ? EmptyStringSha256 : sha256(JSON.stringify(data))
+      const payloadHash = !data ? EmptyStringSha256 : sha256(convertBodyData(data))
       const ts = timestamp || getTimestamp()
       const fullURL = url.startsWith("http") ? new URL(url) : new URL(url, endpoint)
       const uri = fullURL.pathname + fullURL.search
@@ -117,12 +117,20 @@ function parseTimestamp(ts: string) {
   return Date.UTC(+info[1], +info[2] - 1, +info[3], +info[4], +info[5], +info[6])
 }
 
-function sha256(data: string | NodeJS.ArrayBufferView) {
+function sha256(data: BinaryLike) {
   return createHash("sha256").update(data).digest("hex").toLowerCase()
 }
 
-function hS256(secret: string, data: string) {
+function hS256(secret: string, data: BinaryLike) {
   return createHmac("sha256", secret).update(data).digest("hex").toLowerCase()
+}
+
+function convertBodyData(body: IBaseRequestBody): string {
+  if (typeof body === "string") {
+    return body
+  }
+  // TODO
+  return body.toString()
 }
 
 function parseRawAuthHeader(authString: string, prefix: string): Record<string, string> | null {
