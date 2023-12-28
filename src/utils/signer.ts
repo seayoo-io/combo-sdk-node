@@ -21,13 +21,13 @@ type SignDataOptionForVerify = Omit<SignDataOption, "game" | "timestamp"> & { ga
 const SigningDefinitions = {
   HS256: {
     prefix: "SEAYOO-HMAC-SHA256",
-    sign({ game, secret, endpoint, method, url, data, timestamp }) {
+    sign({ game, secret, endpoint, method, url, data, timestamp }, onlySignature = false) {
       const payloadHash = !data ? EmptyStringSha256 : sha256(JSON.stringify(data))
       const ts = timestamp || getTimestamp()
       const fullURL = url.startsWith("http") ? new URL(url) : new URL(url, endpoint)
       const uri = fullURL.pathname + fullURL.search
       const signature = hS256(secret, [this.prefix, method.toUpperCase(), uri, ts, payloadHash].join("\n"))
-      return `${this.prefix} Game=${game},Timestamp=${ts},Signature=${signature}`
+      return onlySignature ? signature : `${this.prefix} Game=${game},Timestamp=${ts},Signature=${signature}`
     },
     verify(authString, option): boolean {
       const info = parseRawAuthHeader(authString, this.prefix)
@@ -45,14 +45,14 @@ const SigningDefinitions = {
       if (!ts || ts < now - MaxTimeDiff || ts > now + MaxTimeDiff) {
         return false
       }
-      return info.signature === this.sign({ ...option, game, timestamp })
+      return info.signature === this.sign({ ...option, game, timestamp }, true)
     },
   },
 } as const satisfies Record<
   string,
   {
     prefix: string
-    sign: (option: SignDataOption) => string
+    sign: (option: SignDataOption, onlySignature: boolean) => string
     verify: (authString: string, option: SignDataOptionForVerify) => boolean
   }
 >
@@ -71,12 +71,12 @@ export function parseAuthorizationHeader(authString: string, version: keyof type
 /**
  * 获取请求签名值，默认签名方法是 HS256
  */
-export function calcAuthorizationHeader(option: SignDataOption, version: keyof typeof SigningDefinitions = "HS256") {
+export function calcAuthorizationHeader(option: SignDataOption, onlySignature = false, version: keyof typeof SigningDefinitions = "HS256") {
   if (!version || !SigningDefinitions[version]) {
     console.error(`calcAuthorizationHeader: invalid version ${version}, support ${Object.keys(SigningDefinitions).join(", ")}`)
     return "ErrorSigningVersion"
   }
-  return SigningDefinitions[version].sign(option)
+  return SigningDefinitions[version].sign(option, onlySignature)
 }
 
 /**
