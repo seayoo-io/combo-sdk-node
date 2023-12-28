@@ -6,3 +6,4 @@ playground
 pnpm-lock.**
 __tests__
 tsconfig*
+preconvert.cjs
