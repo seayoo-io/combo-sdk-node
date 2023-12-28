@@ -11,4 +11,5 @@ export { NotificationType } from "./notify/types"
 export type { NotificationHandler } from "./notify/types"
 
 export type { SDKBaseConfig } from "./utils"
+export { calcAuthorizationHeader, checkHttpAuthInfo } from "./utils"
 export { Endpoint, Platform, IdP } from "./const"
