@@ -39,14 +39,20 @@ export class ApiClient {
           messageField: "message",
         },
       },
-      requestTransformer({ headers, method, url, body }) {
+      requestTransformer({ headers, method, url, params, body }) {
+        const iURL = new URL(url)
+        if (params) {
+          if (params instanceof Object) {
+            Object.keys(params).forEach((key) => iURL.searchParams.set(key, params[key]))
+          }
+        }
         headers["User-Agent"] = ua
         headers[AuthorizationField] = calcAuthorizationHeader({
           game: config.game,
           secret: config.secret,
           endpoint: config.endpoint,
           method,
-          url,
+          url: iURL.toString(),
           data: body || "",
         })
       },

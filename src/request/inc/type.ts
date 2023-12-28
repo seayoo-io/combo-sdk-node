@@ -59,6 +59,7 @@ export type IRequestGlobalConfig = {
         headers: Record<string, string>
         params: Record<string, string>
         method: string
+        /** 要请求的地址，不包含 params 参数 */
         url: string
         body?: IBaseRequestBody
       }) => MaybePromise<void | string>)

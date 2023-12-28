@@ -43,8 +43,7 @@ export async function convertOptions(
   const newURL = await config.get("requestTransformer")?.({ headers, params, method, url: fullUrl, body })
   const finalUrl = typeof newURL === "string" && newURL ? newURL : fullUrl
   // 打印日志
-  const logger = config.get("logHandler")
-  logger && logger({ type: "ready", url: finalUrl, method, headers, timeout, body })
+  config.get("logHandler")?.({ type: "ready", url: finalUrl, method, headers, timeout, body })
   // 返回
   return { url: finalUrl, method, body, params, headers, timeout }
 }
