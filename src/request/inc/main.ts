@@ -9,7 +9,7 @@ import type {
   NetRequestAgent,
   ResponseWithType,
   ResponseWithoutType,
-} from "./type.ts"
+} from "./type"
 
 type RequestBody = NonNullable<IRequestOptions["body"]>
 

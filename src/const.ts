@@ -1,10 +1,8 @@
 /** SDK 名称 */
 export const SDKName = "combo-sdk-node"
 
-/**
- * Api 路由前缀
- */
-export const ApiPrefix = "/v3/server"
+/** SDK 版本，在编译前会被动态替换 */
+export const SDKVersion = "0.0.6"
 
 /**
  * 世游支持的服务端点列表

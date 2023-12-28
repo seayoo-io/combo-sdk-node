@@ -11,5 +11,5 @@
     "target": "ES2022"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["playground-ts", "playground-js"]
+  "exclude": ["playground"]
 }

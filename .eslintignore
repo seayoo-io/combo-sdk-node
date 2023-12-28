@@ -1,6 +1,5 @@
 node_modules
 dist
-stats.html
 .DS_Store
-playground-js
-playground-ts
+playground
+*.cjs

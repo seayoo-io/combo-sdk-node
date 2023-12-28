@@ -1,11 +1,8 @@
 node_modules/
 .DS_Store
 src/
-scripts/
-playground-js
-playground-ts
+playground
 .**
 pnpm-lock.**
-*.json
 __tests__
 tsconfig*
