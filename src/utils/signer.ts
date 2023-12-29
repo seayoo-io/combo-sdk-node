@@ -40,12 +40,12 @@ const SigningDefinitions = {
       if (!game || !signature || !timestamp || (option.game && option.game !== game)) {
         return false
       }
-      const ts = parseTimestamp(info.timestamp)
+      const ts = parseTimestamp(timestamp)
       const now = Date.now()
       if (!ts || ts < now - MaxTimeDiff || ts > now + MaxTimeDiff) {
         return false
       }
-      return info.signature === this.sign({ ...option, game, timestamp }, true)
+      return signature === this.sign({ ...option, game, timestamp }, true)
     },
   },
 } as const satisfies Record<
@@ -133,7 +133,7 @@ function convertBodyData(body: IBaseRequestBody): string {
   return body.toString()
 }
 
-function parseRawAuthHeader(authString: string, prefix: string): Record<string, string> | null {
+function parseRawAuthHeader(authString: string, prefix: string): Record<string, string | undefined> | null {
   if (!authString || !authString.startsWith(prefix + " ")) {
     return null
   }
