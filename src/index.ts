@@ -6,7 +6,13 @@ export { TokenVerifier } from "./verify"
 export type { IdentityPayload } from "./verify/id"
 export type { AdPayload } from "./verify/ads"
 
-export { getNotificationHandler, getNotificationHandlerForExpress, getNotificationHandlerForKoa } from "./notify"
+export {
+  getNotificationHandler,
+  getNotificationHandlerForExpress,
+  getNotificationHandlerForKoa,
+  getNotificationMiddlewareForExpress,
+  getNotificationMiddlewareForKoa,
+} from "./notify"
 export { NotificationType } from "./notify/types"
 export type { NotificationHandler } from "./notify/types"
 
