@@ -31,26 +31,38 @@ function isNotificationRequestBody(data: unknown): data is NotificationRequestBo
 /**
  * 获取一个处理函数用于接收 Seayoo Server 推送过来的消息通知
  *
- * 另有 express 和 koa2 版本的处理函数可以使用
+ * 另有 express 和 koa2 版本的处理函数可以使用。
+ *
+ * 由于签名需要原始请求的内容，如果 request 在函数执行之前已经被读取，则需要手工传入请求的 rawBody 字符串以用以签名
  */
 export function getNotificationHandler(config: SDKBaseConfig, handler: NotificationHandler) {
   verifyConfig(config)
-  return async function (req: IncomingMessage, res: ServerResponse) {
+  /**
+   * 第三个可选参数 rawBodyString 用于在特定场景 request 为 unreadable 时作为容错兜底方案处理
+   *
+   * 具体方案可以参考
+   *
+   * https://cloud.tencent.com/developer/ask/sof/110062928
+   */
+  return async function (req: IncomingMessage, res: ServerResponse, rawBodyString?: string) {
     if (req.method !== "POST") {
       done(res, 405)
       return
     }
-    const contentType = `${req.headers["Content-Type"]}`.toLowerCase()
+    const contentType = `${req.headers["Content-Type"] || req.headers["content-type"]}`.toLowerCase()
     if (!contentType || !contentType.startsWith("application/json")) {
       done(res, 415)
       return
     }
-    const body = await readBody(req)
+    const authString = req.headers[AuthorizationField] || req.headers[AuthorizationField.toLowerCase()]
+    const body = await readBody(req, rawBodyString)
     if (
-      !checkHttpAuthInfo(`${req.headers[AuthorizationField]}`, {
+      !body ||
+      !checkHttpAuthInfo(`${authString}`, {
         game: config.game,
         secret: config.secret,
         method: "POST",
+        // 此处协议不参与计算不需要准确设定
         endpoint: `http://${req.headers.host}`,
         url: req.url || "",
         data: body,
@@ -86,12 +98,18 @@ export function getNotificationHandler(config: SDKBaseConfig, handler: Notificat
 /**
  * 获取基于 express 的处理函数用于接收 Seayoo Server 推送过来的消息通知
  *
- * 如需自定义处理，可以使用 getNotificationHandler 方法
+ * 如需自定义处理，可以使用 getNotificationHandler 方法，
+ *
+ * 如果 express 使用全局的 bodyParse 或类似插件，将需要做额外的处理以获取原始请求的内容 rawBody 以用以计算签名
+ *
+ * 处理方法可以参考
+ *
+ * https://cloud.tencent.com/developer/ask/sof/110062928
  */
 export function getNotificationHandlerForExpress(config: SDKBaseConfig, handler: NotificationHandler) {
   const func = getNotificationHandler(config, handler)
   return async function (req: ExpressRequest, res: ExpressResponse) {
-    await func(req, res)
+    await func(req, res, "rawBody" in req ? `${req.rawBody}` : "")
   }
 }
 
@@ -99,10 +117,16 @@ export function getNotificationHandlerForExpress(config: SDKBaseConfig, handler:
  * 获取基于 koa2 的处理函数用于接收 Seayoo Server 推送过来的消息通知
  *
  * 如需自定义处理，可以使用 getNotificationHandler 方法
+ *
+ * 如果 koa 使用全局的 koa-body 或类似插件，将需要做额外的处理以获取原始请求的内容 rawBody 以用以计算签名
+ *
+ * 处理方法可以参考
+ *
+ *
  */
 export function getNotificationHandlerForKoa(config: SDKBaseConfig, handler: NotificationHandler) {
   const func = getNotificationHandler(config, handler)
   return async function (ctx: ParameterizedContext) {
-    await func(ctx.req, ctx.res)
+    await func(ctx.req, ctx.res, "rawBody" in ctx ? `${ctx.rawBody}` : "")
   }
 }
