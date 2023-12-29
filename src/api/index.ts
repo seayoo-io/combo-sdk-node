@@ -3,7 +3,7 @@ import { NetRequest, type IRequestGlobalConfig } from "../request"
 import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isObject, type SDKBaseConfig } from "../utils"
 import type { CreateOrderOption, CreateOrderResponse } from "./types"
 
-const ApiPrefix = "/v3/server"
+const ApiPrefix = "/v1/server"
 
 /** Api Client Config */
 export interface ApiClientConfig extends SDKBaseConfig {
