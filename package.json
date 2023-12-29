@@ -1,6 +1,6 @@
 {
   "name": "@seayoo-io/combo-sdk-node",
-  "version": "0.0.14",
+  "version": "0.1.0",
   "description": "Combo SDK for Node.js",
   "type": "module",
   "source": "./src/index.ts",
@@ -16,7 +16,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rimraf ./dist && node preconvert.cjs && microbundle --sourcemap false --format cjs,es --target node --compress",
+    "build": "rimraf ./dist && node preconvert.cjs && microbundle --sourcemap false --format cjs,es --target node",
     "preconvert": "node preconvert.cjs",
     "dev": "microbundle watch --target node",
     "clear": "rimraf dist && rimraf node_modules",
