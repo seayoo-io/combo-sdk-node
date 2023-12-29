@@ -1,8 +1,8 @@
 import { verifyConfig, AuthorizationField, checkHttpAuthInfo, isObject, parseJSON, readBody, done, type SDKBaseConfig } from "../utils"
 import { messageDataGuards, NotificationType, type ENotificationPayload, type NotificationHandler } from "./types"
-import type { ParameterizedContext } from "koa"
+import type { ParameterizedContext, Next } from "koa"
 import type { IncomingMessage, ServerResponse } from "node:http"
-import type { Request as ExpressRequest, Response as ExpressResponse } from "express"
+import type { Request as ExpressRequest, Response as ExpressResponse, NextFunction as ExpressNextFunction } from "express"
 
 interface NotificationRequestBody {
   /** 世游服务端通知的版本号 */
@@ -114,19 +114,49 @@ export function getNotificationHandlerForExpress(config: SDKBaseConfig, handler:
 }
 
 /**
+ * 获取基于 express 的中间件用于接收 Seayoo Server 推送过来的消息通知
+ *
+ * 需要先于 body-parse 等类似插件加载
+ */
+export function getNotificationMiddlewareForExpress(paths: string | string[], config: SDKBaseConfig, handler: NotificationHandler) {
+  const func = getNotificationHandler(config, handler)
+  const matchPaths = Array.isArray(paths) ? paths : [paths]
+  return async function (req: ExpressRequest, res: ExpressResponse, next: ExpressNextFunction) {
+    if (req.method.toUpperCase() === "POST" && matchPaths.includes(req.path)) {
+      await func(req, res)
+      return
+    }
+    next()
+  }
+}
+
+/**
  * 获取基于 koa2 的处理函数用于接收 Seayoo Server 推送过来的消息通知
  *
  * 如需自定义处理，可以使用 getNotificationHandler 方法
  *
  * 如果 koa 使用全局的 koa-body 或类似插件，将需要做额外的处理以获取原始请求的内容 rawBody 以用以计算签名
- *
- * 处理方法可以参考
- *
- *
  */
 export function getNotificationHandlerForKoa(config: SDKBaseConfig, handler: NotificationHandler) {
   const func = getNotificationHandler(config, handler)
   return async function (ctx: ParameterizedContext) {
     await func(ctx.req, ctx.res, "rawBody" in ctx ? `${ctx.rawBody}` : "")
+  }
+}
+
+/**
+ * 获取基于 koa2 的中间件用于接收 Seayoo Server 推送过来的消息通知
+ *
+ * 需要先于 koa-body 等类似插件加载
+ */
+export function getNotificationMiddlewareForKoa(paths: string | string[], config: SDKBaseConfig, handler: NotificationHandler) {
+  const func = getNotificationHandler(config, handler)
+  const matchPaths = Array.isArray(paths) ? paths : [paths]
+  return async function (ctx: ParameterizedContext, next: Next) {
+    if (ctx.method.toUpperCase() === "POST" && matchPaths.includes(ctx.path)) {
+      await func(ctx.req, ctx.res)
+      return
+    }
+    next()
   }
 }
