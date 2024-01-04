@@ -1,9 +1,9 @@
 import { createHash, createHmac, type BinaryLike } from "crypto"
 import { IBaseRequestBody } from "../request"
+import { isFullURL } from "../utils"
 
 export const AuthorizationField = "Authorization"
 const MaxTimeDiff = 5 * 60 * 1000
-const EmptyStringSha256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 const timestampReg = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/
 
 interface SignDataOption {
@@ -21,10 +21,13 @@ type SignDataOptionForVerify = Omit<SignDataOption, "game" | "timestamp"> & { ga
 const SigningDefinitions = {
   HS256: {
     prefix: "SEAYOO-HMAC-SHA256",
-    sign({ game, secret, endpoint, method, url, data, timestamp }, onlySignature = false) {
-      const payloadHash = !data ? EmptyStringSha256 : sha256(convertBodyData(data))
+    sign({ game, secret, method, url, data, timestamp }, onlySignature = false) {
+      if (timestamp && !timestampReg.test(timestamp)) {
+        return "ErrorTimestamp"
+      }
+      const payloadHash = sha256(convertBodyData(data || ""))
       const ts = timestamp || getTimestamp()
-      const fullURL = url.startsWith("http") ? new URL(url) : new URL(url, endpoint)
+      const fullURL = isFullURL(url) ? new URL(url) : new URL(url, "http://x.com")
       const uri = fullURL.pathname + fullURL.search
       const signature = hS256(secret, [this.prefix, method.toUpperCase(), uri, ts, payloadHash].join("\n"))
       return onlySignature ? signature : `${this.prefix} Game=${game},Timestamp=${ts},Signature=${signature}`
@@ -41,7 +44,8 @@ const SigningDefinitions = {
         return false
       }
       const ts = parseTimestamp(timestamp)
-      const now = Date.now()
+      // 时间戳精度只到秒，需要忽略毫秒值
+      const now = Math.floor(Date.now() / 1000) * 1000
       if (!ts || ts < now - MaxTimeDiff || ts > now + MaxTimeDiff) {
         return false
       }
@@ -129,8 +133,7 @@ function convertBodyData(body: IBaseRequestBody): string {
   if (typeof body === "string") {
     return body
   }
-  // TODO
-  return body.toString()
+  return JSON.stringify(body)
 }
 
 function parseRawAuthHeader(authString: string, prefix: string): Record<string, string | undefined> | null {
@@ -158,5 +161,5 @@ function parseRawAuthHeader(authString: string, prefix: string): Record<string, 
 }
 function getValue(value: string) {
   const v = value.trim()
-  return /^".+"$/.test(v) ? value.replace(/^"|"$/g, "") : v
+  return /^".+"$/.test(v) ? v.replace(/^"|"$/g, "") : v
 }
