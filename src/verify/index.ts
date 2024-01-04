@@ -44,7 +44,7 @@ export class TokenVerifier {
         idp: payload.idp,
         external_id: payload.external_id,
         external_name: payload.external_name,
-        weixin_unionid: payload.weixin_unionid,
+        weixin_unionid: payload.weixin_unionid || "",
       }
     } catch (error: unknown) {
       return new Error(`IdentityToken 验证失败: ${error instanceof Error ? error.message : String(error)}`)

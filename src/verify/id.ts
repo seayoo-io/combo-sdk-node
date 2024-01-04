@@ -37,7 +37,7 @@ export interface IdentityPayload {
    *
    * 注意：weixin_unionid 只在 IdP 为 weixin 时才会有值。
    */
-  weixin_unionid?: string
+  weixin_unionid: string
 }
 
 export type IdentityJwtPayload = JwtPayload &
