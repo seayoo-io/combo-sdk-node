@@ -40,12 +40,12 @@ import { ApiClient, Endpoint } from "@seayoo-io/combo-sdk-node"
 const client = new ApiClient({
     game: "<GameId>",
     secret: "<SecretKey>",
-    endpoint: Endpoint.China
+    endpoint: Endpoint.China,
     // 以下参数可选
-    maxRetry: 1,       // 失败后自动重试次数，默认 1
-    retryInterval: 100 // 重试间隔，默认是 100，单位 ms，可以传递函数动态设置间隔
-    logger: function(log) {} // 请求日志函数，log 类型参见源码类型定义
-    timeout: 5000,           // 超时等待时长，单位 ms，默认 5000
+    maxRetry: 1,                // 失败后自动重试次数，默认 1
+    retryInterval: 1000,        // 重试间隔，默认是 1000，单位 ms，可以传递函数动态设置间隔
+    logger: function(log) {},   // 请求日志函数，log 类型参见源码类型定义
+    timeout: 5000,              // 超时等待时长，单位 ms，默认 5000
 })
 ```
 

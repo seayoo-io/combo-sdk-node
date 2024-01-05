@@ -157,6 +157,6 @@ export function getNotificationMiddlewareForKoa(paths: string | string[], config
       await func(ctx.req, ctx.res)
       return
     }
-    next()
+    await next()
   }
 }

@@ -1,6 +1,6 @@
 import { createHash, createHmac, type BinaryLike } from "crypto"
 import { IBaseRequestBody } from "../request"
-import { isFullURL } from "../utils"
+import { isFullURL } from "./base"
 
 export const AuthorizationField = "Authorization"
 const MaxTimeDiff = 5 * 60 * 1000
