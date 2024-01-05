@@ -1,6 +1,6 @@
 import { getUserAgent } from "./ua"
 import { NetRequest, type IRequestGlobalConfig } from "../request"
-import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isObject, type SDKBaseConfig } from "../utils"
+import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isObject, type SDKBaseConfig, isFullURL } from "../utils"
 import type { CreateOrderOption, CreateOrderResponse } from "./types"
 
 const ApiPrefix = "/v1/server"
@@ -57,7 +57,7 @@ export class ApiClient {
         })
       },
       logHandler: config.logger,
-      timeout: config.timeout,
+      timeout: config.timeout || 5000,
     })
   }
 
@@ -68,8 +68,15 @@ export class ApiClient {
     if (!option.combo_id || !option.notify_url || !option.product_id || !option.reference_id) {
       throw new Error("createOrder: 必要参数缺失")
     }
+    // 检查通知回调地址
+    if (!isFullURL(option.notify_url)) {
+      throw new Error("createOrder: notify_url 需要是一个完整的 url 地址")
+    }
     // 检查购买数量
-    option.quantity = Math.min(Math.max(1, Math.ceil(option.quantity)), Number.MAX_SAFE_INTEGER)
+    const quantity = Math.min(Math.max(1, Math.ceil(option.quantity)), Number.MAX_SAFE_INTEGER)
+    if (quantity !== option.quantity) {
+      throw new Error("createOrder: 购买数量 quantity 必须是一个有限的正整数，且不能小于 1")
+    }
     const { ok, data, code, status, message, headers } = await this.req.post("create-order", option, isCreateOrderResponse)
     if (!ok || !data) {
       console.error({ type: "createOrder Error", status, code, message, traceId: headers["x-trace-id"] })
