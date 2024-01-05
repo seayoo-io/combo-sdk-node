@@ -234,7 +234,7 @@ describe("EnterGame", () => {
   })
 })
 
-describe.only("LeaveGame", () => {
+describe("LeaveGame", () => {
   test("Normal", async () => {
     vi.spyOn(console, "error")
     const client = new ApiClient({ endpoint, game, secret })

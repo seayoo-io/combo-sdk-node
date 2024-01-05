@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     environment: "node",
     onConsoleLog(log: string, type: "stdout" | "stderr"): false | void {
-      // if (type === "stderr") return false
+      if (type === "stderr") return false
     },
   },
 })
