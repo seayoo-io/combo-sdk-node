@@ -1,4 +1,4 @@
-import { TokenVerifier } from "../src/verify"
+import { TokenVerifier } from "../src"
 import { describe, expect, test } from "vitest"
 
 // jwt 编码解码工具
@@ -30,6 +30,16 @@ describe("CreateInstance", () => {
     expect(err).toBeInstanceOf(Error)
   })
 
+  test("WithErrorKey", () => {
+    let err: Error | null = null
+    try {
+      new TokenVerifier({ ...baseConfig, secret: "errorkey" as unknown as "sk_${string}" })
+    } catch (error) {
+      err = error
+    }
+    expect(err).toBeInstanceOf(Error)
+  })
+
   test("WithoutGame", () => {
     let err: Error | null = null
     try {
@@ -44,6 +54,16 @@ describe("CreateInstance", () => {
     let err: Error | null = null
     try {
       new TokenVerifier({ ...baseConfig, endpoint: "" as unknown as "https://${string}" })
+    } catch (error) {
+      err = error
+    }
+    expect(err).toBeInstanceOf(Error)
+  })
+
+  test("WithErrorEndpoint", () => {
+    let err: Error | null = null
+    try {
+      new TokenVerifier({ ...baseConfig, endpoint: "x.com" as unknown as "https://${string}" })
     } catch (error) {
       err = error
     }

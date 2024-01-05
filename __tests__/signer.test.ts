@@ -1,7 +1,12 @@
-import { parseAuthorizationHeader, calcAuthorizationHeader, checkHttpAuthInfo } from "../src/utils"
-import { describe, expect, test } from "vitest"
+import { parseAuthorizationHeader, calcAuthorizationHeader } from "../src"
+import { checkHttpAuthInfo } from "../src/utils"
+import { describe, expect, test, afterEach, vi } from "vitest"
 
 describe("parseAuthorizationHeader", () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   // 正常数据格式化
   test.concurrent("Normal", () => {
     const info = parseAuthorizationHeader(
@@ -63,11 +68,13 @@ describe("parseAuthorizationHeader", () => {
 
   // 版本错误
   test.concurrent("VersionError1", () => {
+    const fn = vi.spyOn(console, "error")
     const info = parseAuthorizationHeader(
       "SEAYOO-HMAC-SHA256 Timestamp= 20231228T065821Z , Game=xcom, Signature = 05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea",
       "XXX" as unknown as "HS256"
     )
     expect(info).toBe(null)
+    expect(fn).toBeCalledTimes(1)
   })
 
   // 版本识别
@@ -106,6 +113,10 @@ describe("parseAuthorizationHeader", () => {
 })
 
 describe("calcAuthorizationHeader", () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   const baseConfig = {
     game: "xcom",
     secret: "sk_secret",
@@ -158,8 +169,10 @@ describe("calcAuthorizationHeader", () => {
 
   // 如果版本错误
   test.concurrent("VersionError", () => {
+    const fn = vi.spyOn(console, "error")
     const sign = calcAuthorizationHeader(Object.assign({}, baseConfig, { timestamp: "xxxx" }), true, "XXX" as unknown as "HS256")
     expect(sign).toEqual("ErrorSigningVersion")
+    expect(fn).toBeCalledTimes(1)
   })
 })
 

@@ -4,6 +4,7 @@ import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isObject, ty
 import type { CreateOrderOption, CreateOrderResponse } from "./types"
 
 const ApiPrefix = "/v1/server"
+const TraceIdField = "x-trace-id"
 
 /** Api Client Config */
 export interface ApiClientConfig extends SDKBaseConfig {
@@ -79,7 +80,7 @@ export class ApiClient {
     }
     const { ok, data, code, status, message, headers } = await this.req.post("create-order", option, isCreateOrderResponse)
     if (!ok || !data) {
-      console.error({ type: "createOrder Error", status, code, message, traceId: headers["x-trace-id"] })
+      console.error({ type: "createOrder Error", status, code, message, traceId: headers[TraceIdField] })
       throw new Error(`createOrder: ${message || code || status}`)
     }
     return data
@@ -102,7 +103,7 @@ export class ApiClient {
       session_id: sessionId,
     })
     if (!ok) {
-      console.error({ type: "enterGame Error", status, code, message, traceId: headers["x-trace-id"] })
+      console.error({ type: "enterGame Error", status, code, message, traceId: headers[TraceIdField] })
     }
     return ok
   }
@@ -124,7 +125,7 @@ export class ApiClient {
       session_id: sessionId,
     })
     if (!ok) {
-      console.error({ type: "leaveGame Error", status, code, message, traceId: headers["x-trace-id"] })
+      console.error({ type: "leaveGame Error", status, code, message, traceId: headers[TraceIdField] })
     }
     return ok
   }
