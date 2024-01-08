@@ -5,11 +5,7 @@ import { runSeayooMockServer, endpoint, game, secret } from "./mock.seayoo"
 runSeayooMockServer()
 
 describe("CreateInstance", () => {
-  const baseConfig = {
-    endpoint: "https://api.seayoo.com",
-    game: "xcom",
-    secret: "sk_secret",
-  } as const
+  const baseConfig = { endpoint, game, secret } as const
 
   test("Normal", () => {
     const apiClient = new ApiClient(baseConfig)

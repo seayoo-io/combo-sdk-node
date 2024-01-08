@@ -33,7 +33,7 @@ function isNotificationRequestBody(data: unknown): data is NotificationRequestBo
  *
  * 另有 express 和 koa2 版本的处理函数可以使用。
  *
- * 由于签名需要原始请求的内容，如果 request 在函数执行之前已经被读取，则需要手工传入请求的 rawBody 字符串以用以签名
+ * 由于签名需要原始请求的内容，如果 request 在函数执行之前已经被读取，则需要手工传入请求的 rawBody 字符串以核验签名
  */
 export function getNotificationHandler(config: SDKBaseConfig, handler: NotificationHandler) {
   verifyConfig(config)
@@ -108,7 +108,7 @@ export function getNotificationHandler(config: SDKBaseConfig, handler: Notificat
  */
 export function getNotificationHandlerForExpress(config: SDKBaseConfig, handler: NotificationHandler) {
   const func = getNotificationHandler(config, handler)
-  return async function (req: ExpressRequest, res: ExpressResponse) {
+  return async function (req: ExpressRequest & { rawBody?: string }, res: ExpressResponse) {
     await func(req, res, "rawBody" in req ? `${req.rawBody}` : "")
   }
 }
@@ -121,7 +121,7 @@ export function getNotificationHandlerForExpress(config: SDKBaseConfig, handler:
 export function getNotificationMiddlewareForExpress(paths: string | string[], config: SDKBaseConfig, handler: NotificationHandler) {
   const func = getNotificationHandler(config, handler)
   const matchPaths = Array.isArray(paths) ? paths : [paths]
-  return async function (req: ExpressRequest, res: ExpressResponse, next: ExpressNextFunction) {
+  return async function (req: ExpressRequest, res: ServerResponse, next: ExpressNextFunction) {
     if (req.method.toUpperCase() === "POST" && matchPaths.includes(req.path)) {
       await func(req, res)
       return
@@ -139,7 +139,7 @@ export function getNotificationMiddlewareForExpress(paths: string | string[], co
  */
 export function getNotificationHandlerForKoa(config: SDKBaseConfig, handler: NotificationHandler) {
   const func = getNotificationHandler(config, handler)
-  return async function (ctx: ParameterizedContext) {
+  return async function (ctx: Pick<ParameterizedContext, "req" | "res"> & { rawBody?: string }) {
     await func(ctx.req, ctx.res, "rawBody" in ctx ? `${ctx.rawBody}` : "")
   }
 }
@@ -152,7 +152,7 @@ export function getNotificationHandlerForKoa(config: SDKBaseConfig, handler: Not
 export function getNotificationMiddlewareForKoa(paths: string | string[], config: SDKBaseConfig, handler: NotificationHandler) {
   const func = getNotificationHandler(config, handler)
   const matchPaths = Array.isArray(paths) ? paths : [paths]
-  return async function (ctx: ParameterizedContext, next: Next) {
+  return async function (ctx: Pick<ParameterizedContext, "method" | "path" | "req" | "res">, next: Next) {
     if (ctx.method.toUpperCase() === "POST" && matchPaths.includes(ctx.path)) {
       await func(ctx.req, ctx.res)
       return

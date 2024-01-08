@@ -1,5 +1,4 @@
-import { parseAuthorizationHeader, calcAuthorizationHeader } from "../src"
-import { checkHttpAuthInfo } from "../src/utils"
+import { parseAuthorizationHeader, calcAuthorizationHeader, checkHttpAuthInfo } from "../src"
 import { describe, expect, test, afterEach, vi } from "vitest"
 
 describe("parseAuthorizationHeader", () => {
