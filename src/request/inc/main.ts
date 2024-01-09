@@ -1,15 +1,7 @@
 import { Cache } from "./cache"
 import { checkTypedDataResult } from "./guard"
 import { RequestGlobalConfig } from "./config"
-import type {
-  TypeGuardParam,
-  IRequestOptions,
-  IRequestGlobalConfig,
-  IResponseResult,
-  NetRequestAgent,
-  ResponseWithType,
-  ResponseWithoutType,
-} from "./type"
+import type { TypeGuardParam, IRequestOptions, IRequestGlobalConfig, IResponseResult, NetRequestAgent } from "./type"
 
 type RequestBody = NonNullable<IRequestOptions["body"]>
 
@@ -69,7 +61,7 @@ export class NetRequestHandler {
   /**
    * 发送一个 HEAD 请求，并且不处理响应 body
    */
-  async head(url: string, options?: IRequestOptions): ResponseWithoutType {
+  async head(url: string, options?: IRequestOptions): Promise<IResponseResult> {
     const ops = Object.assign({}, options || null)
     ops.method = "HEAD"
     return this.guard(url, await this.exec(url, ops), null)
@@ -78,9 +70,9 @@ export class NetRequestHandler {
   /**
    * 发送一个 GET 请求，请求自带 500ms 缓冲控制以应对并发场景
    */
-  async get(url: string): ResponseWithoutType
-  async get(url: string, typeGard: null, options?: IRequestOptions): ResponseWithoutType
-  async get<T>(url: string, typeGard: TypeGuardParam<T>, options?: IRequestOptions): ResponseWithType<T>
+  async get(url: string): Promise<IResponseResult>
+  async get(url: string, typeGard: null, options?: IRequestOptions): Promise<IResponseResult>
+  async get<T>(url: string, typeGard: TypeGuardParam<T>, options?: IRequestOptions): Promise<IResponseResult<T | null>>
   async get<T>(url: string, typeGard?: TypeGuardParam<T> | null, options?: IRequestOptions) {
     const ops = Object.assign({}, options || null)
     ops.method = "GET"
@@ -97,9 +89,9 @@ export class NetRequestHandler {
   /**
    * 发送一个 POST 请求，可选 typeGuard 用于检查数据类型
    */
-  async post(url: string, data: RequestBody): ResponseWithoutType
-  async post(url: string, data: RequestBody, typeGard: null, options?: IRequestOptions): ResponseWithoutType
-  async post<T>(url: string, data: RequestBody, typeGard: TypeGuardParam<T>, options?: IRequestOptions): ResponseWithType<T>
+  async post(url: string, data: RequestBody): Promise<IResponseResult>
+  async post(url: string, data: RequestBody, typeGard: null, options?: IRequestOptions): Promise<IResponseResult>
+  async post<T>(url: string, data: RequestBody, typeGard: TypeGuardParam<T>, options?: IRequestOptions): Promise<IResponseResult<T | null>>
   async post<T>(url: string, data: RequestBody, typeGard?: TypeGuardParam<T> | null, options?: IRequestOptions) {
     const ops = Object.assign({}, options || null)
     ops.method = "POST"
@@ -110,9 +102,9 @@ export class NetRequestHandler {
   /**
    * 发送一个 DELETE 请求，可选 typeGuard 用于检查数据类型
    */
-  async del(url: string): ResponseWithoutType
-  async del(url: string, typeGard: null, options?: IRequestOptions): ResponseWithoutType
-  async del<T>(url: string, typeGard: TypeGuardParam<T>, options?: IRequestOptions): ResponseWithType<T>
+  async del(url: string): Promise<IResponseResult>
+  async del(url: string, typeGard: null, options?: IRequestOptions): Promise<IResponseResult>
+  async del<T>(url: string, typeGard: TypeGuardParam<T>, options?: IRequestOptions): Promise<IResponseResult<T | null>>
   async del<T>(url: string, typeGard?: TypeGuardParam<T> | null, options?: IRequestOptions) {
     const ops = Object.assign({}, options || null)
     ops.method = "DELETE"
@@ -122,9 +114,9 @@ export class NetRequestHandler {
   /**
    * 发送一个 PUT 请求，可选 typeGuard 用于检查数据类型
    */
-  async put(url: string, data: RequestBody): ResponseWithoutType
-  async put(url: string, data: RequestBody, typeGard: null, options?: IRequestOptions): ResponseWithoutType
-  async put<T>(url: string, data: RequestBody, typeGard: TypeGuardParam<T>, options?: IRequestOptions): ResponseWithType<T>
+  async put(url: string, data: RequestBody): Promise<IResponseResult>
+  async put(url: string, data: RequestBody, typeGard: null, options?: IRequestOptions): Promise<IResponseResult>
+  async put<T>(url: string, data: RequestBody, typeGard: TypeGuardParam<T>, options?: IRequestOptions): Promise<IResponseResult<T | null>>
   async put<T>(url: string, data: RequestBody, typeGard?: TypeGuardParam<T> | null, options?: IRequestOptions) {
     const ops = Object.assign({}, options || null)
     ops.method = "PUT"
@@ -135,9 +127,9 @@ export class NetRequestHandler {
   /**
    * 发送一个 PATCH 请求，可选 typeGuard 用于检查数据类型
    */
-  async patch(url: string, data: RequestBody): ResponseWithoutType
-  async patch(url: string, data: RequestBody, typeGard: null, options?: IRequestOptions): ResponseWithoutType
-  async patch<T>(url: string, data: RequestBody, typeGard: TypeGuardParam<T>, options?: IRequestOptions): ResponseWithType<T>
+  async patch(url: string, data: RequestBody): Promise<IResponseResult>
+  async patch(url: string, data: RequestBody, typeGard: null, options?: IRequestOptions): Promise<IResponseResult>
+  async patch<T>(url: string, data: RequestBody, typeGard: TypeGuardParam<T>, options?: IRequestOptions): Promise<IResponseResult<T | null>>
   async patch<T>(url: string, data: RequestBody, typeGard?: TypeGuardParam<T> | null, options?: IRequestOptions) {
     const ops = Object.assign({}, options || null)
     ops.method = "PATCH"

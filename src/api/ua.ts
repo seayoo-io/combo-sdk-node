@@ -1,4 +1,4 @@
-import { platform, arch } from "node:os"
+import { platform, arch } from "os"
 import { SDKName, SDKVersion } from "../const"
 
 export function getUserAgent(game: string) {

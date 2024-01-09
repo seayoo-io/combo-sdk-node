@@ -1,5 +1,5 @@
 import { getNotificationHandler, type NotificationHandler, type SDKBaseConfig } from "../src"
-import { createServer } from "node:http"
+import { createServer } from "http"
 
 export const localGameHostPort = "5678"
 export const notifyPath = "/seayoo-notify"

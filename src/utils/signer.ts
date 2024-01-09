@@ -1,6 +1,6 @@
 import { createHash, createHmac, type BinaryLike } from "crypto"
 import { IBaseRequestBody } from "../request"
-import { isFullURL } from "./base"
+import { fromEntries, isFullURL } from "./base"
 
 export const AuthorizationField = "Authorization"
 const MaxTimeDiff = 5 * 60 * 1000
@@ -140,7 +140,7 @@ function parseRawAuthHeader(authString: string, prefix: string): Record<string, 
   if (!authString || !authString.startsWith(prefix + " ")) {
     return null
   }
-  return Object.fromEntries(
+  return fromEntries(
     authString
       .substring(prefix.length + 1)
       .split(",")

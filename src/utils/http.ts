@@ -1,4 +1,4 @@
-import type { IncomingMessage, ServerResponse } from "node:http"
+import type { IncomingMessage, ServerResponse } from "http"
 export async function readBody(req: IncomingMessage, backup?: string): Promise<string> {
   const body: Buffer[] = []
   if (!req.readable) {

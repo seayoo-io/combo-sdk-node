@@ -8,8 +8,8 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "module": "ESNext",
-    "target": "ES2022"
+    "target": "ES5"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["playground"]
+  "exclude": ["playground", "dist"]
 }

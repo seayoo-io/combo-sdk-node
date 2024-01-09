@@ -1,6 +1,6 @@
 import { statusOK } from "./rule"
 import { noop, sleep } from "../../utils"
-import { NetRequestCoreFn, IRequestOptions } from "./type"
+import { NetRequestCoreFn, IRequestOptions, IRequestBaseResponse } from "./type"
 import type { RequestGlobalConfig } from "./config"
 
 export async function retryRequest(
@@ -9,7 +9,7 @@ export async function retryRequest(
   config: RequestGlobalConfig,
   options?: IRequestOptions,
   _try?: number
-): ReturnType<NetRequestCoreFn> {
+): Promise<IRequestBaseResponse> {
   const currentTryCount = _try || 0
   const maxRetry = Math.min(10, options?.maxRetry ?? config.get("maxRetry") ?? 0)
   const retryResolve = options?.retryResolve ?? config.get("retryResolve")

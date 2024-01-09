@@ -1,6 +1,6 @@
-import http from "node:http"
-import https from "node:https"
-import { isFullURL } from "../../utils"
+import http from "http"
+import https from "https"
+import { fromEntries, isFullURL } from "../../utils"
 import { retryRequest } from "./retry"
 import { handleResponse } from "./response"
 import { convertOptions } from "./option"
@@ -36,7 +36,7 @@ const coreNodeRequest: NetRequestCoreFn = async function (url, config, options) 
   const isHeadRequest = opt.method === "HEAD"
   return new Promise((resolve) => {
     const req = client.request(
-      iURL,
+      iURL.toString(),
       {
         headers: opt.headers,
         method: opt.method,
@@ -46,7 +46,7 @@ const coreNodeRequest: NetRequestCoreFn = async function (url, config, options) 
         const resbody: Buffer[] = []
         res.on("data", (chunk: Buffer) => resbody.push(chunk))
         res.on("end", () => {
-          const headers = Object.fromEntries(
+          const headers = fromEntries(
             Object.entries(res.headers).map(([key, value]) => {
               return [key.toLowerCase(), Array.isArray(value) ? value.join(",") : value]
             })

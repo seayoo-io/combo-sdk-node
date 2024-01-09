@@ -1,6 +1,7 @@
 import { analyseResponse, statusOK } from "./rule"
 import type { RequestGlobalConfig } from "./config"
 import type { IRequestOptions, IResponseResult, IRequestBaseResponse } from "./type"
+import { fromEntries } from "../../utils"
 
 export function handleResponse(
   res: IRequestBaseResponse,
@@ -27,7 +28,7 @@ export function handleResponse(
   const result: IResponseResult = {
     ...analyseResponse(res.status, res.statusText, res.body, config.get("responseRule"), options?.responseRule),
     status: res.status,
-    headers: Object.fromEntries(Object.entries(res.headers || {}).map(([key, value]) => [key.toLowerCase(), value])),
+    headers: fromEntries(Object.entries(res.headers || {}).map(([key, value]) => [key.toLowerCase(), value])),
   }
   // 全局处理响应结果 (浅复制，防止被修改，同时保留修改 result.data 的可能性)
   config.get("responseHandler")?.({ ...result }, res.method, url)

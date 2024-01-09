@@ -70,7 +70,28 @@ export function getFullURL(url: string, baseURL: string = "") {
  * @param url 要检查的 url，如果是自适应协议 //... 则会添加当前页面的协议信息，否则添加域名和协议信息
  */
 function fillUrl(url: string): string {
-  return isFullURL(url, true) ? (url.startsWith("http") ? url : location.protocol + url) : location.origin + "/" + url.replace(/^\/+/, "")
+  if (isFullURL(url, true)) {
+    if (url.startsWith("http")) {
+      return url
+    }
+    return ("location" in globalThis ? location.protocol : "https:") + url
+  }
+  return ("location" in globalThis ? location.origin + "/" : "http://127.0.0.1/") + url.replace(/^\/+/, "")
+}
+
+/**
+ * 简版 Object.fromEntries
+ */
+export function fromEntries(kv: [string, string | undefined][]): Record<string, string> {
+  return kv.reduce(
+    (result, [key, value]) => {
+      if (key) {
+        result[key] = value || ""
+      }
+      return result
+    },
+    {} as Record<string, string>
+  )
 }
 
 /**

@@ -1,7 +1,7 @@
 import { verifyConfig, AuthorizationField, checkHttpAuthInfo, isObject, parseJSON, readBody, done, type SDKBaseConfig } from "../utils"
 import { messageDataGuards, NotificationType, type ENotificationPayload, type NotificationHandler } from "./types"
 import type { ParameterizedContext, Next } from "koa"
-import type { IncomingMessage, ServerResponse } from "node:http"
+import type { IncomingMessage, ServerResponse } from "http"
 import type { Request as ExpressRequest, Response as ExpressResponse, NextFunction as ExpressNextFunction } from "express"
 
 interface NotificationRequestBody {

@@ -1,6 +1,6 @@
 {
   "name": "@seayoo-io/combo-sdk-node",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Combo SDK for Node.js",
   "type": "module",
   "source": "./src/index.ts",
@@ -27,7 +27,7 @@
     "pub": "pnpm type-check && pnpm lint:fix && vitest run && pnpm build && npm publish"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=12"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint && pnpm type-check"
@@ -44,19 +44,20 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/koa": "^2.13.12",
-    "@types/node": "^20.10.6",
-    "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@typescript-eslint/parser": "^6.17.0",
+    "@types/node": "12.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.2",
     "lint-staged": "^15.2.0",
     "microbundle": "^0.15.1",
-    "msw": "^2.0.11",
+    "msw": "^2.0.12",
     "rimraf": "^5.0.5",
     "simple-git-hooks": "^2.9.0",
-    "typescript": "^5.2.2",
-    "vitest": "^1.1.2"
+    "typescript": "5.2.2",
+    "vite": "^3.2.7",
+    "vitest": "^0.34.6"
   },
   "dependencies": {
     "jsonwebtoken": "^9.0.2"
