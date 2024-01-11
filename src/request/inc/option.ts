@@ -13,8 +13,7 @@ export async function convertOptions(
   options?: IBaseRequestOptions
 ): Promise<FixedRequestOptions> {
   const opt = Object.assign({ method: "GET" }, options)
-  const isFormMode = opt.body instanceof FormData
-  const method = isFormMode ? "POST" : opt.method
+  const method = opt.method
   if (method === "GET" || method === "HEAD" || method === "DELETE") {
     if (opt.body !== undefined) {
       console.warn("request body is invalid with method get, head, delete")
@@ -22,11 +21,9 @@ export async function convertOptions(
     }
   }
   const headers = Object.assign(
-    isFormMode
-      ? {}
-      : {
-          "Content-Type": "application/json;charset=utf-8",
-        },
+    {
+      "Content-Type": "application/json;charset=utf-8",
+    },
     opt.headers
   )
   const p = opt.params || {}
@@ -63,13 +60,7 @@ function convertBody(body: IBaseRequestOptions["body"]): IBaseRequestBody | unde
   if (!body) {
     return
   }
-  if (
-    body instanceof Blob ||
-    body instanceof ArrayBuffer ||
-    body instanceof FormData ||
-    body instanceof URLSearchParams ||
-    typeof body === "string"
-  ) {
+  if (body instanceof Blob || body instanceof ArrayBuffer || body instanceof URLSearchParams || typeof body === "string") {
     return body
   }
   return JSON.stringify(body)
