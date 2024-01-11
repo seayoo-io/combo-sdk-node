@@ -1,7 +1,7 @@
 import type { RequestGlobalConfig } from "./config"
 import type { MaybePromise, TypeGuard, TypeGuardFn } from "../../utils"
 
-export type IBaseRequestBody = Blob | ArrayBuffer | URLSearchParams | string
+export type IBaseRequestBody = URLSearchParams | string
 
 /** 通用网络请求工具的基本配置 */
 export interface IBaseRequestOptions {

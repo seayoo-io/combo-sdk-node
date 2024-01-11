@@ -60,7 +60,7 @@ function convertBody(body: IBaseRequestOptions["body"]): IBaseRequestBody | unde
   if (!body) {
     return
   }
-  if (body instanceof Blob || body instanceof ArrayBuffer || body instanceof URLSearchParams || typeof body === "string") {
+  if (body instanceof URLSearchParams || typeof body === "string") {
     return body
   }
   return JSON.stringify(body)
