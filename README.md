@@ -109,12 +109,25 @@ interface CreateOrderResponse {
 
 ### 进入/离开游戏
 
+下述两个接口对应的功能是**中宣部防沉迷系统**的上报功能，这里的 SessionID 是一次游戏会话的标识，也就是每次玩家进入游戏+离开游戏，算一个 Game Session。单次游戏会话的上下线动作必须使用同一个 SessionID 上报。
+
 ```js
 // 进入游戏
 await client.enterGame("<ComboID>", "<SessionID>");
 
 // 离开游戏
 await client.leaveGame("<ComboID>", "<SessionID>");
+
+```
+
+> 注意，SessionID 不可重复使用，可以使用 SDK 提供的工具函数生成 SessionID
+
+```js
+import { genSessionID } from "@seayoo-io/combo-sdk-node"
+
+// genSessionID 接受唯一参数 comboId 作为输入，返回一个 32 位固定长度的不重复字符串
+const userSessionID = genSessionID("1240110117740001")
+
 ```
 
 ## Notify
