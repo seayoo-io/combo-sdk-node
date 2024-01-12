@@ -52,13 +52,21 @@ const client = new ApiClient({
 ### 创建订单 CreateOrder
 
 ```js
+// 导入枚举变量
+import { Platform } from "@seayoo-io/combo-sdk-node"
+
 // 创建订单
 const createOrderResult = await client.createOrder({
   /** 用于标识创建订单请求的唯一 ID */
   reference_id: "<游戏订单ID>",
   /** 发起购买的用户的唯一标识 */
   combo_id: "<ComboID>",
-  /** 要购买的商品 ID */
+  /**
+   * 要购买的商品 ID
+   * 这里指的是在世游发行平台管理的商品 ID，其中重要的两个约定是：
+   *  - 商品价格是正整数
+   *  - 商品价格单位为 分 或 美分，即商品币种所支持的最小流通单位
+   */
   product_id: "<ProductID>",
   /** 平台，支持类型见源码类型定义 Platform */
   platform: Platform.iOS, 
@@ -67,7 +75,7 @@ const createOrderResult = await client.createOrder({
    * 这个地址对应的服务端应该通过 Notify 模块实现路由处理
    */
   notify_url: "https://<YourSite>/<YourPath>"
-  /** 要购买的商品的数量，最小为 1 */
+  /** 要购买的商品的数量，最小为 1，必须为正整数 */
   quantity: 1,
   /** [可选]订单上下文，在发货通知中透传回游戏 */
   context: "",
@@ -141,9 +149,29 @@ import { NotificationType, Endpoint } from "@seayoo-io/combo-sdk-node"
 function notificationHandler(type, payload) {
     switch(type) {
         case NotificationType.ShipOrder:
-            // Do your work with payload
+            // Do your work with payload：定义见 ShipOrderNotification
             break;
     }
+}
+
+/**  ShipOrderNotification 是订单发货通知的数据结构，包含了订单的详细信息 */
+interface ShipOrderNotification {
+  /** 世游服务端创建的，标识订单的唯一 ID */
+  order_id: string
+  /** 游戏侧用于标识创建订单请求的唯一 ID */
+  reference_id: string
+  /** 发起购买的用户的唯一标识 */
+  combo_id: string
+  /** 购买的商品 ID，指的是在世游发行平台管理的商品 ID */
+  product_id: string
+  /** 购买的商品的数量 */
+  quantity: number
+  /** 订单币种代码。例如 USD CNY */
+  currency: string
+  /** 订单金额，单位为分，如果币种为美元，则单位为美分。 */
+  amount: number
+  /** 游戏侧创建订单时提供的订单上下文，透传回游戏 */
+  context?: string
 }
 
 // 1.2 创建配置，类型定义参见源码 SDKBaseConfig
