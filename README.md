@@ -126,7 +126,7 @@ await client.leaveGame("<ComboID>", "<SessionID>");
 import { genSessionID } from "@seayoo-io/combo-sdk-node"
 
 // genSessionID 接受唯一参数 comboId 作为输入，返回一个 32 位固定长度的不重复字符串
-const userSessionID = genSessionID("1240110117740001")
+const userSessionID = genSessionID("<ComboID>")
 
 ```
 
