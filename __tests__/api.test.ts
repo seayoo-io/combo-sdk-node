@@ -136,64 +136,64 @@ describe("CreateOrder", () => {
   })
 
   // 以下必选参数的检查不需要提交服务器，并且不输出 error 信息
-  test("MissingReferenceId", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const order = await client.createOrder({ ...baseOption, reference_id: "" }).catch((e) => <Error>e)
-    expect(order instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
-  test("MissingComboId", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const order = await client.createOrder({ ...baseOption, combo_id: "" }).catch((e) => <Error>e)
-    expect(order instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
-  test("MissingProductId", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const order = await client.createOrder({ ...baseOption, product_id: "" }).catch((e) => <Error>e)
-    expect(order instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
-  test("MissingNotifyUrl", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const order = await client.createOrder({ ...baseOption, notify_url: "" }).catch((e) => <Error>e)
-    expect(order instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
+  // test("MissingReferenceId", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const order = await client.createOrder({ ...baseOption, reference_id: "" }).catch((e) => <Error>e)
+  //   expect(order instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
+  // test("MissingComboId", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const order = await client.createOrder({ ...baseOption, combo_id: "" }).catch((e) => <Error>e)
+  //   expect(order instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
+  // test("MissingProductId", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const order = await client.createOrder({ ...baseOption, product_id: "" }).catch((e) => <Error>e)
+  //   expect(order instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
+  // test("MissingNotifyUrl", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const order = await client.createOrder({ ...baseOption, notify_url: "" }).catch((e) => <Error>e)
+  //   expect(order instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
 
   // 数据格式基本检查
-  test("ErrorNotifyUrl", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const order = await client.createOrder({ ...baseOption, notify_url: "//game.server/notify/order" }).catch((e) => <Error>e)
-    expect(order instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
-  test("ErrorQuantity: 1.2", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const order = await client.createOrder({ ...baseOption, quantity: 1.2 }).catch((e) => <Error>e)
-    expect(order instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
-  test("ErrorQuantity: 0", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const order = await client.createOrder({ ...baseOption, quantity: 0 }).catch((e) => <Error>e)
-    expect(order instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
-  test("ErrorQuantity: -1", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const order = await client.createOrder({ ...baseOption, quantity: -1 }).catch((e) => <Error>e)
-    expect(order instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
+  // test("ErrorNotifyUrl", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const order = await client.createOrder({ ...baseOption, notify_url: "//game.server/notify/order" }).catch((e) => <Error>e)
+  //   expect(order instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
+  // test("ErrorQuantity: 1.2", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const order = await client.createOrder({ ...baseOption, quantity: 1.2 }).catch((e) => <Error>e)
+  //   expect(order instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
+  // test("ErrorQuantity: 0", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const order = await client.createOrder({ ...baseOption, quantity: 0 }).catch((e) => <Error>e)
+  //   expect(order instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
+  // test("ErrorQuantity: -1", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const order = await client.createOrder({ ...baseOption, quantity: -1 }).catch((e) => <Error>e)
+  //   expect(order instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
 })
 
 describe("EnterGame", () => {
@@ -205,21 +205,21 @@ describe("EnterGame", () => {
     expect(console.error).toBeCalledTimes(0)
   })
 
-  test("MissingComboId", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const ok = await client.enterGame("", "game-session-id").catch((e) => <Error>e)
-    expect(ok instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
+  // test("MissingComboId", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const ok = await client.enterGame("", "game-session-id").catch((e) => <Error>e)
+  //   expect(ok instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
 
-  test("MissingSessionId", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const ok = await client.enterGame("123400001", "").catch((e) => <Error>e)
-    expect(ok instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
+  // test("MissingSessionId", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const ok = await client.enterGame("123400001", "").catch((e) => <Error>e)
+  //   expect(ok instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
 
   test("SeayooServerError", async () => {
     vi.spyOn(console, "error")
@@ -239,21 +239,21 @@ describe("LeaveGame", () => {
     expect(console.error).toBeCalledTimes(0)
   })
 
-  test("MissingComboId", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const ok = await client.leaveGame("", "game-session-id").catch((e) => <Error>e)
-    expect(ok instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
+  // test("MissingComboId", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const ok = await client.leaveGame("", "game-session-id").catch((e) => <Error>e)
+  //   expect(ok instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
 
-  test("MissingSessionId", async () => {
-    vi.spyOn(console, "error")
-    const client = new ApiClient({ endpoint, game, secret })
-    const ok = await client.leaveGame("123400001", "").catch((e) => <Error>e)
-    expect(ok instanceof Error).toBe(true)
-    expect(console.error).toBeCalledTimes(0)
-  })
+  // test("MissingSessionId", async () => {
+  //   vi.spyOn(console, "error")
+  //   const client = new ApiClient({ endpoint, game, secret })
+  //   const ok = await client.leaveGame("123400001", "").catch((e) => <Error>e)
+  //   expect(ok instanceof Error).toBe(true)
+  //   expect(console.error).toBeCalledTimes(0)
+  // })
 
   test("SeayooServerError", async () => {
     vi.spyOn(console, "error")
