@@ -62,7 +62,7 @@ export function getFullURL(url: string, baseURL: string = "") {
   if (!baseURL || isFullURL(url, true)) {
     return fillUrl(url)
   }
-  return (fillUrl(baseURL) + "/" + url).replace(/(?<!:)\/{2,}/g, "/")
+  return (fillUrl(baseURL) + "/" + url).replace(/\/{2,}/g, "/").replace(/:\//, "://")
 }
 
 /**

@@ -1,6 +1,6 @@
 import { statusOK } from "./rule"
 import { noop, sleep } from "../../utils"
-import { NetRequestCoreFn, IRequestOptions, IRequestBaseResponse } from "./type"
+import type { NetRequestCoreFn, IRequestOptions, IRequestBaseResponse } from "./type"
 import type { RequestGlobalConfig } from "./config"
 
 export async function retryRequest(
