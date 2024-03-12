@@ -1,4 +1,5 @@
 import { isShipOrderPayload, type ShipOrderNotification } from "./msgShipOrder"
+import { isRefundPayload, type RefundNotification } from "./msgRefund"
 import type { MaybePromise, TypeGuard } from "../utils"
 
 /**
@@ -14,6 +15,10 @@ export const enum NotificationType {
    * - 如果游戏内发货出现错误，则应当 throw Error。世游服务端会在稍后重试推送发货通知。
    */
   ShipOrder = "ship_order",
+  /**
+   * 世游服务端会在订单状态发生退款时，向游戏侧推送退款通知。
+   */
+  Refund = "refund",
 }
 
 /**
@@ -21,6 +26,7 @@ export const enum NotificationType {
  */
 export interface ENotificationPayload {
   [NotificationType.ShipOrder]: ShipOrderNotification
+  [NotificationType.Refund]: RefundNotification
 }
 
 /**
@@ -41,5 +47,9 @@ export const messageDataGuards = {
   [NotificationType.ShipOrder]: {
     guard: isShipOrderPayload,
     message: "ShipOrder Data Format Error",
+  },
+  [NotificationType.Refund]: {
+    guard: isRefundPayload,
+    message: "Refund Data Format Error",
   },
 } as const satisfies IPayload<NotificationType>

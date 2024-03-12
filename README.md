@@ -151,6 +151,9 @@ function notificationHandler(type, payload) {
         case NotificationType.ShipOrder:
             // Do your work with payload：定义见 ShipOrderNotification
             break;
+        case NotificationType.Refund:
+            // Do your work with payload：定义见 RefundNotification
+            break;
     }
 }
 
@@ -172,6 +175,10 @@ interface ShipOrderNotification {
   amount: number
   /** 游戏侧创建订单时提供的订单上下文，透传回游戏 */
   context?: string
+}
+  
+interface RefundNotification {
+    // 结构同 ShipOrderNotification
 }
 
 // 1.2 创建配置，类型定义参见源码 SDKBaseConfig
