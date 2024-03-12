@@ -100,6 +100,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(
@@ -128,6 +129,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
@@ -147,6 +149,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
@@ -165,6 +168,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
@@ -183,6 +187,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
@@ -201,6 +206,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
@@ -219,6 +225,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
@@ -239,6 +246,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await put(serverNotifyUrl, {
@@ -258,6 +266,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(
@@ -288,6 +297,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(
@@ -311,6 +321,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
@@ -331,6 +342,7 @@ describe("Notification: Common", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
       // 模拟 game server 处理消息出现异常
       throw new Error("Game Server Error")
@@ -358,6 +370,7 @@ describe("Notification: shipOrder", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
@@ -377,6 +390,7 @@ describe("Notification: shipOrder", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const { ok, status, data } = await post(serverNotifyUrl, {
@@ -397,6 +411,7 @@ describe("Notification: shipOrder", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const miniPayload = { ...payload }
@@ -417,30 +432,35 @@ describe("Notification: shipOrder", () => {
 
   test("Missing OrderID", async () => {
     const fixPayload = { ...payload }
+    // @ts-expect-error test
     delete fixPayload.order_id
     await errorPayloadCheck(fixPayload)
   })
 
   test("Missing ComboID", async () => {
     const fixPayload = { ...payload }
+    // @ts-expect-error test
     delete fixPayload.combo_id
     await errorPayloadCheck(fixPayload)
   })
 
   test("Missing ReferenceID", async () => {
     const fixPayload = { ...payload }
+    // @ts-expect-error test
     delete fixPayload.reference_id
     await errorPayloadCheck(fixPayload)
   })
 
   test("Missing Amount", async () => {
     const fixPayload = { ...payload }
+    // @ts-expect-error test
     delete fixPayload.amount
     await errorPayloadCheck(fixPayload)
   })
 
   test("Missing Quantity", async () => {
     const fixPayload = { ...payload }
+    // @ts-expect-error test
     delete fixPayload.quantity
     await errorPayloadCheck(fixPayload)
   })
@@ -467,6 +487,7 @@ describe("Notification: shipOrder", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const fixPayload = { ...payload }
@@ -490,6 +511,7 @@ describe("Notification: shipOrder", () => {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
+      // @ts-expect-error test
       reviceData.payload = payload
     })
     const fixPayload = { ...payload }

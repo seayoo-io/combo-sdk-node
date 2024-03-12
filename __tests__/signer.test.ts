@@ -13,9 +13,9 @@ describe("parseAuthorizationHeader", () => {
       "HS256"
     )
     expect(info).toBeTypeOf("object")
-    expect(info.Game).toEqual("xcom")
-    expect(info.Timestamp).toEqual("20231228T065821Z")
-    expect(info.Signature).toEqual("05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea")
+    expect(info?.Game).toEqual("xcom")
+    expect(info?.Timestamp).toEqual("20231228T065821Z")
+    expect(info?.Signature).toEqual("05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea")
   })
 
   // 默认值
@@ -24,9 +24,9 @@ describe("parseAuthorizationHeader", () => {
       "SEAYOO-HMAC-SHA256 Game=xcom,Timestamp=20231228T065821Z,Signature=05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea"
     )
     expect(info).toBeTypeOf("object")
-    expect(info.Game).toEqual("xcom")
-    expect(info.Timestamp).toEqual("20231228T065821Z")
-    expect(info.Signature).toEqual("05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea")
+    expect(info?.Game).toEqual("xcom")
+    expect(info?.Timestamp).toEqual("20231228T065821Z")
+    expect(info?.Signature).toEqual("05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea")
   })
 
   // 乱序
@@ -36,9 +36,9 @@ describe("parseAuthorizationHeader", () => {
       "HS256"
     )
     expect(info).toBeTypeOf("object")
-    expect(info.Game).toEqual("xcom")
-    expect(info.Timestamp).toEqual("20231228T065821Z")
-    expect(info.Signature).toEqual("05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea")
+    expect(info?.Game).toEqual("xcom")
+    expect(info?.Timestamp).toEqual("20231228T065821Z")
+    expect(info?.Signature).toEqual("05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea")
   })
 
   // 有空格
@@ -48,9 +48,9 @@ describe("parseAuthorizationHeader", () => {
       "HS256"
     )
     expect(info).toBeTypeOf("object")
-    expect(info.Game).toEqual("xcom")
-    expect(info.Timestamp).toEqual("20231228T065821Z")
-    expect(info.Signature).toEqual("05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea")
+    expect(info?.Game).toEqual("xcom")
+    expect(info?.Timestamp).toEqual("20231228T065821Z")
+    expect(info?.Signature).toEqual("05f5be3e9f55f8fa2fb027666ec5bb379ff4732181839c28c77662b7e8eb0fea")
   })
 
   // 有双引号，如果不是成对出现，则不替换，引号内的空格不删除
@@ -60,9 +60,9 @@ describe("parseAuthorizationHeader", () => {
       "HS256"
     )
     expect(info).toBeTypeOf("object")
-    expect(info.Game).toEqual('" xcom')
-    expect(info.Timestamp).toEqual("20231228T065821Z ")
-    expect(info.Signature).toEqual('05f5be "')
+    expect(info?.Game).toEqual('" xcom')
+    expect(info?.Timestamp).toEqual("20231228T065821Z ")
+    expect(info?.Signature).toEqual('05f5be "')
   })
 
   // 版本错误
@@ -107,7 +107,7 @@ describe("parseAuthorizationHeader", () => {
   test.concurrent("EmptyPayload", () => {
     const info = parseAuthorizationHeader("SEAYOO-HMAC-SHA256 ", "HS256")
     expect(info).toBeTypeOf("object")
-    expect(Object.keys(info).length).toEqual(0)
+    expect(Object.keys(info || []).length).toEqual(0)
   })
 })
 

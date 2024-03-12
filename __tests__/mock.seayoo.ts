@@ -14,7 +14,7 @@ const serverBaseUrl = "/v1/server"
 
 export function runSeayooMockServer() {
   const server = setupServer(
-    http.post<null, Partial<CreateOrderOption>>(endpoint + serverBaseUrl + "/create-order", async function ({ request }) {
+    http.post<object, Partial<CreateOrderOption>>(endpoint + serverBaseUrl + "/create-order", async function ({ request }) {
       const rawBody = await request.clone().text()
       const body = await request.json()
       if (!body.combo_id || !body.notify_url || !body.platform || !body.product_id || !body.reference_id || !body.quantity) {
@@ -23,7 +23,7 @@ export function runSeayooMockServer() {
       const headers = { "x-trace-id": "tr" + Date.now() }
       // body 即使提交的数据，此处为 mock server 不再继续处理
       // 开始校验认证信息
-      const authHeader = request.headers.get("Authorization")
+      const authHeader = request.headers.get("Authorization") || ""
       if (
         !checkHttpAuthInfo(authHeader, {
           game,
@@ -80,7 +80,7 @@ export function runSeayooMockServer() {
     }),
 
     // 签名验证过程已经在 creteOrder 中做了检查，因为签名逻辑是一个函数，故在剩余的 mock api 中不再重复检查
-    http.post<null, { combo_id?: string; session_id?: string }>(endpoint + serverBaseUrl + "/enter-game", async function ({ request }) {
+    http.post<object, { combo_id?: string; session_id?: string }>(endpoint + serverBaseUrl + "/enter-game", async function ({ request }) {
       const body = await request.json()
       if (!body.combo_id || !body.session_id) {
         return HttpResponse.json({ message: "Missing required parameters" }, { status: 400 })
@@ -90,7 +90,7 @@ export function runSeayooMockServer() {
       }
       return new HttpResponse(undefined, { status: 204 })
     }),
-    http.post<null, { combo_id?: string; session_id?: string }>(endpoint + serverBaseUrl + "/leave-game", async function ({ request }) {
+    http.post<object, { combo_id?: string; session_id?: string }>(endpoint + serverBaseUrl + "/leave-game", async function ({ request }) {
       const body = await request.json()
       if (!body.combo_id || !body.session_id) {
         return HttpResponse.json({ message: "Missing required parameters" }, { status: 400 })
