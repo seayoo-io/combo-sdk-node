@@ -280,21 +280,59 @@ const verifier = new TokenVerifier({
 import { IdP } from "@seayoo-io/combo-sdk-node"
 // verifyIdentityToken 对 IdentityToken 进行验证
 // 返回 IdentityPayload 数据，如果解析出错则返回 Error 对象
-const result = verifier.verifyIdentityToken(token)
-if(result instanceof Error) {
+const identityPayload = verifier.verifyIdentityToken(token)
+if(identityPayload instanceof Error) {
     console.error(result.message)
 } else {
-    // got Id info: { combo_id, idp, external_id, external_name, weixin_unionid }
     // 微信登录判断
-    if(result.idp === IdP.Weixin) {
+    if(identityPayload.idp === IdP.Weixin) {
         // 微信登录会提供 weixin_unionid
         // do something
     }
     // 游客登录判断
-    if(result.idp === IdP.Device) {
+    if(identityPayload.idp === IdP.Device) {
         // do something
     }
-    // 更多 IdP 枚举可以查看源码定义
+    // 更多 IdP 枚举可以查看源码定义 src/const.ts
+}
+
+// IdentityPayload 数据定义
+interface IdentityPayload {
+  /** combo_id 是世游分配的聚合用户 ID 游戏侧应当使用 combo_id 作为用户的唯一标识。*/
+  combo_id: string
+  /** IdP (Identity Provider) 是用户身份的提供者 */
+  idp: IdP
+  /**
+   * external_id 是用户在外部 IdP 中的唯一标识
+   *
+   * 例如：
+   *  - 如果用户使用世游通行证登录，那么 external_id 就是用户的世游通行证 ID。
+   *  - 如果用户使用 Google Account 登录，那么 external_id 就是用户在 Google 中的账号标识。
+   *  - 如果用户使用微信登录，那么 external_id 就是用户在微信中的 OpenId。
+   *
+   * 注意：
+   * 游戏侧不应当使用 external_id 作为用户标识，但可以将 external_id 用于特定的业务逻辑。
+   */
+  external_id: string
+  /** external_name 是用户在外部 IdP 中的名称，通常是用户的昵称 */
+  external_name: string
+  /**
+   * weixin_unionid 是用户在微信中的 UnionId
+   * 游戏侧可以使用 weixin_unionid 实现多端互通
+   * 注意：weixin_unionid 只在 IdP 为 weixin 时才会有值。
+   */
+  weixin_unionid: string
+  /**
+   * distro 是游戏客户端的发行版本标识。
+   * 游戏侧可将 distro 用于服务端数据埋点，以及特定的业务逻辑判断。
+   */
+  distro: string
+  /**
+   * variant 是游戏客户端的分包标识。
+   * 游戏侧可将 variant 用于服务端数据埋点，以及特定的业务逻辑判断。
+   * 注意：Variant 只在客户端是分包时才会有值。当客户端不是分包的情况下，variant 为空字符串。
+   */
+  variant: string
 }
 ```
 
@@ -308,5 +346,15 @@ if(result instanceof Error) {
     console.error(result.message)
 } else {
     // got ad info: { combo_id, placement_id, impression_id }
+}
+
+// AdPayload 定义
+interface AdPayload {
+  /** combo_id 是世游分配的聚合用户 ID，游戏侧应当使用 combo_id 作为用户的唯一标识。*/
+  combo_id: string
+  /** placement_id 是广告位 ID，游戏侧用它确定发放什么样的广告激励。*/
+  placement_id: string
+  /** impression_id 是世游服务端创建的，标识单次广告播放的唯一 ID。*/
+  impression_id: string
 }
 ```

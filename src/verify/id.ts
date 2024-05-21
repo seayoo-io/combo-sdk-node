@@ -38,6 +38,18 @@ export interface IdentityPayload {
    * 注意：weixin_unionid 只在 IdP 为 weixin 时才会有值。
    */
   weixin_unionid: string
+  /**
+   * distro 是游戏客户端的发行版本标识。
+   * 游戏侧可将 distro 用于服务端数据埋点，以及特定的业务逻辑判断。
+   */
+  distro: string
+  /**
+   * variant 是游戏客户端的分包标识。
+   * 游戏侧可将 variant 用于服务端数据埋点，以及特定的业务逻辑判断。
+   *
+   * 注意：Variant 只在客户端是分包时才会有值。当客户端不是分包的情况下，variant 为空字符串。
+   */
+  variant: string
 }
 
 export type IdentityJwtPayload = JwtPayload &
