@@ -7,6 +7,7 @@
 - 请求 Server REST API 并解析响应
 - 接收 Server Notifications 并回复响应
 - 验证世游服务端签发的 Identity Token 和 Ads Token
+- 接收 Server GM Command 指令并回复响应
 
 ## 安装
 
@@ -208,8 +209,8 @@ app.post("/path/to/your/notify/url", expressHandler)
 
 // 或，使用 Koa 处理函数
 import { getNotificationHandlerForKoa } from "@seayoo-io/combo-sdk-node"
-const expressHandler = getNotificationHandlerForKoa(config, notificationHandler)
-app.post("/path/to/your/notify/url", expressHandler)
+const koaHandler = getNotificationHandlerForKoa(config, notificationHandler)
+app.post("/path/to/your/notify/url", koaHandler)
 ```
 
 > ⚠️ 注意事项
@@ -246,7 +247,7 @@ import { getNotificationMiddlewareForExpress } from "@seayoo-io/combo-sdk-node"
 const notifyMiddleware = getNotificationMiddlewareForExpress(
     "/path/to/your/notify/url",
     config,
-    handler
+    notificationHandler
 );
 app.use(notifyMiddleware);
 
@@ -255,7 +256,7 @@ import { getNotificationMiddlewareForKoa } from "@seayoo-io/combo-sdk-node"
 const notifyMiddleware = getNotificationMiddlewareForKoa(
     "/path/to/your/notify/url",
     config,
-    handler
+    notificationHandler
 );
 app.use(notifyMiddleware);
 ```
@@ -358,3 +359,106 @@ interface AdPayload {
   impression_id: string
 }
 ```
+
+## GM
+
+GM 模块使用方式类似于 Notify 模块。
+
+### Step 1 准备
+
+```js
+import { GMError } from "@seayoo-io/combo-sdk-node"
+
+// 1.1 定义 GM 处理函数
+function gmCommandHandler(command, args, requestId, version) {
+    // requestId 每次 GM 请求的唯一 ID。游戏侧可用此值来对请求进行去重。
+    // version 对应的是世游 GM 服务的版本号，目前固定是 1.0
+    // command 对应的是 GM 协议中定义的方法名，区分大小写
+    switch(command) {
+        case "SomeCmdName":
+            // 参数 args 由协议定义，在使用前需要做严格的格式和逻辑校验
+            // 返回值需要根据协议定义进行响应，通常是一个包含了多个字段的 object
+            return await execSomeCommand(args);
+		case "OtherCmdName":
+            // 抛出自定义错误有三种方式：
+            // 1. 返回一个 Error 对象，最终响应以 500(internalServerError)作为 http status
+            return new Error("自定义错误信息")
+            // 2. 返回一个自定义消息体 (预设的消息类型见下描述)，推荐使用此方式
+            return { error: GMError.ThrottleError, message: "请求过于频繁，请稍后再试" }
+            // 3. 直接抛出错误，用于处理异常场景，最终响应以 500 作为 http status
+            //    相比于方式1，此流程会打印一条错误日志
+            throw new Error("some unknown error")
+        ...
+        default: // 不识别的指令进行返回
+        	return { error: GMError.InvalidCommand, message: "不识别的指令"+ command }
+    }
+}
+
+/** GM 预设错误类型枚举 */
+const enum GMError {
+  /** 请求的 HTTP 方法不正确。例如，期望收到 POST 请求，但实际收到了 GET 请求。*/
+  InvalidHttpMethod = "invalid_http_method",
+  /** 请求的 Content-Type 不正确。例如，期望收到 application/json，但实际收到了 text/plain。*/
+  InvalidContentType = "invalid_content_type",
+  /** 对 HTTP 请求的签名验证不通过。这意味着 HTTP 请求不可信。 */
+  InvalidSignature = "invalid_signature",
+  /** 请求的结构不正确。例如，缺少必要的字段，或字段类型不正确。 */
+  InvalidRequest = "invalid_request",
+  /** 游戏侧不认识请求中的 GM 命令。 */
+  InvalidCommand = "invalid_command",
+  /** GM 命令的参数不正确。例如，缺少必要的字段，或字段类型不正确。 */
+  InvalidArgs = "invalid_args",
+
+  /** 网络通信错误。 */
+  NetworkError = "network_error",
+  /** 数据库操作异常。 */
+  DatabaseError = "database_error",
+  /** GM 命令处理超时。 */
+  TimeoutError = "timeout_error",
+  /** GM 命令发送频率过高，被游戏侧限流，命令未被处理。 */
+  ThrottleError = "throttle_error",
+  /** 处理 GM 命令时内部出错。可作为通用错误类型。*/
+  InternalError = "internal_error",
+}
+
+// 1.2 创建配置，相比于 Notify 模块，此处不需要 endpoint 配置
+const config = {
+   game: "<GameId>",
+   secret: "<SecretKey>",
+}
+```
+
+### Step 2 绑定处理函数
+
+绑定方式同 Notify 类似，提供三种不同的方式来对接 http 服务。推荐使用方式 3。
+
+```js
+// 方式 1. 使用 http 模块处理函数
+import { getGMCommandHandler } from "@seayoo-io/combo-sdk-node"
+const handler = getGMCommandHandler(config, gmCommandHandler)
+http.createServer(async function(req, res){
+    if(req.path === "<YourNotifyUrl>" && req.method === "POST") {
+       await handler(req, res)
+    }
+})
+
+// 方式 2. 使用 express / koa 的 handler
+import { getGMHandlerForExpress } from "@seayoo-io/combo-sdk-node"
+const expressHandler = getGMHandlerForExpress(config, gmCommandHandler)
+app.post("/path/to/your/gm/url", expressHandler)
+
+import { getGMHandlerForKoa } from "@seayoo-io/combo-sdk-node"
+const koaHandler = getGMHandlerForKoa(config, gmCommandHandler)
+app.post("/path/to/your/gm/url", koaHandler)
+
+// 方式 3. 使用 expres / koa 的中间件，推荐
+import { getGMMiddlewareForExpress } from "@seayoo-io/combo-sdk-node"
+const gmMiddleware = getGMMiddlewareForExpress("/path/to/your/gm/url", config, gmCommandHandler);
+app.use(gmMiddleware);
+
+import { getGMMiddlewareForKoa } from "@seayoo-io/combo-sdk-node"
+const gmMiddleware = getGMMiddlewareForKoa("/path/to/your/gm/url", config, gmCommandHandler);
+app.use(gmMiddleware);
+
+```
+

@@ -30,7 +30,7 @@ export interface ENotificationPayload {
 }
 
 /**
- * 自定义处理函数
+ * 自定义通知处理函数
  *
  * 每种消息类型对应不同的 payload 以及返回值具体可以查看类型定义
  */

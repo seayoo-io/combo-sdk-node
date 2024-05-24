@@ -27,3 +27,21 @@ export async function done(res: ServerResponse, statusCode: number, message?: st
   }
   res.end()
 }
+
+export async function responseError(res: ServerResponse, statusCode: number, error: string, message: string) {
+  res.statusCode = statusCode
+  if (statusCode !== 204) {
+    res.setHeader("Content-Type", "application/json")
+    res.write(JSON.stringify({ error, message }))
+  }
+  res.end()
+}
+
+export async function repsonseJson(res: ServerResponse, data: unknown, statusCode: number = 200) {
+  res.statusCode = statusCode
+  if (statusCode !== 204) {
+    res.setHeader("Content-Type", "application/json")
+    res.write(JSON.stringify(data))
+  }
+  res.end()
+}

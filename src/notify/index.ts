@@ -3,6 +3,7 @@ import { messageDataGuards, NotificationType, type ENotificationPayload, type No
 import type { ParameterizedContext, Next } from "koa"
 import type { IncomingMessage, ServerResponse } from "http"
 import type { Request as ExpressRequest, Response as ExpressResponse, NextFunction as ExpressNextFunction } from "express"
+import { HttpStatus } from "../const"
 
 interface NotificationRequestBody {
   /** 世游服务端通知的版本号 */
@@ -46,12 +47,12 @@ export function getNotificationHandler(config: SDKBaseConfig, handler: Notificat
    */
   return async function (req: IncomingMessage, res: ServerResponse, rawBodyString?: string) {
     if (req.method !== "POST") {
-      done(res, 405)
+      done(res, HttpStatus.MethodNotAllowed)
       return
     }
     const contentType = `${req.headers["Content-Type"] || req.headers["content-type"]}`.toLowerCase()
     if (!contentType || !contentType.startsWith("application/json")) {
-      done(res, 415)
+      done(res, HttpStatus.UnsupportedMediaType)
       return
     }
     const authString = req.headers[AuthorizationField] || req.headers[AuthorizationField.toLowerCase()]
@@ -68,29 +69,30 @@ export function getNotificationHandler(config: SDKBaseConfig, handler: Notificat
         data: body,
       })
     ) {
-      done(res, 401)
+      done(res, HttpStatus.Unauthorized)
       return
     }
     const notification = parseJSON(body, isNotificationRequestBody)
     if (!notification) {
-      done(res, 400, `Notification body Format Error`)
+      done(res, HttpStatus.BadRequest, `Notification body format error`)
       return
     }
     const guardCfg = messageDataGuards[notification.notification_type]
     if (!guardCfg) {
-      done(res, 400, `Unknown Notification Type: ${notification.notification_type}`)
+      done(res, HttpStatus.BadRequest, `Unknown notification type: ${notification.notification_type}`)
       return
     }
     if (!guardCfg.guard(notification.data)) {
-      done(res, 400, guardCfg.message)
+      done(res, HttpStatus.BadRequest, guardCfg.message)
       return
     }
     // 所有错误检查完毕，通知游戏处理函数
     try {
       await handler(notification.notification_type, notification.data)
-      done(res, 200, "OK")
+      done(res, HttpStatus.OK, "OK")
     } catch (e) {
-      done(res, 500, e instanceof Error ? e.message : String(e))
+      console.error(`notify handler error`, e)
+      done(res, HttpStatus.InternalServerError, e instanceof Error ? e.message : String(e))
     }
   }
 }

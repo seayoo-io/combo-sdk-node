@@ -16,6 +16,8 @@ export {
 export { NotificationType } from "./notify/types"
 export type { NotificationHandler } from "./notify/types"
 
+export { getGMCommandHandler, getGMHandlerForExpress, getGMMiddlewareForExpress, getGMHandlerForKoa, getGMMiddlewareForKoa } from "./gm"
+
 export type { SDKBaseConfig } from "./utils"
-export { Endpoint, Platform, IdP } from "./const"
+export { Endpoint, Platform, IdP, GMError } from "./const"
 export { genSessionID, parseAuthorizationHeader, calcAuthorizationHeader, checkHttpAuthInfo } from "./utils"

@@ -15,11 +15,18 @@ export interface SDKBaseConfig {
  * 校验通用配置，如果有错误，则直接 throw Error
  */
 export function verifyConfig(config: SDKBaseConfig) {
-  if (!isObject(config)) {
-    throw Error("Config Missing")
-  }
+  verifyConfigWithoutEndpoint(config)
   if (!isFullURL(config.endpoint)) {
     throw Error(`Config.endpoint Error, Should be url, Preset Values: ${Endpoint.China}, ${Endpoint.Global}}`)
+  }
+}
+
+/**
+ * 校验通用配置，如果有错误，则直接 throw Error
+ */
+export function verifyConfigWithoutEndpoint(config: Omit<SDKBaseConfig, "endpoint">) {
+  if (!isObject(config)) {
+    throw Error("Config Missing")
   }
   if (!config.game) {
     throw Error(`Config.game Error, Missing Required GameId`)

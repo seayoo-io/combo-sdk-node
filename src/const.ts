@@ -2,7 +2,7 @@
 export const SDKName = "combo-sdk-node"
 
 /** SDK 版本，在编译前会被动态替换 */
-export const SDKVersion = "0.2.1"
+export const SDKVersion = "0.3.0"
 
 /**
  * 世游支持的服务端点列表
@@ -44,4 +44,50 @@ export enum IdP {
   Xiaomi = "xiaomi",
   /** 微信登录 */
   Weixin = "weixin",
+}
+
+/** GM 错误类型枚举 */
+export const enum GMError {
+  /** 请求的 HTTP 方法不正确。例如，期望收到 POST 请求，但实际收到了 GET 请求。*/
+  InvalidHttpMethod = "invalid_http_method",
+  /** 请求的 Content-Type 不正确。例如，期望收到 application/json，但实际收到了 text/plain。*/
+  InvalidContentType = "invalid_content_type",
+  /** 对 HTTP 请求的签名验证不通过。这意味着 HTTP 请求不可信。 */
+  InvalidSignature = "invalid_signature",
+  /** 请求的结构不正确。例如，缺少必要的字段，或字段类型不正确。 */
+  InvalidRequest = "invalid_request",
+  /** 游戏侧不认识请求中的 GM 命令。 */
+  InvalidCommand = "invalid_command",
+  /** GM 命令的参数不正确。例如，缺少必要的字段，或字段类型不正确。 */
+  InvalidArgs = "invalid_args",
+
+  /** 网络通信错误。 */
+  NetworkError = "network_error",
+  /** 数据库操作异常。 */
+  DatabaseError = "database_error",
+  /** GM 命令处理超时。 */
+  TimeoutError = "timeout_error",
+  /** GM 命令发送频率过高，被游戏侧限流，命令未被处理。 */
+  ThrottleError = "throttle_error",
+  /** 处理 GM 命令时内部出错。可作为通用错误类型。*/
+  InternalError = "internal_error",
+}
+
+export const enum HttpStatus {
+  OK = 200,
+  Accepted = 202,
+  NoContent = 204,
+  BadRequest = 400,
+  Unauthorized = 401,
+  Forbidden = 403,
+  NotFound = 404,
+  MethodNotAllowed = 405,
+  NotAcceptable = 406,
+  RequestTimeout = 408,
+  Conflict = 409,
+  UnsupportedMediaType = 415,
+  TooManyRequests = 429,
+  InternalServerError = 500,
+  BadGateway = 502,
+  ServiceUnavailable = 503,
 }
