@@ -379,7 +379,7 @@ function gmCommandHandler(command, args, requestId, version) {
             // 参数 args 由协议定义，在使用前需要做严格的格式和逻辑校验
             // 返回值需要根据协议定义进行响应，通常是一个包含了多个字段的 object
             return await execSomeCommand(args);
-		case "OtherCmdName":
+        case "OtherCmdName":
             // 抛出自定义错误有三种方式：
             // 1. 返回一个 Error 对象，最终响应以 500(internalServerError)作为 http status
             return new Error("自定义错误信息")
@@ -390,7 +390,7 @@ function gmCommandHandler(command, args, requestId, version) {
             throw new Error("some unknown error")
         ...
         default: // 不识别的指令进行返回
-        	return { error: GMError.InvalidCommand, message: "不识别的指令"+ command }
+            return { error: GMError.InvalidCommand, message: "不识别的指令"+ command }
     }
 }
 
