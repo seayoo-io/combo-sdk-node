@@ -384,7 +384,7 @@ function gmCommandHandler(command, args, requestId, version) {
             // 1. 返回一个 Error 对象，最终响应以 500(internalServerError)作为 http status
             return new Error("自定义错误信息")
             // 2. 返回一个自定义消息体 (预设的消息类型见下描述)，推荐使用此方式
-            return { error: GMError.ThrottleError, message: "请求过于频繁，请稍后再试" }
+            return { error: GMError.ThrottlingError, message: "请求过于频繁，请稍后再试" }
             // 3. 直接抛出错误，用于处理异常场景，最终响应以 500 作为 http status
             //    相比于方式1，此流程会打印一条错误日志
             throw new Error("some unknown error")
