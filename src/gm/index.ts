@@ -54,7 +54,8 @@ const error2httpStatus: Record<GMError, HttpStatus> = {
   [GMError.NetworkError]: HttpStatus.InternalServerError,
   [GMError.DatabaseError]: HttpStatus.InternalServerError,
   [GMError.TimeoutError]: HttpStatus.InternalServerError,
-  [GMError.ThrottleError]: HttpStatus.TooManyRequests,
+  [GMError.MaintenanceError]: HttpStatus.ServiceUnavailable,
+  [GMError.ThrottlingError]: HttpStatus.TooManyRequests,
   [GMError.InternalError]: HttpStatus.InternalServerError,
 }
 
