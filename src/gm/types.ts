@@ -18,6 +18,7 @@ export type GMCommandHandler = {
     command: string,
     args: Record<string, unknown>,
     requestId: string,
+    idempotencyKey: string,
     version: string
   ): MaybePromise<Record<string, unknown> | GMErrorResponse | Error>
 }

@@ -16,10 +16,12 @@ import type { ParameterizedContext, Next } from "koa"
 import type { Request as ExpressRequest, Response as ExpressResponse, NextFunction as ExpressNextFunction } from "express"
 
 interface GMRequestBody {
-  /** version 是世游 GM 服务的版本号，目前固定 1.0 */
+  /** version 是世游 GM 服务的版本号，目前固定 2.0 */
   version: string
-  /** 每次 GM 请求的唯一 ID。游戏侧可用此值来对请求进行去重 */
+  /** 本次 GM 请求的唯一 ID。游戏侧可用此值来对请求进行去重 */
   request_id: string
+  /** 本次 GM 请求的 Idempotency Key。如果有非空值则应当执行幂等处理逻辑。 */
+  idempotency_key?: string
   /** GM 命令标识。取值和 GM 协议文件中的 rpc 名称对应，大小写敏感 */
   command: string
   /** args 是和 cmd 对应的命令参数，具体值取决于协议中对应 rpc 的 Request 定义 */
@@ -33,6 +35,7 @@ function isGMRequestBody(data: unknown): data is GMRequestBody {
     "request_id" in data &&
     "command" in data &&
     "args" in data &&
+    ("idempotency_key" in data ? typeof data.idempotency_key === "string" : true) &&
     typeof data.request_id === "string" &&
     typeof data.command === "string" &&
     typeof data.args === "object" &&
@@ -53,6 +56,8 @@ const error2httpStatus: Record<GMError, HttpStatus> = {
   [GMError.InvalidArgs]: HttpStatus.BadRequest,
   [GMError.NetworkError]: HttpStatus.InternalServerError,
   [GMError.DatabaseError]: HttpStatus.InternalServerError,
+  [GMError.IdempotencyConflict]: HttpStatus.Conflict,
+  [GMError.IdempotencyMismatch]: HttpStatus.UnprocessableEntity,
   [GMError.TimeoutError]: HttpStatus.InternalServerError,
   [GMError.MaintenanceError]: HttpStatus.ServiceUnavailable,
   [GMError.ThrottlingError]: HttpStatus.TooManyRequests,
@@ -104,7 +109,13 @@ export function getGMCommandHandler(config: SDKMinConfig, handler: GMCommandHand
     }
     // 所有错误检查完毕，通知游戏处理函数
     try {
-      const result = await handler(gmRequest.command, gmRequest.args, gmRequest.request_id, gmRequest.version)
+      const result = await handler(
+        gmRequest.command,
+        gmRequest.args,
+        gmRequest.request_id,
+        gmRequest.idempotency_key || "",
+        gmRequest.version
+      )
       // 游戏主动抛错不打印日志信息
       if (result instanceof Error) {
         responseError(res, HttpStatus.InternalServerError, GMError.InternalError, result.message)
@@ -131,7 +142,10 @@ export function getGMCommandHandler(config: SDKMinConfig, handler: GMCommandHand
       }
       repsonseJson(res, result ?? {})
     } catch (e) {
-      console.error(`gm command "${gmRequest.command}"(requestId: ${gmRequest.request_id}) exec error`, e)
+      console.error(
+        `gm command "${gmRequest.command}"(requestId: ${gmRequest.request_id}; idempotencyKey: ${gmRequest.idempotency_key || ""}) exec error`,
+        e
+      )
       responseError(res, HttpStatus.InternalServerError, GMError.InternalError, e instanceof Error ? e.message : String(e))
     }
   }

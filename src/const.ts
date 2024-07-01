@@ -2,7 +2,7 @@
 export const SDKName = "combo-sdk-node"
 
 /** SDK 版本，在编译前会被动态替换 */
-export const SDKVersion = "0.3.2"
+export const SDKVersion = "1.0.0"
 
 /**
  * 世游支持的服务端点列表
@@ -60,6 +60,10 @@ export const enum GMError {
   InvalidCommand = "invalid_command",
   /** GM 命令发送频率过高，被游戏侧限流，命令未被处理。 */
   ThrottlingError = "throttling_error",
+  /** 幂等处理重试请求时，idempotency_key 所对应的原始请求尚未处理完毕。*/
+  IdempotencyConflict = "idempotency_conflict",
+  /** 幂等处理重试请求时，请求内容和 idempotency_key 所对应的原始请求内容不一致。*/
+  IdempotencyMismatch = "idempotency_mismatch",
   /** GM 命令的参数不正确。例如，参数缺少必要的字段，或参数的字段类型不正确。 */
   InvalidArgs = "invalid_args",
 
@@ -88,6 +92,7 @@ export const enum HttpStatus {
   RequestTimeout = 408,
   Conflict = 409,
   UnsupportedMediaType = 415,
+  UnprocessableEntity = 422,
   TooManyRequests = 429,
   InternalServerError = 500,
   BadGateway = 502,

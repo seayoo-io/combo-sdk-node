@@ -9,6 +9,14 @@
 - 验证世游服务端签发的 Identity Token 和 Ads Token
 - 接收 Server GM Command 指令并回复响应
 
+## breaking change
+
+v1 新增 gm 模块的 [IdempotencyKey](https://docs.seayoo.com/combo/server/gm/#idempotency)，主要改动包括：
+
+1. 修改了 commandHandler 的参数，插入 idempotencyKey 参数；当此参数为非空字符串时需要处理幂等性；
+2. 新增预设错误  IdempotencyConflict / IdempotencyMismatch
+3. gm 服务版本号升级到 2.0
+
 ## 安装
 
 ```js
@@ -370,9 +378,10 @@ GM 模块使用方式类似于 Notify 模块。
 import { GMError } from "@seayoo-io/combo-sdk-node"
 
 // 1.1 定义 GM 处理函数
-function gmCommandHandler(command, args, requestId, version) {
-    // requestId 每次 GM 请求的唯一 ID。游戏侧可用此值来对请求进行去重。
-    // version 对应的是世游 GM 服务的版本号，目前固定是 1.0
+function gmCommandHandler(command, args, requestId, idempotencyKey, version) {
+    // requestId 本次 GM 请求的唯一 ID。游戏侧可用此值来对请求进行去重。
+    // idempotencyKey 本次 GM 请求的 Idempotency Key。如果有非空值则应当执行幂等处理逻辑。
+    // version 对应的是世游 GM 服务的版本号，目前固定是 2.0
     // command 对应的是 GM 协议中定义的方法名，区分大小写
     switch(command) {
         case "SomeCmdName":
@@ -408,6 +417,10 @@ const enum GMError {
   InvalidCommand = "invalid_command",
   /** GM 命令发送频率过高，被游戏侧限流，命令未被处理。 */
   ThrottlingError = "throttling_error",
+  /** 幂等处理重试请求时，idempotency_key 所对应的原始请求尚未处理完毕。*/
+  IdempotencyConflict = "idempotency_conflict",
+  /** 幂等处理重试请求时，请求内容和 idempotency_key 所对应的原始请求内容不一致。*/
+  IdempotencyMismatch = "idempotency_mismatch",
   /** GM 命令的参数不正确。例如，参数缺少必要的字段，或参数的字段类型不正确。 */
   InvalidArgs = "invalid_args",
 
