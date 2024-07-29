@@ -47,9 +47,25 @@ export interface IdentityPayload {
    * variant 是游戏客户端的分包标识。
    * 游戏侧可将 variant 用于服务端数据埋点，以及特定的业务逻辑判断。
    *
-   * 注意：Variant 只在客户端是分包时才会有值。当客户端不是分包的情况下，variant 为空字符串。
+   * 注意：variant 只在客户端是分包时才会有值。当客户端不是分包的情况下，variant 为空字符串。
    */
   variant: string
+
+  /**
+   * age 是根据用户的实名认证信息得到的年龄。
+   *
+   * 0 表示未知。
+   *
+   * 在某些特殊场景下，游戏侧可用 age 来自行处理防沉迷。
+   *
+   * 注意：age 不保证返回精确的年龄信息，仅保证用于防沉迷处理时的准确度够用。
+   *
+   * 例如：
+   *
+   * 当某个用户真实年龄为 35 岁时，age 可能返回 18，
+   * 当某个用户真实年龄为 17 岁时，age 可能返回 16。
+   */
+  age: number
 }
 
 export type IdentityJwtPayload = JwtPayload &

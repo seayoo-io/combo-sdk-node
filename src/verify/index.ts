@@ -47,6 +47,7 @@ export class TokenVerifier {
         weixin_unionid: payload.weixin_unionid || "",
         distro: payload.distro || "",
         variant: payload.variant || "",
+        age: payload.age || 0,
       }
     } catch (error: unknown) {
       return new Error(`IdentityToken 验证失败: ${error instanceof Error ? error.message : String(error)}`)

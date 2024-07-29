@@ -1,6 +1,6 @@
 {
   "name": "@seayoo-io/combo-sdk-node",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Combo SDK for Node.js",
   "type": "module",
   "source": "./src/index.ts",
