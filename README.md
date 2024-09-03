@@ -381,6 +381,7 @@ import { GMError } from "@seayoo-io/combo-sdk-node"
 function gmCommandHandler(command, args, requestId, idempotencyKey, version) {
     // requestId 本次 GM 请求的唯一 ID。游戏侧可用此值来对请求进行去重。
     // idempotencyKey 本次 GM 请求的 Idempotency Key。如果有非空值则应当执行幂等处理逻辑。
+    // SDK 已经内置了 idempotencyKey 的处理工具和配置，详细见下描述
     // version 对应的是世游 GM 服务的版本号，目前固定是 2.0
     // command 对应的是 GM 协议中定义的方法名，区分大小写
     switch(command) {
@@ -443,14 +444,55 @@ const config = {
 }
 ```
 
-### Step 2 绑定处理函数
+### Step 2 创建 Store Helper 以启用 idempotencyKey 处理逻辑
+
+```js
+// SDK 内置 idempotencyKey 处理逻辑，其需要相关存储来实现，比如 Redis。
+// 创建 Store Helper 用于启用内置的 idempotencyKey 处理逻辑
+// store helper 需要实现以下方法即可：
+interface IdempotencyKeyStoreHelper {
+  /**
+   * setNX 用于原子性地存储幂等记录并返回旧值。
+   * value 仅在 key 不存在时才会被存储 (Only set the key if it does not already exist)。
+   * 返回值是 key 存在时的旧值。如果 key 不存在则返回空字符串。
+   */
+  setNX: (key: string, value: string) => Promise<string>
+
+  /**
+   * setXX 用于原子性地更新已存在的幂等记录。
+   * value 仅在 key 存在时才会被存储 (Only set the key if it already exists)。
+   */
+  setXX: (key: string, value: string) => Promise<void>
+}
+  
+// SDK 内置实现了两个工具类
+import { MemoryIdempotencyStore, RedisIdempotencyStore } from "@seayoo-io/combo-sdk-node"
+
+// MemoryIdempotencyStore 仅仅用于本地调试
+const storeHelper = new MemoryIdempotencyStore()
+// RedisIdempotencyStore 基于 ioredis 实现
+const storeHelper = new RedisIdempotencyStore({
+   /** 超时设定，单位秒，推荐不低于24小时 */
+   ttl?: number
+   /** ioredis 客户端 */
+   client: Redis
+   /** key 前缀 */
+   prefix?: string
+})
+
+// 当然可以直接自行实现上述 store helper 方法
+```
+
+### Step 3 绑定处理函数
 
 绑定方式同 Notify 类似，提供三种不同的方式来对接 http 服务。推荐使用方式 3。
 
 ```js
 // 方式 1. 使用 http 模块处理函数
 import { getGMCommandHandler } from "@seayoo-io/combo-sdk-node"
-const handler = getGMCommandHandler(config, gmCommandHandler)
+// storeHelper 类型为 IdempotencyKeyStoreHelper
+// 可不传递，如果不提供则不会启用内置的 idempotencyKey 处理逻辑，下同
+const handler = getGMCommandHandler(config, gmCommandHandler, storeHelper)
 http.createServer(async function(req, res){
     if(req.path === "<YourNotifyUrl>" && req.method === "POST") {
        await handler(req, res)
@@ -459,20 +501,20 @@ http.createServer(async function(req, res){
 
 // 方式 2. 使用 express / koa 的 handler
 import { getGMHandlerForExpress } from "@seayoo-io/combo-sdk-node"
-const expressHandler = getGMHandlerForExpress(config, gmCommandHandler)
+const expressHandler = getGMHandlerForExpress(config, gmCommandHandler, storeHelper)
 app.post("/path/to/your/gm/url", expressHandler)
 
 import { getGMHandlerForKoa } from "@seayoo-io/combo-sdk-node"
-const koaHandler = getGMHandlerForKoa(config, gmCommandHandler)
+const koaHandler = getGMHandlerForKoa(config, gmCommandHandler, storeHelper)
 app.post("/path/to/your/gm/url", koaHandler)
 
 // 方式 3. 使用 expres / koa 的中间件，推荐
 import { getGMMiddlewareForExpress } from "@seayoo-io/combo-sdk-node"
-const gmMiddleware = getGMMiddlewareForExpress("/path/to/your/gm/url", config, gmCommandHandler);
+const gmMiddleware = getGMMiddlewareForExpress("/path/to/your/gm/url", config, gmCommandHandler, storeHelper);
 app.use(gmMiddleware);
 
 import { getGMMiddlewareForKoa } from "@seayoo-io/combo-sdk-node"
-const gmMiddleware = getGMMiddlewareForKoa("/path/to/your/gm/url", config, gmCommandHandler);
+const gmMiddleware = getGMMiddlewareForKoa("/path/to/your/gm/url", config, gmCommandHandler, storeHelper);
 app.use(gmMiddleware);
 
 ```

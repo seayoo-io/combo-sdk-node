@@ -17,6 +17,7 @@ export { NotificationType } from "./notify/types"
 export type { NotificationHandler } from "./notify/types"
 
 export { getGMCommandHandler, getGMHandlerForExpress, getGMMiddlewareForExpress, getGMHandlerForKoa, getGMMiddlewareForKoa } from "./gm"
+export { RedisIdempotencyStore, MemoryIdempotencyStore } from "./gm/utils"
 
 export type { SDKBaseConfig } from "./utils"
 export { Endpoint, Platform, IdP, GMError } from "./const"
