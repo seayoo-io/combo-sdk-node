@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest"
 
 // jwt 编码解码工具
 // https://www.bejson.com/jwt/
+// https://jwt.io/
 
 describe("CreateInstance", () => {
   const baseConfig = {
@@ -78,7 +79,7 @@ describe("Identity Token", () => {
     secret: "sk_secret",
   } as const
   const baseToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2FwaS5zZWF5b28uY29tIiwiYXVkIjoieGNvbSIsInN1YiI6IjkxMjMxMjIzMzQ2MTMwMDAxIiwiaWF0IjoxNzAzNzQ4NDM3LCJleHAiOjQxMDM4MzQ4MzcsInNjb3BlIjoiYXV0aCIsImlkcCI6InNlYXlvbyIsImV4dGVybmFsX2lkIjoiMTk5OSIsImV4dGVybmFsX25hbWUiOiIqKuWzsCJ9.LuGwQ1sVCFBmxYx-FuArO_17Y02mqpMYENXhb-yTyiY"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2FwaS5zZWF5b28uY29tIiwiYXVkIjoieGNvbSIsInN1YiI6IjkxMjMxMjIzMzQ2MTMwMDAxIiwiaWF0IjoxNzAzNzQ4NDM3LCJleHAiOjQxMDM4MzQ4MzcsInNjb3BlIjoiYXV0aCIsImlkcCI6InNlYXlvbyIsImV4dGVybmFsX2lkIjoiMTk5OSIsImV4dGVybmFsX25hbWUiOiIqKuWzsCIsImRldmljZV9pZCI6InRlc3QifQ.9ifKI8nXNqe8q4unzSv30zcXt0Uh5FR1M06TZxIWlrQ"
 
   test("Normal", () => {
     const verifier = new TokenVerifier(baseConfig)
@@ -89,6 +90,7 @@ describe("Identity Token", () => {
     expect("external_id" in info ? info.external_id : "").toEqual("1999")
     expect("external_name" in info ? info.external_name : "").toEqual("**峰")
     expect("weixin_unionid" in info ? info.weixin_unionid : "error").toEqual("")
+    expect("device_id" in info ? info.device_id : "").toEqual("test")
   })
 
   test("ErrorSecretKey", () => {

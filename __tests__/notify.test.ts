@@ -81,6 +81,7 @@ const shipOrderMessagePayload: {
   currency: string
   amount: string | number
   context?: string
+  is_sandbox: boolean
 } = Object.freeze({
   order_id: Math.random().toString(32).slice(2) + Math.random().toString(32).slice(2),
   reference_id: "abc",
@@ -90,6 +91,7 @@ const shipOrderMessagePayload: {
   currency: "CNY",
   amount: 12000,
   context: "",
+  is_sandbox: false,
 })
 
 describe("Notification: Common", () => {
@@ -366,7 +368,7 @@ describe("Notification: shipOrder", () => {
   const payload = { ...shipOrderMessagePayload }
 
   // 检查错误 payload 的通用方法
-  async function errorPayloadCheck(payload: Record<string, string | number>) {
+  async function errorPayloadCheck(payload: Record<string, string | number | boolean>) {
     const reviceData = { message: "", payload: null }
     const { stop } = runGameMockServer(baseConfig, function (message, payload) {
       reviceData.message = message
