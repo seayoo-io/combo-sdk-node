@@ -18,6 +18,12 @@ export interface ShipOrderNotification {
   amount: number
   /** 游戏侧创建订单时提供的订单上下文，透传回游戏 */
   context?: string
+  /**
+   * 是否是沙盒订单。沙盒订单意味着此订单并未产生真实的付款。
+   *
+   * 预期此字段仅用于记录日志和数据埋点。无论是否是沙盒订单，游戏侧都应当发货。
+   */
+  is_sandbox: boolean
 }
 
 export function isShipOrderPayload(data: unknown): data is ShipOrderNotification {
@@ -30,10 +36,12 @@ export function isShipOrderPayload(data: unknown): data is ShipOrderNotification
     "quantity" in data &&
     "currency" in data &&
     "amount" in data &&
+    "is_sandbox" in data &&
     typeof data.order_id === "string" &&
     typeof data.combo_id === "string" &&
     typeof data.quantity === "number" &&
     typeof data.amount === "number" &&
+    typeof data.is_sandbox === "boolean" &&
     Number.isSafeInteger(data.quantity) &&
     Number.isSafeInteger(data.amount) &&
     !!data.order_id &&
