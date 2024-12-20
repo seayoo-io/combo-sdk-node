@@ -43,7 +43,11 @@ export class MemoryIdempotencyStore implements IdempotencyKeyStoreHelper {
   }
 }
 
-/** 基于 ioredis 的 store helper */
+/**
+ * 基于 ioredis 的 store helper,
+ *
+ * 需要 Redis >= 7.0，见 https://redis.io/docs/latest/commands/set/
+ */
 export class RedisIdempotencyStore implements IdempotencyKeyStoreHelper {
   client: Redis
   ttl: number

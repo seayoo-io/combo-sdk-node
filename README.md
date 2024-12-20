@@ -9,7 +9,7 @@
 - 验证世游服务端签发的 Identity Token 和 Ads Token
 - 接收 Server GM Command 指令并回复响应
 
-## breaking change
+## breaking changes
 
 v1 新增 gm 模块的 [IdempotencyKey](https://docs.seayoo.com/combo/server/gm/#idempotency)，主要改动包括：
 
@@ -184,6 +184,11 @@ interface ShipOrderNotification {
   amount: number
   /** 游戏侧创建订单时提供的订单上下文，透传回游戏 */
   context?: string
+  /**
+   * 是否是沙盒订单。沙盒订单意味着此订单并未产生真实的付款。
+   * 预期此字段仅用于记录日志和数据埋点。无论是否是沙盒订单，游戏侧都应当发货。
+   */
+  is_sandbox: boolean
 }
   
 interface RefundNotification {
@@ -299,7 +304,7 @@ if(identityPayload instanceof Error) {
         // do something
     }
     // 游客登录判断
-    if(identityPayload.idp === IdP.Device) {
+    if(identityPayload.idp === IdP.Guest) {
         // do something
     }
     // 更多 IdP 枚举可以查看源码定义 src/const.ts
@@ -331,6 +336,10 @@ interface IdentityPayload {
    * 注意：weixin_unionid 只在 IdP 为 weixin 时才会有值。
    */
   weixin_unionid: string
+  /**
+   * device_id 是用户在登录时使用的设备的唯一 ID。
+   */
+  device_id: string
   /**
    * distro 是游戏客户端的发行版本标识。
    * 游戏侧可将 distro 用于服务端数据埋点，以及特定的业务逻辑判断。
@@ -470,7 +479,7 @@ import { MemoryIdempotencyStore, RedisIdempotencyStore } from "@seayoo-io/combo-
 
 // MemoryIdempotencyStore 仅仅用于本地调试
 const storeHelper = new MemoryIdempotencyStore()
-// RedisIdempotencyStore 基于 ioredis 实现
+// RedisIdempotencyStore 基于 ioredis 实现，需要 Redis 版本大于 7: https://redis.io/docs/latest/commands/set/
 const storeHelper = new RedisIdempotencyStore({
    /** 超时设定，单位秒，推荐不低于24小时 */
    ttl?: number
