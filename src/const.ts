@@ -30,8 +30,8 @@ export enum Platform {
 
 /** 支持的登录提供方 */
 export enum IdP {
-  /** 设备登录（游客） */
-  Device = "device",
+  /** 游客登录 */
+  Guest = "guest",
   /** 世游通行证 */
   Seayoo = "seayoo",
   /** Sign-in with Apple */
@@ -44,6 +44,36 @@ export enum IdP {
   Xiaomi = "xiaomi",
   /** 微信登录 */
   Weixin = "weixin",
+  /** OPPO 账号 */
+  Oppo = "oppo",
+  /** VIVO 账号 */
+  Vivo = "vivo",
+  /** 华为账号 */
+  Huawei = "huawei",
+  /** 荣耀账号 */
+  Honor = "honor",
+  /** UC（九游）登录 */
+  UC = "uc",
+  /** TapTap 登录 */
+  TapTap = "taptap",
+  /** 哔哩哔哩（B站）账号 */
+  Bilibili = "bilibili",
+  /** 应用宝 YSDK 登录 */
+  Yingyongbao = "yingyongbao",
+  /** 4399 账号登录 */
+  F4399 = "4399",
+  /** 雷电模拟器账号 */
+  Leidian = "leidian",
+  /** 猫窝游戏 */
+  Maowo = "maowo",
+  /** 联想 */
+  Lenovo = "lenovo",
+  /** 魅族 */
+  Meizu = "meizu",
+  /** 酷派 */
+  Coolpad = "coolpad",
+  /** 努比亚 */
+  Nubia = "nubia",
 }
 
 /** GM 错误类型枚举 */
