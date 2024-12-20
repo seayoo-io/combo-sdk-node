@@ -6,7 +6,7 @@ export interface IdentityPayload {
   /**
    * combo_id 是世游分配的聚合用户 ID
    *
-   * 游戏侧应当使用 combo_id 作为用户的唯一标识。
+   * 游戏侧应当使用 combo_id 作为用户的唯一标识，即游戏帐号。
    */
   combo_id: string
   /**
@@ -39,6 +39,10 @@ export interface IdentityPayload {
    */
   weixin_unionid: string
   /**
+   * DeviceId 是用户在登录时使用的设备的唯一 ID。
+   */
+  device_id: string
+  /**
    * distro 是游戏客户端的发行版本标识。
    * 游戏侧可将 distro 用于服务端数据埋点，以及特定的业务逻辑判断。
    */
@@ -50,7 +54,6 @@ export interface IdentityPayload {
    * 注意：variant 只在客户端是分包时才会有值。当客户端不是分包的情况下，variant 为空字符串。
    */
   variant: string
-
   /**
    * age 是根据用户的实名认证信息得到的年龄。
    *
@@ -80,6 +83,7 @@ export function isIdentityJwtPayload(payload: unknown): payload is IdentityJwtPa
     "iss" in payload &&
     "scope" in payload &&
     "idp" in payload &&
+    "device_id" in payload &&
     "external_id" in payload &&
     "external_name" in payload
   )

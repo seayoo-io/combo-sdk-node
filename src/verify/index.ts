@@ -47,6 +47,7 @@ export class TokenVerifier {
         weixin_unionid: payload.weixin_unionid || "",
         distro: payload.distro || "",
         variant: payload.variant || "",
+        device_id: payload.device_id || "",
         age: payload.age || 0,
       }
     } catch (error: unknown) {
