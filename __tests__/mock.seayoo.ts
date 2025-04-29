@@ -41,7 +41,7 @@ export function runSeayooMockServer() {
       if (body.product_id === "SeayooServerError") {
         return HttpResponse.json({ message: "Seayoo Error Response" }, { status: 500, headers })
       }
-      if (body.product_id === "SeayooResponError") {
+      if (body.product_id === "SeayooResponseError") {
         return HttpResponse.json(
           {
             order_id: Math.random().toString(32).slice(2),
@@ -52,7 +52,7 @@ export function runSeayooMockServer() {
           { headers }
         )
       }
-      if (body.product_id === "SeayooResponMissingField") {
+      if (body.product_id === "SeayooResponseMissingField") {
         return HttpResponse.json(
           {
             order_id: Math.random().toString(32).slice(2),
