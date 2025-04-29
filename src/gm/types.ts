@@ -8,6 +8,8 @@ export interface GMRequestBody {
   request_id: string
   /** 本次 GM 请求的 Idempotency Key。如果有非空值则应当执行幂等处理逻辑。 */
   idempotency_key?: string
+  /** 本次 GM 请求的来源，大小写敏感，比如 combo/console。 */
+  origin?: string
   /** GM 命令标识。取值和 GM 协议文件中的 rpc 名称对应，大小写敏感 */
   command: string
   /** args 是和 cmd 对应的命令参数，具体值取决于协议中对应 rpc 的 Request 定义 */
@@ -22,6 +24,7 @@ export function isGMRequestBody(data: unknown): data is GMRequestBody {
     "command" in data &&
     "args" in data &&
     ("idempotency_key" in data ? typeof data.idempotency_key === "string" : true) &&
+    ("origin" in data ? typeof data.origin === "string" : true) &&
     typeof data.request_id === "string" &&
     typeof data.command === "string" &&
     typeof data.args === "object" &&
@@ -51,7 +54,8 @@ export type GMCommandHandler = {
     args: Record<string, unknown>,
     requestId: string,
     idempotencyKey: string,
-    version: string
+    version: string,
+    origin: string
   ): MaybePromise<Record<string, unknown> | GMErrorResponse | Error>
 }
 

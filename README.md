@@ -387,12 +387,14 @@ GM 模块使用方式类似于 Notify 模块。
 import { GMError } from "@seayoo-io/combo-sdk-node"
 
 // 1.1 定义 GM 处理函数
-function gmCommandHandler(command, args, requestId, idempotencyKey, version) {
+function gmCommandHandler(command, args, requestId, idempotencyKey, version, origin) {
+    // command 对应的是 GM 协议中定义的方法名，区分大小写，args 为该方法的参数。
     // requestId 本次 GM 请求的唯一 ID。游戏侧可用此值来对请求进行去重。
     // idempotencyKey 本次 GM 请求的 Idempotency Key。如果有非空值则应当执行幂等处理逻辑。
     // SDK 已经内置了 idempotencyKey 的处理工具和配置，详细见下描述
     // version 对应的是世游 GM 服务的版本号，目前固定是 2.0
-    // command 对应的是 GM 协议中定义的方法名，区分大小写
+    // origin 对应的是 GM 请求的来源标记，区分大小写，如 combo/console
+    // 详见 https://docs.seayoo.com/combo/server/gm/#gm-request
     switch(command) {
         case "SomeCmdName":
             // 参数 args 由协议定义，在使用前需要做严格的格式和逻辑校验

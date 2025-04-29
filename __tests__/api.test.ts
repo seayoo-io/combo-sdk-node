@@ -31,7 +31,7 @@ describe("CreateInstance", () => {
   test("WithErrorKey", () => {
     let err: Error | null = null
     try {
-      new ApiClient({ ...baseConfig, secret: "errorkey" as unknown as "sk_${string}" })
+      new ApiClient({ ...baseConfig, secret: "errorKey" as unknown as "sk_${string}" })
     } catch (error) {
       err = error
     }
@@ -77,7 +77,7 @@ describe("CreateOrder", () => {
     platform: Platform.Android,
     notify_url: "https://game-server/notify-url",
     quantity: 1,
-    context: "payloay for game order, anything you want",
+    context: "payload for game order, anything you want",
     meta: {},
   }
 
@@ -101,20 +101,20 @@ describe("CreateOrder", () => {
     expect(console.error).toBeCalledTimes(1)
   })
 
-  test("SeayooResponError", async () => {
+  test("SeayooResponseError", async () => {
     vi.spyOn(console, "error")
     const client = new ApiClient({ endpoint, game, secret })
     // 借助数据字段告诉 mock server 以 500 响应
-    const order = await client.createOrder({ ...baseOption, product_id: "SeayooResponError" }).catch((e) => <Error>e)
+    const order = await client.createOrder({ ...baseOption, product_id: "SeayooResponseError" }).catch((e) => <Error>e)
     expect(order instanceof Error).toBe(true)
     expect(console.error).toBeCalledTimes(1)
   })
 
-  test("SeayooResponMissingField", async () => {
+  test("SeayooResponseMissingField", async () => {
     vi.spyOn(console, "error")
     const client = new ApiClient({ endpoint, game, secret })
     // 借助数据字段告诉 mock server 以错误字段响应
-    const order = await client.createOrder({ ...baseOption, product_id: "SeayooResponMissingField" }).catch((e) => <Error>e)
+    const order = await client.createOrder({ ...baseOption, product_id: "SeayooResponseMissingField" }).catch((e) => <Error>e)
     expect(order instanceof Error).toBe(true)
     expect(console.error).toBeCalledTimes(1)
   })

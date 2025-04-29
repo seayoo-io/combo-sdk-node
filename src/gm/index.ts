@@ -163,7 +163,14 @@ export function getGMCommandHandler(config: SDKMinConfig, handler: GMCommandHand
     try {
       const result =
         oldResponse ||
-        (await handler(gmRequest.command, gmRequest.args, gmRequest.request_id, gmRequest.idempotency_key || "", gmRequest.version))
+        (await handler(
+          gmRequest.command,
+          gmRequest.args,
+          gmRequest.request_id,
+          gmRequest.idempotency_key || "",
+          gmRequest.version,
+          gmRequest.origin || ""
+        ))
       // 记录handler返回的结果以备下次检查使用，setXX出现错误也不再中断请求
       if (storeHelper && gmRequest.idempotency_key) {
         currentRecord.resp = result
