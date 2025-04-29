@@ -4,7 +4,7 @@ import {
   checkHttpAuthInfo,
   parseJSON,
   readBody,
-  repsonseJson,
+  responseJson,
   responseError,
   type SDKBaseConfig,
   genNonceString,
@@ -87,7 +87,7 @@ export function getGMCommandHandler(config: SDKMinConfig, handler: GMCommandHand
     }
     // 处理幂等key
     const currentRecord: IdempotencyRecord = {
-      noce: genNonceString(),
+      nonce: genNonceString(),
       key: gmRequest.idempotency_key || "",
       id: gmRequest.request_id,
       cmd: gmRequest.command,
@@ -118,8 +118,16 @@ export function getGMCommandHandler(config: SDKMinConfig, handler: GMCommandHand
         responseError(res, HttpStatus.InternalServerError, GMError.InternalError, "parse old idempotency record failed")
         return
       }
+
+      // spell-checker:disable
+      // fix spell error
+      if (oldRecord && "noce" in oldRecord) {
+        oldRecord.nonce = oldRecord.noce + ""
+      }
+      // spell-checker:enable
+
       // 检查是否为首次请求
-      const isFirstRequest = oldRecordStr === "" || oldRecord?.noce === currentRecord.noce
+      const isFirstRequest = oldRecordStr === "" || oldRecord?.nonce === currentRecord.nonce
       if (!isFirstRequest && oldRecord) {
         if (!oldRecord.resp) {
           responseError(
@@ -187,7 +195,7 @@ export function getGMCommandHandler(config: SDKMinConfig, handler: GMCommandHand
       if (!result) {
         console.warn(`gm command "${gmRequest.command}" should give back some data`)
       }
-      repsonseJson(res, result ?? {})
+      responseJson(res, result ?? {})
     } catch (e) {
       console.error(
         `gm command "${gmRequest.command}"(requestId: ${gmRequest.request_id}; idempotencyKey: ${

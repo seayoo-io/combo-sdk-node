@@ -75,7 +75,7 @@ export interface IdempotencyKeyStoreHelper {
 
 /** 幂等key 记录 */
 export interface IdempotencyRecord {
-  noce: string
+  nonce: string
   key: string
   id: string
   cmd: string

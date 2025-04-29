@@ -37,7 +37,7 @@ export async function responseError(res: ServerResponse, statusCode: number, err
   res.end()
 }
 
-export async function repsonseJson(res: ServerResponse, data: unknown, statusCode: number = 200) {
+export async function responseJson(res: ServerResponse, data: unknown, statusCode: number = 200) {
   res.statusCode = statusCode
   if (statusCode !== 204) {
     res.setHeader("Content-Type", "application/json")

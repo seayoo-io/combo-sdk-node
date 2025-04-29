@@ -42,8 +42,8 @@ export function isStringRecord(data: unknown): data is Record<string, unknown> {
 /**
  * 检查一个url地址是否以 http/https 开头，如果第二个参数传递 true，则自适应协议（//....）也被认为是完整 url
  */
-export function isFullURL(url: string, ignoreProtocal: boolean = false) {
-  return ignoreProtocal ? urlReg.test(url) : urlReg2.test(url)
+export function isFullURL(url: string, ignoreProtocol: boolean = false) {
+  return ignoreProtocol ? urlReg.test(url) : urlReg2.test(url)
 }
 
 /**

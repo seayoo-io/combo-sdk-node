@@ -96,8 +96,8 @@ export function checkHttpAuthInfo(authString: string, option: SignDataOptionForV
   if (!authString) {
     return false
   }
-  const cfgs = Object.values(SigningDefinitions)
-  for (const cfg of cfgs) {
+  const configs = Object.values(SigningDefinitions)
+  for (const cfg of configs) {
     if (authString.startsWith(cfg.prefix + " ")) {
       return cfg.verify(authString, option)
     }
