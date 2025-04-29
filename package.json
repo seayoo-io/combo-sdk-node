@@ -24,7 +24,7 @@
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.{ts,js} --fix",
     "test": "vitest",
-    "pub": "pnpm type-check && pnpm lint:fix && vitest run && pnpm build && npm publish"
+    "prepublish": "pnpm type-check && pnpm lint:fix && vitest run && pnpm build"
   },
   "engines": {
     "node": ">=12"
