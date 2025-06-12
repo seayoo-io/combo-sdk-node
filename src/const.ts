@@ -2,7 +2,7 @@
 export const SDKName = "combo-sdk-node"
 
 /** SDK 版本，在编译前会被动态替换 */
-export const SDKVersion = "1.4.0"
+export const SDKVersion = "1.4.1"
 
 /**
  * 世游支持的服务端点列表
@@ -26,6 +26,8 @@ export enum Platform {
   macOS = "macos",
   /** 微信小游戏 */
   Weixin = "weixin",
+  /** WebGL 平台，包括微信、抖音等小游戏，以及 HTML5 网页游戏 */
+  WebGL = "webgl",
 }
 
 /** 支持的登录提供方 */
