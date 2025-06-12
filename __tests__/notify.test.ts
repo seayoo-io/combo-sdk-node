@@ -99,11 +99,11 @@ describe("Notification: Common", () => {
   const payload = { ...shipOrderMessagePayload }
 
   test("Error Authorization", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(
       serverNotifyUrl,
@@ -123,16 +123,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(401)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Unknown NotificationType", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
       version: "0.1.2",
@@ -143,16 +143,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(400)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Missing Version", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
       notification_id: Math.random().toString(32).slice(2),
@@ -162,16 +162,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(400)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Missing NotificationType", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
       version: "0.1.2",
@@ -181,16 +181,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(400)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Missing NotificationID", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
       version: "0.1.2",
@@ -200,16 +200,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(400)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Missing Payload", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
       version: "0.1.2",
@@ -219,16 +219,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(400)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("NotificationID Must be String", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
       version: "0.1.2",
@@ -240,16 +240,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(400)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Request Method Must be POST", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await put(serverNotifyUrl, {
       version: "0.1.2",
@@ -260,16 +260,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(405)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Request ContentType Must be json", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(
       serverNotifyUrl,
@@ -291,16 +291,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(415)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Error Payload Format", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(
       serverNotifyUrl,
@@ -315,16 +315,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(400)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Error Payload Struct", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
       version: "0.1.2",
@@ -336,16 +336,16 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(400)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   })
 
   test("Game Server Error By Handler", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
       // 模拟 game server 处理消息出现异常
       throw new Error("Game Server Error")
     })
@@ -358,8 +358,8 @@ describe("Notification: Common", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(500)
-    expect(reviceData.message).toEqual(NotificationType.ShipOrder)
-    expect(reviceData.payload).toEqual(payload)
+    expect(receiveData.message).toEqual(NotificationType.ShipOrder)
+    expect(receiveData.payload).toEqual(payload)
   })
 })
 
@@ -369,11 +369,11 @@ describe("Notification: shipOrder", () => {
 
   // 检查错误 payload 的通用方法
   async function errorPayloadCheck(payload: Record<string, string | number | boolean>) {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status } = await post(serverNotifyUrl, {
       version: "0.1.2",
@@ -384,16 +384,16 @@ describe("Notification: shipOrder", () => {
     stop()
     expect(ok).toBe(false)
     expect(status).toEqual(400)
-    expect(reviceData.message).toEqual("")
-    expect(reviceData.payload).toEqual(null)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
   }
 
   test("Normal: Full Data", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const { ok, status, data } = await post(serverNotifyUrl, {
       version: "0.1.2",
@@ -405,16 +405,16 @@ describe("Notification: shipOrder", () => {
     expect(ok).toBe(true)
     expect(status).toEqual(200)
     expect(data).toEqual("OK")
-    expect(reviceData.message).toEqual(NotificationType.ShipOrder)
-    expect(reviceData.payload).toEqual(payload)
+    expect(receiveData.message).toEqual(NotificationType.ShipOrder)
+    expect(receiveData.payload).toEqual(payload)
   })
 
   test("Normal: Without Context", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const miniPayload = { ...payload }
     delete miniPayload.context
@@ -424,12 +424,13 @@ describe("Notification: shipOrder", () => {
       notification_type: NotificationType.ShipOrder,
       data: miniPayload,
     })
+    console.log("====================", ok, status, data)
     stop()
     expect(ok).toBe(true)
     expect(status).toEqual(200)
     expect(data).toEqual("OK")
-    expect(reviceData.message).toEqual(NotificationType.ShipOrder)
-    expect(reviceData.payload).toEqual(miniPayload)
+    expect(receiveData.message).toEqual(NotificationType.ShipOrder)
+    expect(receiveData.payload).toEqual(miniPayload)
   })
 
   test("Missing OrderID", async () => {
@@ -486,11 +487,11 @@ describe("Notification: shipOrder", () => {
   })
 
   test("Allowed Zero", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const fixPayload = { ...payload }
     fixPayload.quantity = 0
@@ -505,16 +506,16 @@ describe("Notification: shipOrder", () => {
     expect(ok).toBe(true)
     expect(status).toEqual(200)
     expect(data).toEqual("OK")
-    expect(reviceData.message).toEqual(NotificationType.ShipOrder)
-    expect(reviceData.payload).toEqual(fixPayload)
+    expect(receiveData.message).toEqual(NotificationType.ShipOrder)
+    expect(receiveData.payload).toEqual(fixPayload)
   })
 
   test("Allowed Negative", async () => {
-    const reviceData = { message: "", payload: null }
-    const { stop } = runGameMockServer(baseConfig, function (message, payload) {
-      reviceData.message = message
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
       // @ts-expect-error test
-      reviceData.payload = payload
+      receiveData.payload = payload
     })
     const fixPayload = { ...payload }
     fixPayload.quantity = -1
@@ -529,7 +530,7 @@ describe("Notification: shipOrder", () => {
     expect(ok).toBe(true)
     expect(status).toEqual(200)
     expect(data).toEqual("OK")
-    expect(reviceData.message).toEqual(NotificationType.ShipOrder)
-    expect(reviceData.payload).toEqual(fixPayload)
+    expect(receiveData.message).toEqual(NotificationType.ShipOrder)
+    expect(receiveData.payload).toEqual(fixPayload)
   })
 })

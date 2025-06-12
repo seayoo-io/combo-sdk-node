@@ -1,10 +1,11 @@
 import { getNotificationHandler, type NotificationHandler, type SDKBaseConfig } from "../src"
 import { createServer } from "http"
+import { sleep } from "../src/utils"
 
 export const localGameHostPort = "5678"
 export const notifyPath = "/seayoo-notify"
 
-export function runGameMockServer(config: SDKBaseConfig, messageHandler: NotificationHandler) {
+export async function runGameMockServer(config: SDKBaseConfig, messageHandler: NotificationHandler) {
   const handler = getNotificationHandler(config, messageHandler)
 
   const server = createServer(async function (req, res) {
@@ -20,6 +21,7 @@ export function runGameMockServer(config: SDKBaseConfig, messageHandler: Notific
   })
 
   server.listen(localGameHostPort)
+  await sleep(1)
 
   return {
     stop: () => server.close(),
