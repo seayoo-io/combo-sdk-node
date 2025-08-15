@@ -359,7 +359,7 @@ interface IdentityPayload {
 ```js
 // verifyAdToken 对 AdToken 进行验证
 // 返回 AdPayload 数据，如果解析出错则返回 Error 对象
-const adInfo = vierfier.verifyAdToken(token)
+const adInfo = verifier.verifyAdToken(token)
 if(result instanceof Error) {
     console.error(result.message)
 } else {
@@ -416,7 +416,7 @@ function gmCommandHandler(command, args, requestId, idempotencyKey, version, ori
 }
 
 /** GM 预设错误类型枚举 */
-const enum GMError {
+enum GMError {
   /** 请求中的 HTTP method 不正确，没有按照预期使用 POST。*/
   InvalidHttpMethod = "invalid_http_method",
   /** 请求中的 Content-Type 不是 application/json。*/
@@ -519,7 +519,7 @@ import { getGMHandlerForKoa } from "@seayoo-io/combo-sdk-node"
 const koaHandler = getGMHandlerForKoa(config, gmCommandHandler, storeHelper)
 app.post("/path/to/your/gm/url", koaHandler)
 
-// 方式 3. 使用 expres / koa 的中间件，推荐
+// 方式 3. 使用 express / koa 的中间件，推荐
 import { getGMMiddlewareForExpress } from "@seayoo-io/combo-sdk-node"
 const gmMiddleware = getGMMiddlewareForExpress("/path/to/your/gm/url", config, gmCommandHandler, storeHelper);
 app.use(gmMiddleware);

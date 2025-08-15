@@ -28,6 +28,8 @@ export enum Platform {
   Weixin = "weixin",
   /** WebGL 平台，包括微信、抖音等小游戏，以及 HTML5 网页游戏 */
   WebGL = "webgl",
+  /** 华为的 HarmonyOS NEXT 鸿蒙应用开发平台 */
+  HarmonyOS = "harmonyos",
 }
 
 /** 支持的登录提供方 */
@@ -79,7 +81,7 @@ export enum IdP {
 }
 
 /** GM 错误类型枚举 */
-export const enum GMError {
+export enum GMError {
   /** 请求中的 HTTP method 不正确，没有按照预期使用 POST。*/
   InvalidHttpMethod = "invalid_http_method",
   /** 请求中的 Content-Type 不是 application/json。*/
