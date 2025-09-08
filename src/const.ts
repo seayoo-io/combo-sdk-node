@@ -2,7 +2,7 @@
 export const SDKName = "combo-sdk-node"
 
 /** SDK 版本，在编译前会被动态替换 */
-export const SDKVersion = "1.4.2"
+export const SDKVersion = "1.4.3"
 
 /**
  * 世游支持的服务端点列表
@@ -24,7 +24,11 @@ export enum Platform {
   Windows = "windows",
   /** macOS 桌面平台 */
   macOS = "macos",
-  /** 微信小游戏 */
+  /**
+   * 微信小游戏
+   *
+   * @deprecated 已被 Platform.WebGL 取代
+   */
   Weixin = "weixin",
   /** WebGL 平台，包括微信、抖音等小游戏，以及 HTML5 网页游戏 */
   WebGL = "webgl",
@@ -78,6 +82,16 @@ export enum IdP {
   Coolpad = "coolpad",
   /** 努比亚 */
   Nubia = "nubia",
+  /** 绝峰游戏 */
+  Juefeng = "juefeng",
+  /** 魅拓游戏 */
+  Meituo = "meituo",
+  /** 微信小游戏 */
+  MinigameWeixin = "minigame_weixin",
+  /** MuMu 模拟器 */
+  Mumu = "mumu",
+  /** 虎牙游戏 */
+  Huya = "huya",
 }
 
 /** GM 错误类型枚举 */
