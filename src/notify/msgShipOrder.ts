@@ -23,7 +23,7 @@ export interface ShipOrderNotification {
    *
    * 预期此字段仅用于记录日志和数据埋点。无论是否是沙盒订单，游戏侧都应当发货。
    */
-  is_sandbox: boolean
+  is_sandbox?: boolean
 }
 
 export function isShipOrderPayload(data: unknown): data is ShipOrderNotification {
@@ -36,12 +36,11 @@ export function isShipOrderPayload(data: unknown): data is ShipOrderNotification
     "quantity" in data &&
     "currency" in data &&
     "amount" in data &&
-    "is_sandbox" in data &&
     typeof data.order_id === "string" &&
     typeof data.combo_id === "string" &&
     typeof data.quantity === "number" &&
     typeof data.amount === "number" &&
-    typeof data.is_sandbox === "boolean" &&
+    ("is_sandbox" in data ? typeof data.is_sandbox === "boolean" : true) &&
     Number.isSafeInteger(data.quantity) &&
     Number.isSafeInteger(data.amount) &&
     !!data.order_id &&

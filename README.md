@@ -188,7 +188,7 @@ interface ShipOrderNotification {
    * 是否是沙盒订单。沙盒订单意味着此订单并未产生真实的付款。
    * 预期此字段仅用于记录日志和数据埋点。无论是否是沙盒订单，游戏侧都应当发货。
    */
-  is_sandbox: boolean
+  is_sandbox?: boolean
 }
   
 interface RefundNotification {

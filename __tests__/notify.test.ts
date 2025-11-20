@@ -81,7 +81,7 @@ const shipOrderMessagePayload: {
   currency: string
   amount: string | number
   context?: string
-  is_sandbox: boolean
+  is_sandbox?: boolean
 } = Object.freeze({
   order_id: Math.random().toString(32).slice(2) + Math.random().toString(32).slice(2),
   reference_id: "abc",
