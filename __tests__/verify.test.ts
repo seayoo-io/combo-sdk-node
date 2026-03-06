@@ -5,6 +5,8 @@ import { describe, expect, test } from "vitest"
 // https://www.bejson.com/jwt/
 // https://jwt.io/
 
+// spell-checker:ignore errorkey XVCJ topon
+
 describe("CreateInstance", () => {
   const baseConfig = {
     endpoint: "https://api.seayoo.com",
@@ -22,7 +24,7 @@ describe("CreateInstance", () => {
   })
 
   test("WithoutKey", () => {
-    let err: Error | null = null
+    let err: unknown = null
     try {
       new TokenVerifier({ ...baseConfig, secret: "" as unknown as "sk_${string}" })
     } catch (error) {
@@ -32,7 +34,7 @@ describe("CreateInstance", () => {
   })
 
   test("WithErrorKey", () => {
-    let err: Error | null = null
+    let err: unknown = null
     try {
       new TokenVerifier({ ...baseConfig, secret: "errorkey" as unknown as "sk_${string}" })
     } catch (error) {
@@ -42,7 +44,7 @@ describe("CreateInstance", () => {
   })
 
   test("WithoutGame", () => {
-    let err: Error | null = null
+    let err: unknown = null
     try {
       new TokenVerifier({ ...baseConfig, game: "" })
     } catch (error) {
@@ -52,7 +54,7 @@ describe("CreateInstance", () => {
   })
 
   test("WithoutEndpoint", () => {
-    let err: Error | null = null
+    let err: unknown = null
     try {
       new TokenVerifier({ ...baseConfig, endpoint: "" as unknown as "https://${string}" })
     } catch (error) {
@@ -62,7 +64,7 @@ describe("CreateInstance", () => {
   })
 
   test("WithErrorEndpoint", () => {
-    let err: Error | null = null
+    let err: unknown = null
     try {
       new TokenVerifier({ ...baseConfig, endpoint: "x.com" as unknown as "https://${string}" })
     } catch (error) {
@@ -79,7 +81,7 @@ describe("Identity Token", () => {
     secret: "sk_secret",
   } as const
   const baseToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2FwaS5zZWF5b28uY29tIiwiYXVkIjoieGNvbSIsInN1YiI6IjkxMjMxMjIzMzQ2MTMwMDAxIiwiaWF0IjoxNzAzNzQ4NDM3LCJleHAiOjQxMDM4MzQ4MzcsInNjb3BlIjoiYXV0aCIsImlkcCI6InNlYXlvbyIsImV4dGVybmFsX2lkIjoiMTk5OSIsImV4dGVybmFsX25hbWUiOiIqKuWzsCIsImRldmljZV9pZCI6InRlc3QifQ.9ifKI8nXNqe8q4unzSv30zcXt0Uh5FR1M06TZxIWlrQ"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2FwaS5zZWF5b28uY29tIiwiYXVkIjoieGNvbSIsInN1YiI6IjkxMjMxMjIzMzQ2MTMwMDAxIiwiaWF0IjoxNzAzNzQ4NDM3LCJleHAiOjQxMDM4MzQ4MzcsInNjb3BlIjoiYXV0aCIsImlkcCI6InNlYXlvbyIsImV4dGVybmFsX2lkIjoiMTk5OSIsImV4dGVybmFsX25hbWUiOiIqKuWzsCIsImRldmljZV9pZCI6InRlc3QiLCJyZWdfdGltZSI6MTc3Mjc2NzcwM30.z7-OwQxbzvb1Ho9cDwGf2TLQXTdyd-B1_dQOFHc8Ol0"
 
   test("Normal", () => {
     const verifier = new TokenVerifier(baseConfig)
@@ -91,6 +93,7 @@ describe("Identity Token", () => {
     expect("external_name" in info ? info.external_name : "").toEqual("**峰")
     expect("weixin_unionid" in info ? info.weixin_unionid : "error").toEqual("")
     expect("device_id" in info ? info.device_id : "").toEqual("test")
+    expect("reg_time" in info ? info.reg_time : "").toEqual(1772767703)
   })
 
   test("ErrorSecretKey", () => {
