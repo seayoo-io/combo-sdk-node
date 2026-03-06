@@ -49,6 +49,7 @@ export class TokenVerifier {
         variant: payload.variant || "",
         device_id: payload.device_id || "",
         age: payload.age || 0,
+        reg_time: payload.reg_time || 0,
       }
     } catch (error: unknown) {
       return new Error(`IdentityToken 验证失败: ${error instanceof Error ? error.message : String(error)}`)

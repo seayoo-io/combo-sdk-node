@@ -69,6 +69,10 @@ export interface IdentityPayload {
    * 当某个用户真实年龄为 17 岁时，age 可能返回 16。
    */
   age: number
+  /**
+   * reg_time 是用户 ID（Combo ID）注册时间。Unix timestamp in seconds。
+   */
+  reg_time: number
 }
 
 export type IdentityJwtPayload = JwtPayload &
@@ -85,6 +89,7 @@ export function isIdentityJwtPayload(payload: unknown): payload is IdentityJwtPa
     "idp" in payload &&
     "device_id" in payload &&
     "external_id" in payload &&
-    "external_name" in payload
+    "external_name" in payload &&
+    "reg_time" in payload
   )
 }
