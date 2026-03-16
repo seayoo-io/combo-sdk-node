@@ -3,6 +3,7 @@ import { verifyConfig, type SDKBaseConfig } from "../utils"
 import { isIdentityJwtPayload, type IdentityPayload } from "./id"
 import { isAdJwtPayload, type AdPayload } from "./ads"
 import type { VerifyOptions } from "jsonwebtoken"
+import { decryptAESGCM } from "../utils/gcm"
 
 const IdentityTokenScope = "auth"
 const AdTokenScope = "ads"
@@ -39,12 +40,13 @@ export class TokenVerifier {
       if (payload.scope !== IdentityTokenScope) {
         return new Error("verifyIdentityToken: 无效的 Scope")
       }
+      // spell-checker:ignore AESGCM
       return {
         combo_id: payload.sub,
         idp: payload.idp,
         external_id: payload.external_id,
         external_name: payload.external_name,
-        weixin_session_key: payload.weixin_session_key || "",
+        weixin_session_key: payload.weixin_session_key ? decryptAESGCM(this.privateKey, payload.weixin_session_key) : "",
         distro: payload.distro || "",
         variant: payload.variant || "",
         device_id: payload.device_id || "",

@@ -91,7 +91,7 @@ describe("Identity Token", () => {
     idp: "seayoo",
     external_id: "oUVs6xlA-2Ek5zqNwflQa12345678",
     external_name: "**峰",
-    weixin_session_key: "tiihtNczf5v6AKRyjwEUAA==",
+    weixin_session_key: "mCMTJQaTkDaSu8lpcH2Z1Vi+BcDWT86nuVjRDh/PYm8FRdeZh3eJv5SK",
     device_id: "minigame_device_001",
     reg_time: 1703748437,
   }
@@ -104,7 +104,7 @@ describe("Identity Token", () => {
     expect("idp" in info ? info.idp : "").toEqual(jwtPayload.idp)
     expect("external_id" in info ? info.external_id : "").toEqual(jwtPayload.external_id)
     expect("external_name" in info ? info.external_name : "").toEqual(jwtPayload.external_name)
-    expect("weixin_session_key" in info ? info.weixin_session_key : "error").toEqual(jwtPayload.weixin_session_key)
+    expect("weixin_session_key" in info ? info.weixin_session_key : "error").toEqual("testSessionKey")
     expect("device_id" in info ? info.device_id : "").toEqual(jwtPayload.device_id)
     expect("reg_time" in info ? info.reg_time : "").toEqual(jwtPayload.reg_time)
   })
