@@ -108,10 +108,6 @@ interface OrderMetaData {
   role_name?: string
   /** 游戏角色的等级 */
   role_level?: number
-  /** 微信小游戏的 App ID, 微信小游戏的 iOS 支付场景必须传入 */
-  weixin_appid?: string
-  /** 微信小游戏的玩家 OpenID, 微信小游戏的 iOS 支付场景必须传入 */
-  weixin_openid?: string
 }
 
 interface CreateOrderResponse {
@@ -298,9 +294,8 @@ const identityPayload = verifier.verifyIdentityToken(token)
 if(identityPayload instanceof Error) {
     console.error(result.message)
 } else {
-    // 微信登录判断
-    if(identityPayload.idp === IdP.Weixin) {
-        // 微信登录会提供 weixin_unionid
+    // WebGL 平台，包括微信、抖音等小游戏，以及 HTML5 网页游戏 
+    if(identityPayload.idp === IdP.WebGL) {
         // do something
     }
     // 游客登录判断
@@ -331,12 +326,6 @@ interface IdentityPayload {
   /** external_name 是用户在外部 IdP 中的名称，通常是用户的昵称 */
   external_name: string
   /**
-   * weixin_unionid 是用户在微信中的 UnionId
-   * 游戏侧可以使用 weixin_unionid 实现多端互通
-   * 注意：weixin_unionid 只在 IdP 为 weixin 时才会有值。
-   */
-  weixin_unionid: string
-   /**
    * weixin_session_key 是用户在微信小游戏登录时，从微信服务端获得的会话密钥 session_key。
    * 该字段在 Identity Token 中以 AES-256-GCM 加密存储，SDK 会自动解密。
    * weixin_session_key 只在 IdP 为 MinigameWeixin 时才会有值。

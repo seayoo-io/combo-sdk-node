@@ -24,12 +24,6 @@ export enum Platform {
   Windows = "windows",
   /** macOS 桌面平台 */
   macOS = "macos",
-  /**
-   * 微信小游戏
-   *
-   * @deprecated 已被 Platform.WebGL 取代
-   */
-  Weixin = "weixin",
   /** WebGL 平台，包括微信、抖音等小游戏，以及 HTML5 网页游戏 */
   WebGL = "webgl",
   /** 华为的 HarmonyOS NEXT 鸿蒙应用开发平台 */

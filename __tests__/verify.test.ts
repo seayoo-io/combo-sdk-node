@@ -81,25 +81,37 @@ describe("Identity Token", () => {
     game: "xcom",
     secret: "sk_secret",
   } as const
-  const baseToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2FwaS5zZWF5b28uY29tIiwiYXVkIjoieGNvbSIsInN1YiI6IjkxMjMxMjIzMzQ2MTMwMDAxIiwiaWF0IjoxNzAzNzQ4NDM3LCJleHAiOjQxMDM4MzQ4MzcsInNjb3BlIjoiYXV0aCIsImlkcCI6InNlYXlvbyIsImV4dGVybmFsX2lkIjoiMTk5OSIsImV4dGVybmFsX25hbWUiOiIqKuWzsCIsImRldmljZV9pZCI6InRlc3QiLCJyZWdfdGltZSI6MTc3Mjc2NzcwM30.z7-OwQxbzvb1Ho9cDwGf2TLQXTdyd-B1_dQOFHc8Ol0"
-
+  const jwtPayload = {
+    iss: baseConfig.endpoint,
+    aud: baseConfig.game,
+    sub: "1231223346130001",
+    iat: 1703748437,
+    exp: 4103834837,
+    scope: "auth",
+    idp: "seayoo",
+    external_id: "oUVs6xlA-2Ek5zqNwflQa12345678",
+    external_name: "**峰",
+    weixin_session_key: "tiihtNczf5v6AKRyjwEUAA==",
+    device_id: "minigame_device_001",
+    reg_time: 1703748437,
+  }
+  const token = sign(jwtPayload, baseConfig.secret, { algorithm: "HS256" })
   test("Normal", () => {
     const verifier = new TokenVerifier(baseConfig)
-    const info = verifier.verifyIdentityToken(baseToken)
+    const info = verifier.verifyIdentityToken(token)
     expect(info instanceof Error).toBe(false)
-    expect("combo_id" in info ? info.combo_id : "").toEqual("91231223346130001")
-    expect("idp" in info ? info.idp : "").toEqual("seayoo")
-    expect("external_id" in info ? info.external_id : "").toEqual("1999")
-    expect("external_name" in info ? info.external_name : "").toEqual("**峰")
-    expect("weixin_unionid" in info ? info.weixin_unionid : "error").toEqual("")
-    expect("device_id" in info ? info.device_id : "").toEqual("test")
-    expect("reg_time" in info ? info.reg_time : "").toEqual(1772767703)
+    expect("combo_id" in info ? info.combo_id : "").toEqual(jwtPayload.sub)
+    expect("idp" in info ? info.idp : "").toEqual(jwtPayload.idp)
+    expect("external_id" in info ? info.external_id : "").toEqual(jwtPayload.external_id)
+    expect("external_name" in info ? info.external_name : "").toEqual(jwtPayload.external_name)
+    expect("weixin_session_key" in info ? info.weixin_session_key : "error").toEqual(jwtPayload.weixin_session_key)
+    expect("device_id" in info ? info.device_id : "").toEqual(jwtPayload.device_id)
+    expect("reg_time" in info ? info.reg_time : "").toEqual(jwtPayload.reg_time)
   })
 
   test("ErrorSecretKey", () => {
     const verifier = new TokenVerifier({ ...baseConfig, secret: "sk_error" })
-    const info = verifier.verifyIdentityToken(baseToken)
+    const info = verifier.verifyIdentityToken(token)
     expect(info).toBeInstanceOf(Error)
   })
 
@@ -144,40 +156,6 @@ describe("Identity Token", () => {
     const verifier = new TokenVerifier(baseConfig)
     const info = verifier.verifyIdentityToken("")
     expect(info).toBeInstanceOf(Error)
-  })
-
-  // MinigameWeixin with weixin_session_key
-  test("MinigameWeixin:WithWeixinSessionKey", () => {
-    const verifier = new TokenVerifier(baseConfig)
-    const jwtPayload = {
-      iss: "https://api.seayoo.com",
-      aud: "xcom",
-      sub: "91231223346130002",
-      iat: 1703748437,
-      exp: 4103834837,
-      scope: "auth",
-      idp: "minigame_weixin",
-      external_id: "oUVs6xlA-2Ek5zqNwflQa12345678",
-      external_name: "WeChat User",
-      weixin_unionid: "ouhPjwMHEIJ1tq3vG5K-9xY1234567",
-      weixin_session_key: "tiihtNczf5v6AKRyjwEUAA==",
-      device_id: "minigame_device_001",
-      distro: "stable",
-      variant: "cn",
-      age: 18,
-      reg_time: 1703748437,
-    }
-    const token = sign(jwtPayload, baseConfig.secret, { algorithm: "HS256" })
-    const info = verifier.verifyIdentityToken(token)
-    expect(info instanceof Error).toBe(false)
-    expect("combo_id" in info ? info.combo_id : "").toEqual("91231223346130002")
-    expect("idp" in info ? info.idp : "").toEqual("minigame_weixin")
-    expect("external_id" in info ? info.external_id : "").toEqual("oUVs6xlA-2Ek5zqNwflQa12345678")
-    expect("external_name" in info ? info.external_name : "").toEqual("WeChat User")
-    expect("weixin_unionid" in info ? info.weixin_unionid : "").toEqual("ouhPjwMHEIJ1tq3vG5K-9xY1234567")
-    expect("weixin_session_key" in info ? info.weixin_session_key : "").toEqual("tiihtNczf5v6AKRyjwEUAA==")
-    expect("device_id" in info ? info.device_id : "").toEqual("minigame_device_001")
-    expect("reg_time" in info ? info.reg_time : "").toEqual(1703748437)
   })
 })
 

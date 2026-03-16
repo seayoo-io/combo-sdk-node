@@ -32,13 +32,6 @@ export interface IdentityPayload {
    */
   external_name: string
   /**
-   * weixin_unionid 是用户在微信中的 UnionId
-   * 游戏侧可以使用 weixin_unionid 实现多端互通
-   *
-   * 注意：weixin_unionid 只在 IdP 为 weixin 时才会有值。
-   */
-  weixin_unionid: string
-  /**
    * weixin_session_key 是用户在微信小游戏登录时，从微信服务端获得的会话密钥 session_key。
    * 该字段在 Identity Token 中以 AES-256-GCM 加密存储，SDK 会自动解密。
    *
