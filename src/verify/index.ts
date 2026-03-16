@@ -45,6 +45,7 @@ export class TokenVerifier {
         external_id: payload.external_id,
         external_name: payload.external_name,
         weixin_unionid: payload.weixin_unionid || "",
+        weixin_session_key: payload.weixin_session_key || "",
         distro: payload.distro || "",
         variant: payload.variant || "",
         device_id: payload.device_id || "",

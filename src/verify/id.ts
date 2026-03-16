@@ -39,6 +39,13 @@ export interface IdentityPayload {
    */
   weixin_unionid: string
   /**
+   * weixin_session_key 是用户在微信小游戏登录时，从微信服务端获得的会话密钥 session_key。
+   * 该字段在 Identity Token 中以 AES-256-GCM 加密存储，SDK 会自动解密。
+   *
+   * weixin_session_key 只在 IdP 为 MinigameWeixin 时才会有值。
+   */
+  weixin_session_key: string
+  /**
    * DeviceId 是用户在登录时使用的设备的唯一 ID。
    */
   device_id: string
