@@ -33,6 +33,11 @@ describe("gcm utils", () => {
     return Buffer.concat([iv as Uint8Array, ciphertext as Uint8Array, authTag as Uint8Array]).toString("base64")
   }
 
+  test("base decode", () => {
+    const encoded = decryptAESGCM("sk_secret", "u4PaFsxKN2GJV+WBVzJDr6CNUv07ZH4DhAxEZ4zZq16nhuQoRb7vMjen")
+    expect(encoded).toBe("testSessionKey")
+  })
+
   test("decryptAESGCM should decrypt valid ciphertext", () => {
     const sk = "test-secret-key"
     const plain = "hello from gcm test"
