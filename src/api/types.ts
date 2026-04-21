@@ -39,10 +39,6 @@ export interface OrderMetaData {
   role_name?: string
   /** 游戏角色的等级 */
   role_level?: number
-  /** 微信小游戏的 App ID, 微信小游戏的 iOS 支付场景必须传入 */
-  weixin_appid?: string
-  /** 微信小游戏的玩家 OpenID, 微信小游戏的 iOS 支付场景必须传入 */
-  weixin_openid?: string
 }
 
 export interface CreateOrderResponse {

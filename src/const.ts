@@ -2,7 +2,7 @@
 export const SDKName = "combo-sdk-node"
 
 /** SDK 版本，在编译前会被动态替换 */
-export const SDKVersion = "1.5.1"
+export const SDKVersion = "1.5.2"
 
 /**
  * 世游支持的服务端点列表
@@ -64,6 +64,8 @@ export enum IdP {
   Yingyongbao = "yingyongbao",
   /** 4399 账号登录 */
   F4399 = "4399",
+  /** 抖音账号 */
+  Douyin = "douyin",
   /** 雷电模拟器账号 */
   Leidian = "leidian",
   /** 猫窝游戏 */
@@ -82,10 +84,16 @@ export enum IdP {
   Meituo = "meituo",
   /** 微信小游戏 */
   MinigameWeixin = "minigame_weixin",
+  /** 抖音小游戏 */
+  MinigameDouyin = "minigame_douyin",
   /** MuMu 模拟器 */
   Mumu = "mumu",
   /** 虎牙游戏 */
   Huya = "huya",
+  /** 好游快爆 */
+  Hykb = "hykb",
+  /** 233 乐园 */
+  L233 = "233",
 }
 
 /** GM 错误类型枚举 */
