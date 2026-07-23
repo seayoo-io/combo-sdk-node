@@ -11,5 +11,5 @@
     "target": "ES5"
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["playground", "dist"]
+  "exclude": ["dist"]
 }
