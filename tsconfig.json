@@ -5,10 +5,11 @@
     "noEmit": true,
     "declaration": true,
     "emitDeclarationOnly": false,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "module": "ESNext",
-    "target": "ES5"
+    "target": "ES2019"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["dist"]

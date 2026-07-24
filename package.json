@@ -20,7 +20,7 @@
     "preconvert": "node preconvert.cjs",
     "dev": "microbundle watch --target node",
     "clear": "rimraf dist && rimraf node_modules",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --noEmit -p tsconfig.typecheck.json",
     "lint": "eslint ./src/**/*.ts",
     "lint:fix": "eslint ./src/**/*.{ts,js} --fix",
     "test": "vitest",

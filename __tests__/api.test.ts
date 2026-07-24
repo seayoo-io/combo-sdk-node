@@ -28,7 +28,7 @@ describe("CreateInstance", () => {
     try {
       new ApiClient({ ...baseConfig, secret: "" as unknown as "sk_${string}" })
     } catch (error) {
-      err = error
+      err = <Error>error
     }
     expect(err).toBeInstanceOf(Error)
   })
@@ -38,7 +38,7 @@ describe("CreateInstance", () => {
     try {
       new ApiClient({ ...baseConfig, secret: "errorKey" as unknown as "sk_${string}" })
     } catch (error) {
-      err = error
+      err = <Error>error
     }
     expect(err).toBeInstanceOf(Error)
   })
@@ -48,7 +48,7 @@ describe("CreateInstance", () => {
     try {
       new ApiClient({ ...baseConfig, game: "" })
     } catch (error) {
-      err = error
+      err = <Error>error
     }
     expect(err).toBeInstanceOf(Error)
   })
@@ -58,7 +58,7 @@ describe("CreateInstance", () => {
     try {
       new ApiClient({ ...baseConfig, endpoint: "" as unknown as "https://${string}" })
     } catch (error) {
-      err = error
+      err = <Error>error
     }
     expect(err).toBeInstanceOf(Error)
   })
@@ -68,7 +68,7 @@ describe("CreateInstance", () => {
     try {
       new ApiClient({ ...baseConfig, endpoint: "x.com" as unknown as "https://${string}" })
     } catch (error) {
-      err = error
+      err = <Error>error
     }
     expect(err).toBeInstanceOf(Error)
   })

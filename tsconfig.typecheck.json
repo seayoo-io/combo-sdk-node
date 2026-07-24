@@ -1,0 +1,8 @@
+{
+  // 仅用于类型检查（pnpm type-check）：在 tsconfig.json 基础上把测试文件纳入检查。
+  // 注意：不要把 __tests__ 加进 tsconfig.json 的 include —— microbundle 构建会复用
+  // tsconfig.json 生成 .d.ts，一旦 include 包含测试文件，声明输出的 rootDir 会从 src/
+  // 上移到仓库根，导致 dist/index.d.ts 变成 dist/src/index.d.ts，破坏 package.json 的 types 路径。
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*.ts", "__tests__/**/*.ts"]
+}
