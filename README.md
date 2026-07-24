@@ -143,6 +143,70 @@ const userSessionID = genSessionID("<ComboID>")
 
 ```
 
+### 发送/验证短信验证码 OTP
+
+用于向用户发送短信验证码 (OTP)，以及校验用户输入的验证码，可用于账号绑定、敏感操作二次确认等场景。
+
+> 验证码的目标行为 `action` 由世游发行平台创建并管理。同一次验证流程中，`sendOtp` 与 `verifyOtp` 传入的 `action` 和 `channel` 必须保持一致。
+
+```js
+// 1. 发送验证码
+const sendResult = await client.sendOtp({
+  /** 要发送验证码的用户的唯一标识 */
+  combo_id: "<ComboID>",
+  /** [可选] 发送验证码的通道，目前仅支持 "sms"，不填写时默认为 "sms" */
+  channel: "sms",
+  /** 发送验证码的目标行为，由世游发行平台创建并管理 */
+  action: "<Action>",
+  /**
+   * [可选] 发送方元数据，主要用于数据分析，游戏服务端应当尽量提供
+   * 字段定义同 OrderMetaData
+   */
+  meta: { ... },
+})
+
+interface SendOtpResponse {
+  /** 掩码后的手机号，仅当 channel=sms 时有值。 */
+  mobile: string
+  /** 验证码有效期，单位秒。 */
+  otp_ttl: number
+  /** 重新发送验证码的冷却时间，单位秒。 */
+  otp_cooldown: number
+}
+
+// 2. 验证验证码
+const verifyResult = await client.verifyOtp({
+  /** 要验证验证码的用户的唯一标识 */
+  combo_id: "<ComboID>",
+  /** [可选] 发送验证码的通道，需与发送时一致，不填写时默认为 "sms" */
+  channel: "sms",
+  /** 发送验证码的目标行为，需与发送时一致 */
+  action: "<Action>",
+  /** 用户输入的验证码 */
+  otp: "<OTP>",
+})
+
+if (verifyResult.valid) {
+  // 验证通过。验证码立即失效，不可重复使用
+} else {
+  // 验证失败：验证码错误或已过期，建议提示用户重新输入
+}
+
+interface VerifyOtpResponse {
+  /**
+   * 是否验证通过。
+   * - true  表示验证通过。验证通过后验证码立即失效，不可重复使用。
+   * - false 表示验证失败，验证码不匹配或已过期，建议用户重新检查后重试。
+   */
+  valid: boolean
+}
+```
+
+> ⚠️ 错误处理
+>
+> - `sendOtp` 在请求失败时（如触发发送冷却、参数错误、服务端错误）会**抛出异常**，请使用 try/catch 捕获处理。
+> - `verifyOtp` 仅在请求本身失败时抛出异常。**验证码不正确属于正常业务结果**，此时会返回 `{ valid: false }` 而不会抛出异常，游戏侧需要根据 `valid` 字段判断验证是否通过。
+
 ## Notify
 
 ### Step 1 准备参数

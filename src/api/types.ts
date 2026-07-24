@@ -49,3 +49,48 @@ export interface CreateOrderResponse {
   /** 订单失效时间。Unix timestamp in seconds。 */
   expires_at: number
 }
+
+export type SupportedOtpChannel = "sms"
+
+export interface SendOtpOption {
+  /** 要发送验证码的用户的唯一标识。 */
+  combo_id: string
+  /** 发送验证码的通道，目前仅支持 sms。不填写时默认为 sms。*/
+  channel?: SupportedOtpChannel
+  /** 发送验证码的目标行为，由世游发行平台创建并管理。*/
+  action: string
+  /** 发送方元数据，主要用于数据分析，游戏服务端应当尽量提供。*/
+  meta?: SendOtpMetaData
+}
+
+export type SendOtpMetaData = OrderMetaData
+
+export interface SendOtpResponse {
+  /** 掩码后的手机号，仅当 channel=sms 时有值。*/
+  mobile: string
+  /** 验证码有效期，单位秒。*/
+  otp_ttl: number
+  /**  重新发送验证码的冷却时间，单位秒。*/
+  otp_cooldown: number
+}
+
+export interface VerifyOtpOption {
+  /** 要验证验证码的用户的唯一标识。 */
+  combo_id: string
+  /** 发送验证码的通道，需与发送时一致。不填写时默认为 sms。*/
+  channel?: SupportedOtpChannel
+  /** 发送验证码的目标行为，需与发送时一致。*/
+  action: string
+  /** 用户输入的验证码。*/
+  otp: string
+}
+
+export interface VerifyOtpResponse {
+  /**
+   * 是否验证通过。
+   *
+   * - true 表示验证通过。验证通过后验证码立即失效，不可重复使用。
+   * - false 表示验证失败，用户输入的验证码与系统生成的验证码不匹配，可能是由于输入错误或验证码已过期，建议用户重新检查输入的验证码。
+   */
+  valid: boolean
+}

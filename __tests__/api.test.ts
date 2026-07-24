@@ -1,4 +1,5 @@
 import { ApiClient, Platform } from "../src"
+import type { SendOtpOption, VerifyOtpOption } from "../src"
 import { describe, expect, test, vi } from "vitest"
 import { runSeayooMockServer, endpoint, game, secret } from "./mock.seayoo"
 
@@ -16,6 +17,10 @@ describe("CreateInstance", () => {
     expect(apiClient.enterGame.length).toBe(2)
     expect("leaveGame" in apiClient).toBe(true)
     expect(apiClient.leaveGame.length).toBe(2)
+    expect("sendOtp" in apiClient).toBe(true)
+    expect(apiClient.sendOtp.length).toBe(1)
+    expect("verifyOtp" in apiClient).toBe(true)
+    expect(apiClient.verifyOtp.length).toBe(1)
   })
 
   test("WithoutKey", () => {
@@ -260,6 +265,95 @@ describe("LeaveGame", () => {
     const client = new ApiClient({ endpoint, game, secret })
     const ok = await client.leaveGame("123400001", "SeayooServerError").catch((e) => <Error>e)
     expect(ok).toBe(false)
+    expect(console.error).toBeCalledTimes(1)
+  })
+})
+
+describe("SendOtp", () => {
+  const baseOption: SendOtpOption = {
+    combo_id: "234232320001",
+    channel: "sms",
+    action: "bind_mobile",
+    meta: {},
+  }
+
+  test("Normal", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.sendOtp(baseOption).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(false)
+    expect(console.error).toBeCalledTimes(0)
+    expect("mobile" in result ? result.mobile : null).toBeTypeOf("string")
+    expect("otp_ttl" in result ? result.otp_ttl : null).toBeTypeOf("number")
+    expect("otp_cooldown" in result ? result.otp_cooldown : null).toBeTypeOf("number")
+  })
+
+  test("DefaultChannel", async () => {
+    // 不传 channel 时默认为 sms，应正常发送
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.sendOtp({ combo_id: "234232320001", action: "bind_mobile" }).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(false)
+    expect(console.error).toBeCalledTimes(0)
+  })
+
+  test("SeayooServerError", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.sendOtp({ ...baseOption, action: "SeayooServerError" }).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(true)
+    expect(console.error).toBeCalledTimes(1)
+  })
+
+  test("SeayooResponseError", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.sendOtp({ ...baseOption, action: "SeayooResponseError" }).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(true)
+    expect(console.error).toBeCalledTimes(1)
+  })
+
+  test("SeayooResponseMissingField", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.sendOtp({ ...baseOption, action: "SeayooResponseMissingField" }).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(true)
+    expect(console.error).toBeCalledTimes(1)
+  })
+})
+
+describe("VerifyOtp", () => {
+  const baseOption: VerifyOtpOption = {
+    combo_id: "234232320001",
+    channel: "sms",
+    action: "bind_mobile",
+    otp: "000000",
+  }
+
+  test("Valid", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.verifyOtp(baseOption).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(false)
+    expect(console.error).toBeCalledTimes(0)
+    expect("valid" in result ? result.valid : null).toBe(true)
+  })
+
+  test("Invalid", async () => {
+    // 验证码错误属于正常业务结果：返回 { valid: false } 而非抛出异常，也不打印 error
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.verifyOtp({ ...baseOption, otp: "999999" }).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(false)
+    expect(console.error).toBeCalledTimes(0)
+    expect("valid" in result ? result.valid : null).toBe(false)
+  })
+
+  test("SeayooServerError", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.verifyOtp({ ...baseOption, action: "SeayooServerError" }).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(true)
     expect(console.error).toBeCalledTimes(1)
   })
 })

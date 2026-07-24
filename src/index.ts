@@ -1,6 +1,7 @@
 export { ApiClient } from "./api"
 export type { ApiClientConfig } from "./api"
 export type { CreateOrderOption, OrderMetaData, CreateOrderResponse } from "./api/types"
+export type { SendOtpOption, SendOtpMetaData, SendOtpResponse, SupportedOtpChannel, VerifyOtpOption, VerifyOtpResponse } from "./api/types"
 
 export { TokenVerifier } from "./verify"
 export type { IdentityPayload } from "./verify/id"

@@ -1,10 +1,12 @@
 import { getUserAgent } from "./ua"
 import { NetRequest, type IRequestGlobalConfig } from "../request"
 import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isObject, type SDKBaseConfig } from "../utils"
-import type { CreateOrderOption, CreateOrderResponse } from "./types"
+import type { CreateOrderOption, CreateOrderResponse, SendOtpOption, SendOtpResponse, VerifyOtpOption, VerifyOtpResponse } from "./types"
 
 const ApiPrefix = "/v1/server"
 const TraceIdField = "x-trace-id"
+
+// spell-checker:ignore cooldown
 
 /** Api Client Config */
 export interface ApiClientConfig extends SDKBaseConfig {
@@ -111,6 +113,34 @@ export class ApiClient {
     }
     return ok
   }
+
+  /**
+   * 发送验证码
+   *
+   * @param option 发送验证码参数
+   */
+  async sendOtp(option: SendOtpOption): Promise<SendOtpResponse> {
+    const { ok, data, code, status, message, headers } = await this.req.post("send-otp", option, isSendOtpResponse)
+    if (!ok || !data) {
+      console.error({ type: "sendOtp Error", status, code, message, traceId: headers[TraceIdField] })
+      throw new Error(`sendOtp: ${message || code || status}`)
+    }
+    return data
+  }
+
+  /**
+   * 验证验证码
+   *
+   * @param option 验证码验证参数
+   */
+  async verifyOtp(option: VerifyOtpOption): Promise<VerifyOtpResponse> {
+    const { ok, data, code, status, message, headers } = await this.req.post("verify-otp", option, isVerifyOtpResponse)
+    if (!ok || !data) {
+      console.error({ type: "verifyOtp Error", status, code, message, traceId: headers[TraceIdField] })
+      throw new Error(`verifyOtp: ${message || code || status}`)
+    }
+    return data
+  }
 }
 
 function isCreateOrderResponse(data: unknown): data is CreateOrderResponse {
@@ -120,4 +150,23 @@ function isCreateOrderResponse(data: unknown): data is CreateOrderResponse {
     "expires_at" in data &&
     typeof data.expires_at === "number"
   )
+}
+
+// 目前 OTP 仅支持 sms 通道，mobile 恒为掩码后的手机号字符串，故此处统一按 string 校验。
+// 后续新增 channel 时，需要在此根据 channel 补充 mobile 的关联校验
+// （例如非 sms 通道下 mobile 可能为空），届时可考虑将 channel 传入本守卫。
+function isSendOtpResponse(data: unknown): data is SendOtpResponse {
+  return (
+    isObject(data) &&
+    "mobile" in data &&
+    "otp_ttl" in data &&
+    "otp_cooldown" in data &&
+    typeof data.mobile === "string" &&
+    typeof data.otp_ttl === "number" &&
+    typeof data.otp_cooldown === "number"
+  )
+}
+
+function isVerifyOtpResponse(data: unknown): data is VerifyOtpResponse {
+  return isObject(data) && "valid" in data && typeof data.valid === "boolean"
 }

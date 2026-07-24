@@ -2,7 +2,7 @@ import { setupServer } from "msw/node"
 import { HttpResponse, http } from "msw"
 import { beforeAll, afterAll, afterEach } from "vitest"
 import { checkHttpAuthInfo } from "../src/utils"
-import type { CreateOrderOption } from "../src"
+import type { CreateOrderOption, SendOtpOption, VerifyOtpOption } from "../src"
 
 export const game = "xcom"
 
@@ -99,6 +99,61 @@ export function runSeayooMockServer() {
         return HttpResponse.json({ message: "Seayoo Error Response" }, { status: 500 })
       }
       return new HttpResponse(undefined, { status: 204 })
+    }),
+
+    http.post<object, Partial<SendOtpOption>>(endpoint + serverBaseUrl + "/send-otp", async function ({ request }) {
+      const body = await request.json()
+      const headers = { "x-trace-id": "tr" + Date.now() }
+      // combo_id 和 action 为必填，channel 可选（默认 sms）
+      if (!body.combo_id || !body.action) {
+        return HttpResponse.json({ message: "Missing required parameters" }, { status: 400, headers })
+      }
+      // 借助 action 字段告诉 mock server 以异常方式响应
+      if (body.action === "SeayooServerError") {
+        return HttpResponse.json({ message: "Seayoo Error Response" }, { status: 500, headers })
+      }
+      if (body.action === "SeayooResponseError") {
+        return HttpResponse.json(
+          {
+            mobile: "138****0001",
+            // 设置响应数据类型错误：otp_ttl 应为 number
+            otp_ttl: "600",
+            otp_cooldown: 60,
+          },
+          { headers }
+        )
+      }
+      if (body.action === "SeayooResponseMissingField") {
+        return HttpResponse.json(
+          {
+            mobile: "138****0001",
+            // 假设服务器同学手抖漏写了 otp_ttl 字段
+            otp_cooldown: 60,
+          },
+          { headers }
+        )
+      }
+      return HttpResponse.json(
+        {
+          // 掩码后的手机号，仅当 channel=sms 时有值
+          mobile: "138****0001",
+          otp_ttl: 600,
+          otp_cooldown: 60,
+        },
+        { headers }
+      )
+    }),
+    http.post<object, Partial<VerifyOtpOption>>(endpoint + serverBaseUrl + "/verify-otp", async function ({ request }) {
+      const body = await request.json()
+      const headers = { "x-trace-id": "tr" + Date.now() }
+      if (!body.combo_id || !body.action || !body.otp) {
+        return HttpResponse.json({ message: "Missing required parameters" }, { status: 400, headers })
+      }
+      if (body.action === "SeayooServerError") {
+        return HttpResponse.json({ message: "Seayoo Error Response" }, { status: 500, headers })
+      }
+      // 约定：otp 为 "000000" 时验证通过，否则验证失败（验证失败属于正常业务结果，仍以 200 响应）
+      return HttpResponse.json({ valid: body.otp === "000000" }, { headers })
     }),
 
     http.all("/*", async () => {
