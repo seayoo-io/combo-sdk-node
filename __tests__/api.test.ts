@@ -1,5 +1,5 @@
 import { ApiClient, Platform } from "../src"
-import type { SendOtpOption, VerifyOtpOption } from "../src"
+import type { SendOtpOption, VerifyOtpOption, VoiceModerationRequestOption } from "../src"
 import { describe, expect, test, vi } from "vitest"
 import { runSeayooMockServer, endpoint, game, secret } from "./mock.seayoo"
 
@@ -21,6 +21,8 @@ describe("CreateInstance", () => {
     expect(apiClient.sendOtp.length).toBe(1)
     expect("verifyOtp" in apiClient).toBe(true)
     expect(apiClient.verifyOtp.length).toBe(1)
+    expect("voiceModerationRequest" in apiClient).toBe(true)
+    expect(apiClient.voiceModerationRequest.length).toBe(1)
   })
 
   test("WithoutKey", () => {
@@ -354,6 +356,31 @@ describe("VerifyOtp", () => {
     const client = new ApiClient({ endpoint, game, secret })
     const result = await client.verifyOtp({ ...baseOption, action: "SeayooServerError" }).catch((e) => <Error>e)
     expect(result instanceof Error).toBe(true)
+    expect(console.error).toBeCalledTimes(1)
+  })
+})
+
+describe("VoiceModerationRequest", () => {
+  const baseOption: VoiceModerationRequestOption = {
+    room_instance_id: "room-instance-001",
+    server_id: 1001,
+    requester_role_id: "player-001",
+    target_role_ids: ["player-002", "player-003"],
+  }
+
+  test("Normal", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const ok = await client.voiceModerationRequest(baseOption).catch((e) => <Error>e)
+    expect(ok).toBe(true)
+    expect(console.error).toBeCalledTimes(0)
+  })
+
+  test("SeayooServerError", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const ok = await client.voiceModerationRequest({ ...baseOption, room_instance_id: "SeayooServerError" }).catch((e) => <Error>e)
+    expect(ok).toBe(false)
     expect(console.error).toBeCalledTimes(1)
   })
 })

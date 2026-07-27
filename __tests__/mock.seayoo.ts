@@ -2,7 +2,7 @@ import { setupServer } from "msw/node"
 import { HttpResponse, http } from "msw"
 import { beforeAll, afterAll, afterEach } from "vitest"
 import { checkHttpAuthInfo } from "../src/utils"
-import type { CreateOrderOption, SendOtpOption, VerifyOtpOption } from "../src"
+import type { CreateOrderOption, SendOtpOption, VerifyOtpOption, VoiceModerationRequestOption } from "../src"
 
 export const game = "xcom"
 
@@ -154,6 +154,18 @@ export function runSeayooMockServer() {
       }
       // 约定：otp 为 "000000" 时验证通过，否则验证失败（验证失败属于正常业务结果，仍以 200 响应）
       return HttpResponse.json({ valid: body.otp === "000000" }, { headers })
+    }),
+
+    http.post<object, Partial<VoiceModerationRequestOption>>(endpoint + serverBaseUrl + "/voice-moderation-request", async function ({ request }) {
+      const body = await request.json()
+      const headers = { "x-trace-id": "tr" + Date.now() }
+      if (!body.room_instance_id || !body.server_id || !body.requester_role_id || !body.target_role_ids) {
+        return HttpResponse.json({ message: "Missing required parameters" }, { status: 400, headers })
+      }
+      if (body.room_instance_id === "SeayooServerError") {
+        return HttpResponse.json({ message: "Seayoo Error Response" }, { status: 500, headers })
+      }
+      return new HttpResponse(undefined, { status: 204 })
     }),
 
     http.all("/*", async () => {

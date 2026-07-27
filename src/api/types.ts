@@ -94,3 +94,14 @@ export interface VerifyOtpResponse {
    */
   valid: boolean
 }
+
+export interface VoiceModerationRequestOption {
+  /** 房间实例 ID，唯一标识某个语音房间的一次存续（从开启到关闭）。 */
+  room_instance_id: string
+  /** 游戏服务器 ID。 */
+  server_id: number
+  /** 提交审核申请的玩家角色 ID。 */
+  requester_role_id: string
+  /** 被提交语音审核的玩家角色 ID 列表，一次最多提交 32 个。 */
+  target_role_ids: string[]
+}

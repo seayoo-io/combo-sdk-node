@@ -207,6 +207,33 @@ interface VerifyOtpResponse {
 > - `sendOtp` 在请求失败时（如触发发送冷却、参数错误、服务端错误）会**抛出异常**，请使用 try/catch 捕获处理。
 > - `verifyOtp` 仅在请求本身失败时抛出异常。**验证码不正确属于正常业务结果**，此时会返回 `{ valid: false }` 而不会抛出异常，游戏侧需要根据 `valid` 字段判断验证是否通过。
 
+### 申请语音审核 VoiceModerationRequest
+
+玩家认为语音房间内某些玩家存在语音违规行为时，可提交语音审核申请。调用前提是：游戏已经在世游开启语音审核服务。
+
+```js
+const ok = await client.voiceModerationRequest({
+  /** 房间实例 ID，唯一标识某个语音房间的一次存续（从开启到关闭） */
+  room_instance_id: "<RoomInstanceID>",
+  /** 游戏服务器 ID */
+  server_id: 1001,
+  /** 提交审核申请的玩家角色 ID */
+  requester_role_id: "<PlayerRoleID>",
+  /** 被提交语音审核的玩家角色 ID 列表，一次最多提交 32 个 */
+  target_role_ids: ["<TargetRoleID1>", "<TargetRoleID2>"],
+})
+
+// ok 为 true 表示提交成功，false 表示提交失败（已自动打印错误日志）
+if (ok) {
+  // 提交成功
+}
+```
+
+> ⚠️ 注意事项
+>
+> - `voiceModerationRequest` 不会在失败时抛出异常，而是返回 `false`。游戏侧可根据返回值决定后续处理。
+> - `target_role_ids` 一次最多提交 32 个玩家角色 ID。
+
 ## Notify
 
 ### Step 1 准备参数

@@ -1,7 +1,15 @@
 import { getUserAgent } from "./ua"
 import { NetRequest, type IRequestGlobalConfig } from "../request"
 import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isObject, type SDKBaseConfig } from "../utils"
-import type { CreateOrderOption, CreateOrderResponse, SendOtpOption, SendOtpResponse, VerifyOtpOption, VerifyOtpResponse } from "./types"
+import type {
+  CreateOrderOption,
+  CreateOrderResponse,
+  SendOtpOption,
+  SendOtpResponse,
+  VerifyOtpOption,
+  VerifyOtpResponse,
+  VoiceModerationRequestOption,
+} from "./types"
 
 const ApiPrefix = "/v1/server"
 const TraceIdField = "x-trace-id"
@@ -140,6 +148,19 @@ export class ApiClient {
       throw new Error(`verifyOtp: ${message || code || status}`)
     }
     return data
+  }
+
+  /**
+   * 申请语音审核。
+   *
+   * 玩家认为语音房间内某些玩家存在语音违规行为时，可提交语音审核申请。调用前提是：游戏已经在世游开启语音审核服务。
+   */
+  async voiceModerationRequest(option: VoiceModerationRequestOption): Promise<boolean> {
+    const { ok, status, code, message, headers } = await this.req.post("voice-moderation-request", option)
+    if (!ok) {
+      console.error({ type: "voiceModerationRequest Error", status, code, message, traceId: headers[TraceIdField] })
+    }
+    return ok
   }
 }
 
