@@ -129,7 +129,7 @@ export enum GMError {
   InternalError = "internal_error",
 }
 
-export const enum HttpStatus {
+export enum HttpStatus {
   OK = 200,
   Accepted = 202,
   NoContent = 204,

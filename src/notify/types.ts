@@ -5,7 +5,7 @@ import type { MaybePromise, TypeGuard } from "../utils"
 /**
  * 通知类型枚举
  */
-export const enum NotificationType {
+export enum NotificationType {
   /**
    * 世游服务端会在订单状态变更为已支付时，向游戏侧推送发货通知。
    *
