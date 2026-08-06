@@ -7,3 +7,6 @@ pnpm-lock.**
 __tests__
 tsconfig*
 preconvert.cjs
+scripts
+vitest.config.ts
+tsdown.config.ts

@@ -2,7 +2,8 @@ import { getNotificationHandler, type NotificationHandler, type SDKBaseConfig } 
 import { createServer } from "http"
 import { sleep } from "../src/utils"
 
-export const localGameHostPort = "5678"
+// 端口可被覆盖，避免 src / dist 两个 project 并行时争抢同一端口
+export const localGameHostPort = process.env.GAME_MOCK_PORT || "5678"
 export const notifyPath = "/seayoo-notify"
 
 export async function runGameMockServer(config: SDKBaseConfig, messageHandler: NotificationHandler) {
