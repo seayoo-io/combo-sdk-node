@@ -48,7 +48,10 @@
   "simple-git-hooks": {
     "pre-commit": "pnpm lint && pnpm type-check"
   },
-  "repository": "https://github.com/seayoo-io/combo-sdk-node",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seayoo-io/combo-sdk-node.git"
+  },
   "keywords": [
     "combo",
     "seayoo",
