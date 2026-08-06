@@ -8,6 +8,9 @@
     "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
+    "rootDir": "./src",
+    "types": ["node"],
     "module": "ESNext",
     "target": "ES2019"
   },

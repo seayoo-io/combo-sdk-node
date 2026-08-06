@@ -14,7 +14,7 @@
 v1 新增 gm 模块的 [IdempotencyKey](https://docs.seayoo.com/combo/server/gm/#idempotency)，主要改动包括：
 
 1. 修改了 commandHandler 的参数，插入 idempotencyKey 参数；当此参数为非空字符串时需要处理幂等性；
-2. 新增预设错误  IdempotencyConflict / IdempotencyMismatch
+2. 新增预设错误 IdempotencyConflict / IdempotencyMismatch
 3. gm 服务版本号升级到 2.0
 
 ## 安装
@@ -32,7 +32,7 @@ pnpm add @seayoo-io/combo-sdk-node
 请按照工程实际情况选择导入方式，后续示例采用 ES 方式导入。
 
 ```js
-// ES 
+// ES
 import { ApiClient } from "@seayoo-io/combo-sdk-node"
 
 // CommonJS
@@ -47,14 +47,14 @@ const { ApiClient } = require("@seayoo-io/combo-sdk-node")
 import { ApiClient, Endpoint } from "@seayoo-io/combo-sdk-node"
 
 const client = new ApiClient({
-    game: "<GameId>",
-    secret: "<SecretKey>",
-    endpoint: Endpoint.China,
-    // 以下参数可选
-    maxRetry: 1,                // 失败后自动重试次数，默认 1
-    retryInterval: 1000,        // 重试间隔，默认是 1000，单位 ms，可以传递函数动态设置间隔
-    logger: function(log) {},   // 请求日志函数，log 类型参见源码类型定义
-    timeout: 5000,              // 超时等待时长，单位 ms，默认 5000
+  game: "<GameId>",
+  secret: "<SecretKey>",
+  endpoint: Endpoint.China,
+  // 以下参数可选
+  maxRetry: 1, // 失败后自动重试次数，默认 1
+  retryInterval: 1000, // 重试间隔，默认是 1000，单位 ms，可以传递函数动态设置间隔
+  logger: function (log) {}, // 请求日志函数，log 类型参见源码类型定义
+  timeout: 5000, // 超时等待时长，单位 ms，默认 5000
 })
 ```
 
@@ -78,7 +78,7 @@ const createOrderResult = await client.createOrder({
    */
   product_id: "<ProductID>",
   /** 平台，支持类型见源码类型定义 Platform */
-  platform: Platform.iOS, 
+  platform: Platform.iOS,
   /**
    * 游戏侧接收发货通知的服务端地址
    * 这个地址对应的服务端应该通过 Notify 模块实现路由处理
@@ -126,11 +126,10 @@ interface CreateOrderResponse {
 
 ```js
 // 进入游戏
-await client.enterGame("<ComboID>", "<SessionID>");
+await client.enterGame("<ComboID>", "<SessionID>")
 
 // 离开游戏
-await client.leaveGame("<ComboID>", "<SessionID>");
-
+await client.leaveGame("<ComboID>", "<SessionID>")
 ```
 
 > 注意，SessionID 不可重复使用，可以使用 SDK 提供的工具函数生成 SessionID
@@ -140,7 +139,6 @@ import { genSessionID } from "@seayoo-io/combo-sdk-node"
 
 // genSessionID 接受唯一参数 comboId 作为输入，返回一个 32 位固定长度的不重复字符串
 const userSessionID = genSessionID("<ComboID>")
-
 ```
 
 ### 发送/验证短信验证码 OTP
@@ -277,7 +275,7 @@ interface ShipOrderNotification {
    */
   is_sandbox?: boolean
 }
-  
+
 interface RefundNotification {
     // 结构同 ShipOrderNotification
 }
@@ -296,10 +294,10 @@ const config = {
 // 使用 http 模块的处理函数
 import { getNotificationHandler } from "@seayoo-io/combo-sdk-node"
 const notifyHandler = getNotificationHandler(config, notificationHandler)
-http.createServer(async function(req, res){
-    if(req.path === "<YourNotifyUrl>" && req.method === "POST") {
-       await notifyHandler(req, res)
-    }
+http.createServer(async function (req, res) {
+  if (req.path === "<YourNotifyUrl>" && req.method === "POST") {
+    await notifyHandler(req, res)
+  }
 })
 
 // 或，使用 Express 处理函数
@@ -327,15 +325,15 @@ app.post("/path/to/your/notify/url", koaHandler)
 
 ```js
 // 插件需要先于 bodyParse 类似的插件执行，以确保可以获取原始请求的内容
-app.use(function(req, res, next){
-    // 在其他插件处理之前，检查是否为通知请求的 url，方法是否为 POST
-    if(req.method === "POST" && req.path === "/path/to/your/notify/url") {
-        // 如果是，则交由插件处理后续响应
-        notifyMiddleware(req, res)
-        return
-    }
-    // 否则其他一切正常
-    next()
+app.use(function (req, res, next) {
+  // 在其他插件处理之前，检查是否为通知请求的 url，方法是否为 POST
+  if (req.method === "POST" && req.path === "/path/to/your/notify/url") {
+    // 如果是，则交由插件处理后续响应
+    notifyMiddleware(req, res)
+    return
+  }
+  // 否则其他一切正常
+  next()
 })
 ```
 
@@ -344,21 +342,13 @@ SDK 提供了两个插件来处理：
 ```js
 // express 插件
 import { getNotificationMiddlewareForExpress } from "@seayoo-io/combo-sdk-node"
-const notifyMiddleware = getNotificationMiddlewareForExpress(
-    "/path/to/your/notify/url",
-    config,
-    notificationHandler
-);
-app.use(notifyMiddleware);
+const notifyMiddleware = getNotificationMiddlewareForExpress("/path/to/your/notify/url", config, notificationHandler)
+app.use(notifyMiddleware)
 
 // koa 插件
 import { getNotificationMiddlewareForKoa } from "@seayoo-io/combo-sdk-node"
-const notifyMiddleware = getNotificationMiddlewareForKoa(
-    "/path/to/your/notify/url",
-    config,
-    notificationHandler
-);
-app.use(notifyMiddleware);
+const notifyMiddleware = getNotificationMiddlewareForKoa("/path/to/your/notify/url", config, notificationHandler)
+app.use(notifyMiddleware)
 ```
 
 ## Verify
@@ -369,9 +359,9 @@ app.use(notifyMiddleware);
 import { TokenVerifier, Endpoint } from "@seayoo-io/combo-sdk-node"
 
 const verifier = new TokenVerifier({
-    game: "<GameId>",
-    secret: "<SecretKey>",
-    endpoint: Endpoint.China
+  game: "<GameId>",
+  secret: "<SecretKey>",
+  endpoint: Endpoint.China,
 })
 ```
 
@@ -385,7 +375,7 @@ const identityPayload = verifier.verifyIdentityToken(token)
 if(identityPayload instanceof Error) {
     console.error(result.message)
 } else {
-    // WebGL 平台，包括微信、抖音等小游戏，以及 HTML5 网页游戏 
+    // WebGL 平台，包括微信、抖音等小游戏，以及 HTML5 网页游戏
     if(identityPayload.idp === IdP.WebGL) {
         // do something
     }
@@ -580,7 +570,7 @@ interface IdempotencyKeyStoreHelper {
    */
   setXX: (key: string, value: string) => Promise<void>
 }
-  
+
 // SDK 内置实现了两个工具类
 import { MemoryIdempotencyStore, RedisIdempotencyStore } from "@seayoo-io/combo-sdk-node"
 
@@ -609,10 +599,10 @@ import { getGMCommandHandler } from "@seayoo-io/combo-sdk-node"
 // storeHelper 类型为 IdempotencyKeyStoreHelper
 // 可不传递，如果不提供则不会启用内置的 idempotencyKey 处理逻辑，下同
 const handler = getGMCommandHandler(config, gmCommandHandler, storeHelper)
-http.createServer(async function(req, res){
-    if(req.path === "<YourNotifyUrl>" && req.method === "POST") {
-       await handler(req, res)
-    }
+http.createServer(async function (req, res) {
+  if (req.path === "<YourNotifyUrl>" && req.method === "POST") {
+    await handler(req, res)
+  }
 })
 
 // 方式 2. 使用 express / koa 的 handler
@@ -626,12 +616,10 @@ app.post("/path/to/your/gm/url", koaHandler)
 
 // 方式 3. 使用 express / koa 的中间件，推荐
 import { getGMMiddlewareForExpress } from "@seayoo-io/combo-sdk-node"
-const gmMiddleware = getGMMiddlewareForExpress("/path/to/your/gm/url", config, gmCommandHandler, storeHelper);
-app.use(gmMiddleware);
+const gmMiddleware = getGMMiddlewareForExpress("/path/to/your/gm/url", config, gmCommandHandler, storeHelper)
+app.use(gmMiddleware)
 
 import { getGMMiddlewareForKoa } from "@seayoo-io/combo-sdk-node"
-const gmMiddleware = getGMMiddlewareForKoa("/path/to/your/gm/url", config, gmCommandHandler, storeHelper);
-app.use(gmMiddleware);
-
+const gmMiddleware = getGMMiddlewareForKoa("/path/to/your/gm/url", config, gmCommandHandler, storeHelper)
+app.use(gmMiddleware)
 ```
-

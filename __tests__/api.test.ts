@@ -1,7 +1,11 @@
 import { ApiClient, Platform } from "../src"
 import type { SendOtpOption, VerifyOtpOption, VoiceModerationRequestOption } from "../src"
-import { describe, expect, test, vi } from "vitest"
+import { describe, expect, test, vi, afterEach } from "vitest"
 import { runSeayooMockServer, endpoint, game, secret } from "./mock.seayoo"
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
 
 runSeayooMockServer()
 

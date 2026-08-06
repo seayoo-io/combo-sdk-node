@@ -156,17 +156,20 @@ export function runSeayooMockServer() {
       return HttpResponse.json({ valid: body.otp === "000000" }, { headers })
     }),
 
-    http.post<object, Partial<VoiceModerationRequestOption>>(endpoint + serverBaseUrl + "/voice-moderation-request", async function ({ request }) {
-      const body = await request.json()
-      const headers = { "x-trace-id": "tr" + Date.now() }
-      if (!body.room_instance_id || !body.server_id || !body.requester_role_id || !body.target_role_ids) {
-        return HttpResponse.json({ message: "Missing required parameters" }, { status: 400, headers })
+    http.post<object, Partial<VoiceModerationRequestOption>>(
+      endpoint + serverBaseUrl + "/voice-moderation-request",
+      async function ({ request }) {
+        const body = await request.json()
+        const headers = { "x-trace-id": "tr" + Date.now() }
+        if (!body.room_instance_id || !body.server_id || !body.requester_role_id || !body.target_role_ids) {
+          return HttpResponse.json({ message: "Missing required parameters" }, { status: 400, headers })
+        }
+        if (body.room_instance_id === "SeayooServerError") {
+          return HttpResponse.json({ message: "Seayoo Error Response" }, { status: 500, headers })
+        }
+        return new HttpResponse(undefined, { status: 204 })
       }
-      if (body.room_instance_id === "SeayooServerError") {
-        return HttpResponse.json({ message: "Seayoo Error Response" }, { status: 500, headers })
-      }
-      return new HttpResponse(undefined, { status: 204 })
-    }),
+    ),
 
     http.all("/*", async () => {
       return HttpResponse.text("NotFound", { status: 404 })

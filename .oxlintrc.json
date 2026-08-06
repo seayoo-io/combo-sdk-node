@@ -1,0 +1,16 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "eqeqeq": "error",
+    "no-console": "off",
+    "no-debugger": "off",
+    "no-case-declarations": "off",
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }],
+    "no-unused-vars": ["error", { "caughtErrors": "none" }]
+  },
+  "ignorePatterns": ["dist", "node_modules", "coverage"]
+}
