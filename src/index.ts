@@ -24,7 +24,10 @@ export {
   getNotificationMiddlewareForKoa,
 } from "./notify"
 export { NotificationType } from "./notify/types"
-export type { NotificationHandler } from "./notify/types"
+export type { NotificationHandler, ENotificationPayload } from "./notify/types"
+export type { ShipOrderNotification } from "./notify/msgShipOrder"
+export type { RefundNotification } from "./notify/msgRefund"
+export type { DataTag, DataTagsNotification } from "./notify/msgDataTags"
 
 export { getGMCommandHandler, getGMHandlerForExpress, getGMMiddlewareForExpress, getGMHandlerForKoa, getGMMiddlewareForKoa } from "./gm"
 export { RedisIdempotencyStore, MemoryIdempotencyStore } from "./gm/utils"

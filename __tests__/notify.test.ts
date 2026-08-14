@@ -4,6 +4,7 @@ import { runGameMockServer, notifyPath, localGameHostPort } from "./mock.game"
 import { calcAuthorizationHeader } from "../src"
 import { getNotificationHandler, getNotificationHandlerForExpress, getNotificationHandlerForKoa } from "../src"
 import { NotificationType, getNotificationMiddlewareForExpress, getNotificationMiddlewareForKoa } from "../src"
+import type { DataTagsNotification } from "../src"
 import { NetRequest } from "../src/request"
 
 const serverNotifyUrl = `http://127.0.0.1:${localGameHostPort}${notifyPath}`
@@ -531,6 +532,158 @@ describe("Notification: shipOrder", () => {
     expect(status).toEqual(200)
     expect(data).toEqual("OK")
     expect(receiveData.message).toEqual(NotificationType.ShipOrder)
+    expect(receiveData.payload).toEqual(fixPayload)
+  })
+})
+
+describe("Notification: dataTags", () => {
+  const baseConfig = { endpoint, game, secret } as const
+  const payload: DataTagsNotification = {
+    tags: [
+      { entity_type: "role", entity_id: "126250012", tag_name: "payment_score", tag_value: "9999" },
+      { entity_type: "role", entity_id: "126250012", tag_name: "anchor", tag_value: "dasima" },
+    ],
+  }
+
+  // 检查错误 payload 的通用方法
+  async function errorPayloadCheck(payload: unknown) {
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
+      // @ts-expect-error test
+      receiveData.payload = payload
+    })
+    const { ok, status } = await post(serverNotifyUrl, {
+      version: "0.1.2",
+      notification_id: Math.random().toString(32).slice(2),
+      notification_type: NotificationType.DataTags,
+      data: payload,
+    })
+    stop()
+    expect(ok).toBe(false)
+    expect(status).toEqual(400)
+    expect(receiveData.message).toEqual("")
+    expect(receiveData.payload).toEqual(null)
+  }
+
+  test("Normal: Full Data", async () => {
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
+      // @ts-expect-error test
+      receiveData.payload = payload
+    })
+    const { ok, status, data } = await post(serverNotifyUrl, {
+      version: "0.1.2",
+      notification_id: Math.random().toString(32).slice(2),
+      notification_type: NotificationType.DataTags,
+      data: payload,
+    })
+    stop()
+    expect(ok).toBe(true)
+    expect(status).toEqual(200)
+    expect(data).toEqual("OK")
+    expect(receiveData.message).toEqual(NotificationType.DataTags)
+    expect(receiveData.payload).toEqual(payload)
+  })
+
+  test("Normal: Empty Tags", async () => {
+    // 空批次不算格式错误，游戏侧按无标签处理
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
+      // @ts-expect-error test
+      receiveData.payload = payload
+    })
+    const { ok, status } = await post(serverNotifyUrl, {
+      version: "0.1.2",
+      notification_id: Math.random().toString(32).slice(2),
+      notification_type: NotificationType.DataTags,
+      data: { tags: [] },
+    })
+    stop()
+    expect(ok).toBe(true)
+    expect(status).toEqual(200)
+    expect(receiveData.message).toEqual(NotificationType.DataTags)
+    expect(receiveData.payload).toEqual({ tags: [] })
+  })
+
+  test("Game Server Error By Handler", async () => {
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
+      // @ts-expect-error test
+      receiveData.payload = payload
+      // 模拟 game server 持久化标签失败，世游服务端稍后会重试推送
+      throw new Error("Game Server Error")
+    })
+    const { ok, status } = await post(serverNotifyUrl, {
+      version: "0.1.2",
+      notification_id: Math.random().toString(32).slice(2),
+      notification_type: NotificationType.DataTags,
+      data: payload,
+    })
+    stop()
+    expect(ok).toBe(false)
+    expect(status).toEqual(500)
+    expect(receiveData.message).toEqual(NotificationType.DataTags)
+    expect(receiveData.payload).toEqual(payload)
+  })
+
+  test("Missing Tags", async () => {
+    await errorPayloadCheck({})
+  })
+
+  test("Tags Must be Array", async () => {
+    await errorPayloadCheck({ tags: { entity_type: "role", entity_id: "1", tag_name: "n", tag_value: "v" } })
+  })
+
+  test("Missing EntityType", async () => {
+    await errorPayloadCheck({ tags: [{ entity_id: "126250012", tag_name: "payment_score", tag_value: "9999" }] })
+  })
+
+  test("Missing EntityID", async () => {
+    await errorPayloadCheck({ tags: [{ entity_type: "role", tag_name: "payment_score", tag_value: "9999" }] })
+  })
+
+  test("Missing TagName", async () => {
+    await errorPayloadCheck({ tags: [{ entity_type: "role", entity_id: "126250012", tag_value: "9999" }] })
+  })
+
+  test("Missing TagValue", async () => {
+    await errorPayloadCheck({ tags: [{ entity_type: "role", entity_id: "126250012", tag_name: "payment_score" }] })
+  })
+
+  test("TagValue Must be String", async () => {
+    // 标签值统一以字符串传递，数字型标签值同样要求 string
+    await errorPayloadCheck({ tags: [{ entity_type: "role", entity_id: "126250012", tag_name: "payment_score", tag_value: 9999 }] })
+  })
+
+  test("Reject When Any Tag Invalid", async () => {
+    // 一批中只要有一条不合法，整批拒绝，避免游戏侧存入残缺数据
+    await errorPayloadCheck({
+      tags: [{ entity_type: "role", entity_id: "126250012", tag_name: "payment_score", tag_value: "9999" }, { entity_type: "role" }],
+    })
+  })
+
+  test("Allowed Empty TagValue", async () => {
+    // 空标签值是合法业务语义（清空某个标签），不应判为格式错误
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
+      // @ts-expect-error test
+      receiveData.payload = payload
+    })
+    const fixPayload = { tags: [{ entity_type: "role", entity_id: "126250012", tag_name: "payment_score", tag_value: "" }] }
+    const { ok, status } = await post(serverNotifyUrl, {
+      version: "0.1.2",
+      notification_id: Math.random().toString(32).slice(2),
+      notification_type: NotificationType.DataTags,
+      data: fixPayload,
+    })
+    stop()
+    expect(ok).toBe(true)
+    expect(status).toEqual(200)
     expect(receiveData.payload).toEqual(fixPayload)
   })
 })

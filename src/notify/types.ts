@@ -1,5 +1,6 @@
 import { isShipOrderPayload, type ShipOrderNotification } from "./msgShipOrder"
 import { isRefundPayload, type RefundNotification } from "./msgRefund"
+import { isDataTagsPayload, type DataTagsNotification } from "./msgDataTags"
 import type { MaybePromise, TypeGuard } from "../utils"
 
 /**
@@ -19,6 +20,15 @@ export enum NotificationType {
    * 世游服务端会在订单状态发生退款时，向游戏侧推送退款通知。
    */
   Refund = "refund",
+  /**
+   * 世游服务端会将约定好的数据标签批量推送给游戏侧。
+   *
+   * 预期游戏侧在接收到数据标签通知后，将这些数据标签持久化存储：
+   *
+   * - 如果游戏内成功处理了数据标签通知，则应当返回 void 或 Promise<void>
+   * - 如果游戏内处理数据标签时出现错误，则应当 throw Error。世游服务端会在稍后重试推送数据标签通知。
+   */
+  DataTags = "data_tags",
 }
 
 /**
@@ -27,6 +37,7 @@ export enum NotificationType {
 export interface ENotificationPayload {
   [NotificationType.ShipOrder]: ShipOrderNotification
   [NotificationType.Refund]: RefundNotification
+  [NotificationType.DataTags]: DataTagsNotification
 }
 
 /**
@@ -51,5 +62,9 @@ export const messageDataGuards = {
   [NotificationType.Refund]: {
     guard: isRefundPayload,
     message: "Refund Data Format Error",
+  },
+  [NotificationType.DataTags]: {
+    guard: isDataTagsPayload,
+    message: "DataTags Data Format Error",
   },
 } as const satisfies IPayload<NotificationType>

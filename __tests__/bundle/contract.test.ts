@@ -84,7 +84,7 @@ describe("产物导出面", () => {
 describe("枚举运行时取值", () => {
   // const enum 改为 enum 后，取值必须逐一保持不变
   const cases = {
-    NotificationType: { ShipOrder: "ship_order", Refund: "refund" },
+    NotificationType: { ShipOrder: "ship_order", Refund: "refund", DataTags: "data_tags" },
     Endpoint: { China: "https://api.seayoo.com", Global: "https://api.seayoo.io" },
     Platform: {
       Android: "android",

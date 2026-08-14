@@ -259,6 +259,16 @@ if (ok) {
 
 ## Notify
 
+世游服务端目前会推送以下几种通知：
+
+| NotificationType | 说明                                                       | payload                 |
+| ---------------- | ---------------------------------------------------------- | ----------------------- |
+| `ShipOrder`      | 订单状态变更为已支付时推送，游戏侧据此发货                 | `ShipOrderNotification` |
+| `Refund`         | 订单发生退款时推送                                         | `RefundNotification`    |
+| `DataTags`       | 世游服务端批量推送约定好的数据标签，游戏侧应将其持久化存储 | `DataTagsNotification`  |
+
+> 通知处理函数正常返回（`void` 或 `Promise<void>`）表示处理成功；如果处理过程中出现错误，应当 `throw Error`，世游服务端会在稍后重试推送。
+
 ### Step 1 准备参数
 
 ```js
@@ -272,6 +282,9 @@ function notificationHandler(type, payload) {
             break;
         case NotificationType.Refund:
             // Do your work with payload：定义见 RefundNotification
+            break;
+        case NotificationType.DataTags:
+            // Do your work with payload：定义见 DataTagsNotification
             break;
     }
 }
@@ -303,6 +316,24 @@ interface ShipOrderNotification {
 
 interface RefundNotification {
     // 结构同 ShipOrderNotification
+}
+
+/** DataTag 表示单条数据标签，即某个数据实体的某个标签 */
+interface DataTag {
+  /** 标签所属实体的类型。例如 `role` 代表实体类型为游戏角色 */
+  entity_type: string
+  /** 标签所属实体的唯一标识 */
+  entity_id: string
+  /** 标签名称 */
+  tag_name: string
+  /** 标签值 */
+  tag_value: string
+}
+
+/** DataTagsNotification 是数据标签通知的数据结构，包含一批数据标签 */
+interface DataTagsNotification {
+  /** 一批数据标签，数组长度不定 */
+  tags: DataTag[]
 }
 
 // 1.2 创建配置，类型定义参见源码 SDKBaseConfig
