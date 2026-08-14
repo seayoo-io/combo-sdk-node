@@ -4,6 +4,8 @@ import { AuthorizationField, calcAuthorizationHeader, verifyConfig, isObject, ty
 import type {
   CreateOrderOption,
   CreateOrderResponse,
+  GetMiniGameWeixinAccessTokenOption,
+  GetMiniGameWeixinAccessTokenResponse,
   SendOtpOption,
   SendOtpResponse,
   VerifyOtpOption,
@@ -151,6 +153,30 @@ export class ApiClient {
   }
 
   /**
+   * 获取微信小游戏的接口调用凭证（Access Token），供游戏服务端调用微信服务端 API 使用。
+   *
+   * 接口调用凭证由世游服务端统一维护和刷新，游戏侧无需自行调用微信接口获取。
+   *
+   * 此接口仅适用于微信小游戏。
+   *
+   * 游戏服务端应当缓存接口调用凭证，缓存时间 1 分钟，按照 1 次/分钟 的频率请求该 API 获取并刷新缓存。
+   *
+   * @param option 获取接口调用凭证的参数
+   */
+  async getMiniGameWeixinAccessToken(option: GetMiniGameWeixinAccessTokenOption): Promise<GetMiniGameWeixinAccessTokenResponse> {
+    const { ok, data, code, status, message, headers } = await this.req.post(
+      "minigame-weixin-access-token",
+      option,
+      isGetMiniGameWeixinAccessTokenResponse
+    )
+    if (!ok || !data) {
+      console.error({ type: "getMiniGameWeixinAccessToken Error", status, code, message, traceId: headers[TraceIdField] })
+      throw new Error(`getMiniGameWeixinAccessToken: ${message || code || status}`)
+    }
+    return data
+  }
+
+  /**
    * 申请语音审核。
    *
    * 玩家认为语音房间内某些玩家存在语音违规行为时，可提交语音审核申请。调用前提是：游戏已经在世游开启语音审核服务。
@@ -190,4 +216,15 @@ function isSendOtpResponse(data: unknown): data is SendOtpResponse {
 
 function isVerifyOtpResponse(data: unknown): data is VerifyOtpResponse {
   return isObject(data) && "valid" in data && typeof data.valid === "boolean"
+}
+
+function isGetMiniGameWeixinAccessTokenResponse(data: unknown): data is GetMiniGameWeixinAccessTokenResponse {
+  return (
+    isObject(data) &&
+    "app_id" in data &&
+    "access_token" in data &&
+    typeof data.app_id === "string" &&
+    typeof data.access_token === "string" &&
+    data.access_token !== ""
+  )
 }

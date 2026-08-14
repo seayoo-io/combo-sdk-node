@@ -2,7 +2,13 @@ import { setupServer } from "msw/node"
 import { HttpResponse, http } from "msw"
 import { beforeAll, afterAll, afterEach } from "vitest"
 import { checkHttpAuthInfo } from "../src/utils"
-import type { CreateOrderOption, SendOtpOption, VerifyOtpOption, VoiceModerationRequestOption } from "../src"
+import type {
+  CreateOrderOption,
+  GetMiniGameWeixinAccessTokenOption,
+  SendOtpOption,
+  VerifyOtpOption,
+  VoiceModerationRequestOption,
+} from "../src"
 
 export const game = "xcom"
 
@@ -155,6 +161,41 @@ export function runSeayooMockServer() {
       // 约定：otp 为 "000000" 时验证通过，否则验证失败（验证失败属于正常业务结果，仍以 200 响应）
       return HttpResponse.json({ valid: body.otp === "000000" }, { headers })
     }),
+
+    http.post<object, Partial<GetMiniGameWeixinAccessTokenOption>>(
+      endpoint + serverBaseUrl + "/minigame-weixin-access-token",
+      async function ({ request }) {
+        const body = await request.json()
+        const headers = { "x-trace-id": "tr" + Date.now() }
+        if (!body.app_id) {
+          return HttpResponse.json({ message: "Missing required parameters" }, { status: 400, headers })
+        }
+        // 借助 app_id 字段告诉 mock server 以异常方式响应
+        if (body.app_id === "SeayooServerError") {
+          return HttpResponse.json({ message: "Seayoo Error Response" }, { status: 500, headers })
+        }
+        if (body.app_id === "SeayooResponseError") {
+          return HttpResponse.json(
+            {
+              app_id: body.app_id,
+              // 设置响应数据类型错误：access_token 应为 string
+              access_token: 123456,
+            },
+            { headers }
+          )
+        }
+        if (body.app_id === "SeayooResponseMissingField") {
+          return HttpResponse.json(
+            {
+              // 假设服务器同学手抖漏写了 access_token 字段
+              app_id: body.app_id,
+            },
+            { headers }
+          )
+        }
+        return HttpResponse.json({ app_id: body.app_id, access_token: "STABLE_AK" }, { headers })
+      }
+    ),
 
     http.post<object, Partial<VoiceModerationRequestOption>>(
       endpoint + serverBaseUrl + "/voice-moderation-request",

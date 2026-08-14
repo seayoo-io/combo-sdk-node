@@ -1,5 +1,5 @@
 import { ApiClient, Platform } from "../src"
-import type { SendOtpOption, VerifyOtpOption, VoiceModerationRequestOption } from "../src"
+import type { GetMiniGameWeixinAccessTokenOption, SendOtpOption, VerifyOtpOption, VoiceModerationRequestOption } from "../src"
 import { describe, expect, test, vi, afterEach } from "vitest"
 import { runSeayooMockServer, endpoint, game, secret } from "./mock.seayoo"
 
@@ -27,6 +27,8 @@ describe("CreateInstance", () => {
     expect(apiClient.verifyOtp.length).toBe(1)
     expect("voiceModerationRequest" in apiClient).toBe(true)
     expect(apiClient.voiceModerationRequest.length).toBe(1)
+    expect("getMiniGameWeixinAccessToken" in apiClient).toBe(true)
+    expect(apiClient.getMiniGameWeixinAccessToken.length).toBe(1)
   })
 
   test("WithoutKey", () => {
@@ -359,6 +361,46 @@ describe("VerifyOtp", () => {
     vi.spyOn(console, "error")
     const client = new ApiClient({ endpoint, game, secret })
     const result = await client.verifyOtp({ ...baseOption, action: "SeayooServerError" }).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(true)
+    expect(console.error).toBeCalledTimes(1)
+  })
+})
+
+describe("GetMiniGameWeixinAccessToken", () => {
+  const baseOption: GetMiniGameWeixinAccessTokenOption = {
+    app_id: "wx1234567890abcdef",
+  }
+
+  test("Normal", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.getMiniGameWeixinAccessToken(baseOption).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(false)
+    expect(console.error).toBeCalledTimes(0)
+    expect("app_id" in result ? result.app_id : null).toBe(baseOption.app_id)
+    expect("access_token" in result ? result.access_token : null).toBe("STABLE_AK")
+  })
+
+  test("SeayooServerError", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.getMiniGameWeixinAccessToken({ app_id: "SeayooServerError" }).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(true)
+    expect(console.error).toBeCalledTimes(1)
+  })
+
+  test("SeayooResponseError", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.getMiniGameWeixinAccessToken({ app_id: "SeayooResponseError" }).catch((e) => <Error>e)
+    expect(result instanceof Error).toBe(true)
+    expect(console.error).toBeCalledTimes(1)
+  })
+
+  test("SeayooResponseMissingField", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const result = await client.getMiniGameWeixinAccessToken({ app_id: "SeayooResponseMissingField" }).catch((e) => <Error>e)
     expect(result instanceof Error).toBe(true)
     expect(console.error).toBeCalledTimes(1)
   })

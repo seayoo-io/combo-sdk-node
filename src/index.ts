@@ -10,6 +10,7 @@ export type {
   VerifyOtpResponse,
   VoiceModerationRequestOption,
 } from "./api/types"
+export type { GetMiniGameWeixinAccessTokenOption, GetMiniGameWeixinAccessTokenResponse } from "./api/types"
 
 export { TokenVerifier } from "./verify"
 export type { IdentityPayload } from "./verify/id"

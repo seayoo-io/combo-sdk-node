@@ -95,6 +95,18 @@ export interface VerifyOtpResponse {
   valid: boolean
 }
 
+export interface GetMiniGameWeixinAccessTokenOption {
+  /** 微信小游戏的 AppID。必须是当前游戏配置的微信小游戏应用。 */
+  app_id: string
+}
+
+export interface GetMiniGameWeixinAccessTokenResponse {
+  /** 微信小游戏的 AppID，与请求中的 app_id 一致。 */
+  app_id: string
+  /** 微信小游戏的接口调用凭证。 */
+  access_token: string
+}
+
 export interface VoiceModerationRequestOption {
   /** 房间实例 ID，唯一标识某个语音房间的一次存续（从开启到关闭）。 */
   room_instance_id: string
