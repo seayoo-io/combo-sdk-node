@@ -52,8 +52,7 @@ const { ApiClient } = require("@seayoo-io/combo-sdk-node")
   - [申请语音审核 VoiceModerationRequest](./docs/api-client.md#申请语音审核-voicemoderationrequest)
 - [Notify](./docs/notify.md) — 接收 Server Notifications 并回复响应
   - [Step 1 准备参数](./docs/notify.md#step-1-准备参数)
-  - [Step 2 使用 RequestHandler 处理通知](./docs/notify.md#step-2-使用-requesthandler-处理通知)
-  - [Step 2 使用 RequestMiddleware 处理通知](./docs/notify.md#step-2-使用-requestmiddleware-处理通知)
+  - [Step 2 处理通知](./docs/notify.md#step-2-处理通知)
 - [Verify](./docs/verify.md) — 验证世游服务端签发的 Identity Token 和 Ads Token
   - [初始化](./docs/verify.md#初始化)
   - [IdentityToken 验证](./docs/verify.md#identitytoken-验证)

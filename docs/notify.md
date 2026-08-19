@@ -87,7 +87,11 @@ const config = {
 }
 ```
 
-## Step 2 使用 RequestHandler 处理通知
+## Step 2 处理通知
+
+SDK 提供两种对接方式，推荐使用方式二。
+
+### 方式一 使用 RequestHandler
 
 ```js
 // 使用 http 模块的处理函数
@@ -118,7 +122,7 @@ app.post("/path/to/your/notify/url", koaHandler)
 >
 > 推荐以下解决方案：
 
-## Step 2 使用 RequestMiddleware 处理通知
+### 方式二 使用 RequestMiddleware（推荐）
 
 针对 express 或 koa 框架，可以创建一个高优先级的插件来处理回调通知，其原理如下
 
