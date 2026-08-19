@@ -242,8 +242,12 @@ const ok = await client.voiceModerationRequest({
   server_id: 1001,
   /** 提交审核申请的玩家角色 ID */
   requester_role_id: "<PlayerRoleID>",
+  /** 提交审核申请的玩家的唯一标识，选填 */
+  requester_combo_id: "<PlayerComboID>",
   /** 被提交语音审核的玩家角色 ID 列表，一次最多提交 32 个 */
   target_role_ids: ["<TargetRoleID1>", "<TargetRoleID2>"],
+  /** 提交审核申请的原因列表，选填，数据来自于 GM 维度表 */
+  reasons: ["abuse", "noise"],
 })
 
 // ok 为 true 表示提交成功，false 表示提交失败（已自动打印错误日志）
@@ -256,6 +260,7 @@ if (ok) {
 >
 > - `voiceModerationRequest` 不会在失败时抛出异常，而是返回 `false`。游戏侧可根据返回值决定后续处理。
 > - `target_role_ids` 一次最多提交 32 个玩家角色 ID。
+> - `reasons` 选填，一次最多提交 12 个，单个原因最多 32 个字符且不能包含英文逗号，取值参见：审核申请原因维度表。
 
 ## Notify
 

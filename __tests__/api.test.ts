@@ -422,6 +422,30 @@ describe("VoiceModerationRequest", () => {
     expect(console.error).toBeCalledTimes(0)
   })
 
+  test("WithRequesterComboId", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const ok = await client.voiceModerationRequest({ ...baseOption, requester_combo_id: "1260418509000005" }).catch((e) => <Error>e)
+    expect(ok).toBe(true)
+    expect(console.error).toBeCalledTimes(0)
+  })
+
+  test("WithReasons", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const ok = await client.voiceModerationRequest({ ...baseOption, reasons: ["辱骂", "开麦噪音"] }).catch((e) => <Error>e)
+    expect(ok).toBe(true)
+    expect(console.error).toBeCalledTimes(0)
+  })
+
+  test("InvalidReasons", async () => {
+    vi.spyOn(console, "error")
+    const client = new ApiClient({ endpoint, game, secret })
+    const ok = await client.voiceModerationRequest({ ...baseOption, reasons: ["辱骂,开麦噪音"] }).catch((e) => <Error>e)
+    expect(ok).toBe(false)
+    expect(console.error).toBeCalledTimes(1)
+  })
+
   test("SeayooServerError", async () => {
     vi.spyOn(console, "error")
     const client = new ApiClient({ endpoint, game, secret })

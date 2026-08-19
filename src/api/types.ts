@@ -114,6 +114,15 @@ export interface VoiceModerationRequestOption {
   server_id: number
   /** 提交审核申请的玩家角色 ID。 */
   requester_role_id: string
+  /** 提交审核申请的玩家的唯一标识，选填。不传表示未提供。 */
+  requester_combo_id?: string
   /** 被提交语音审核的玩家角色 ID 列表，一次最多提交 32 个。 */
   target_role_ids: string[]
+  /**
+   * 提交审核申请的原因列表，选填。
+   *
+   * 一次最多提交 12 个，单个原因最多 32 个字符，取值参见：审核申请原因维度表。
+   * 注意：取值不能包含英文逗号。
+   */
+  reasons?: string[]
 }
