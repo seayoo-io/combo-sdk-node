@@ -39,6 +39,27 @@ import { ApiClient } from "@seayoo-io/combo-sdk-node"
 const { ApiClient } = require("@seayoo-io/combo-sdk-node")
 ```
 
+## 工具函数
+
+除上述模块外，SDK 还导出一组通用工具函数，详细说明见 [Utils](./docs/utils.md)。
+
+```js
+import { mayBeComboId } from "@seayoo-io/combo-sdk-node"
+
+// 校验一个值是否为 Combo ID 格式
+if (mayBeComboId(combo_id)) {
+  // ...
+}
+```
+
+| 函数                       | 说明                               |
+| -------------------------- | ---------------------------------- |
+| `genSessionID`             | 生成用于标记用户上下线的 SessionID |
+| `mayBeComboId`             | 检查值是否符合 Combo ID 格式       |
+| `parseAuthorizationHeader` | 解析 Authorization 请求头          |
+| `calcAuthorizationHeader`  | 计算 HTTP 请求的 Authorization 头  |
+| `checkHttpAuthInfo`        | 校验 HTTP 请求的签名信息           |
+
 ## 文档
 
 各模块的详细用法见 `docs` 目录：
@@ -61,3 +82,4 @@ const { ApiClient } = require("@seayoo-io/combo-sdk-node")
   - [Step 1 准备](./docs/gm.md#step-1-准备)
   - [Step 2 创建 Store Helper 以启用 idempotencyKey 处理逻辑](./docs/gm.md#step-2-创建-store-helper-以启用-idempotencykey-处理逻辑)
   - [Step 3 绑定处理函数](./docs/gm.md#step-3-绑定处理函数)
+- [Utils](./docs/utils.md) — 通用工具函数

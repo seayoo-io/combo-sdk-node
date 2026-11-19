@@ -1,4 +1,4 @@
-import { genSessionID } from "../src"
+import { genSessionID, mayBeComboId } from "../src"
 import { decryptAESGCM } from "../src/utils/gcm"
 import { describe, expect, test } from "vitest"
 import { createCipheriv, randomBytes, createHash } from "crypto"
@@ -20,6 +20,92 @@ describe("CreateInstance", () => {
     }
     const uids = Array.from(new Set(ids))
     expect(uids.length).toBe(N)
+  })
+})
+
+describe("mayBeComboId", () => {
+  test("接受正式环境（16 位）的 comboId", () => {
+    expect(mayBeComboId("1260418509000005")).toBe(true)
+    expect(mayBeComboId("5231223346130001")).toBe(true)
+  })
+
+  test("接受测试环境（9 前缀，17 位）的 comboId", () => {
+    expect(mayBeComboId("91260418509000005")).toBe(true)
+    expect(mayBeComboId("95231223346130001")).toBe(true)
+  })
+
+  test("接受 2021 年及以后的合法年份", () => {
+    expect(mayBeComboId("1210101123450001")).toBe(true) // 2021-01-01
+    expect(mayBeComboId("1291231123450001")).toBe(true) // 2099-12-31
+  })
+
+  test("拒绝 2020 年及以前", () => {
+    expect(mayBeComboId("1001011123450001")).toBe(false) // 2000-01-01
+    expect(mayBeComboId("1201231123450001")).toBe(false) // 2020-01-23
+  })
+
+  test("接受闰年 2 月 29 日", () => {
+    expect(mayBeComboId("1240229123450001")).toBe(true)
+  })
+
+  test("检查通过时收窄为 string", () => {
+    const value: unknown = "1260418509000005"
+    if (mayBeComboId(value)) {
+      expect(value.length).toBe(16)
+    } else {
+      throw new Error("mayBeComboId 应当通过并收窄类型")
+    }
+  })
+
+  test("拒绝非字符串", () => {
+    expect(mayBeComboId(undefined)).toBe(false)
+    expect(mayBeComboId(null)).toBe(false)
+    expect(mayBeComboId(1260418509000005)).toBe(false)
+    expect(mayBeComboId(true)).toBe(false)
+    expect(mayBeComboId({})).toBe(false)
+    expect(mayBeComboId([])).toBe(false)
+  })
+
+  test("拒绝长度或前缀不正确的字符串", () => {
+    expect(mayBeComboId("")).toBe(false)
+    // 1 开头的正式 comboId 应为 16 位
+    expect(mayBeComboId("126041850900000")).toBe(false)
+    expect(mayBeComboId("12604185090000055")).toBe(false)
+    // 只支持 1 / 5 开头，以及其前的 9 非生产环境前缀
+    expect(mayBeComboId("0260418509000005")).toBe(false)
+    expect(mayBeComboId("2260418509000005")).toBe(false)
+    expect(mayBeComboId("9926041850900005")).toBe(false)
+    expect(mayBeComboId("93260418509000005")).toBe(false)
+    expect(mayBeComboId("912604185090000005")).toBe(false)
+  })
+
+  test("拒绝含非数字字符的字符串", () => {
+    expect(mayBeComboId("126041850900000a")).toBe(false)
+    expect(mayBeComboId("12604185 9000005")).toBe(false)
+    expect(mayBeComboId(" 1260418509000005")).toBe(false)
+    expect(mayBeComboId("1260418509000005\n")).toBe(false)
+  })
+
+  test("拒绝注册日期不合理的 comboId", () => {
+    // 月份 / 日期越界
+    expect(mayBeComboId("1260011123450001")).toBe(false)
+    expect(mayBeComboId("1261311123450001")).toBe(false)
+    expect(mayBeComboId("1261000123450001")).toBe(false)
+    // 该月不存在的日期
+    expect(mayBeComboId("1262311123450001")).toBe(false)
+    expect(mayBeComboId("1260431123450001")).toBe(false)
+    expect(mayBeComboId("1250229123450001")).toBe(false)
+  })
+
+  test("拒绝当天秒数越界的 comboId", () => {
+    expect(mayBeComboId("1260418863990001")).toBe(true)
+    expect(mayBeComboId("1260418864000001")).toBe(false)
+    expect(mayBeComboId("1260418999990001")).toBe(false)
+  })
+
+  test("拒绝序列号为 0 的 comboId", () => {
+    expect(mayBeComboId("1260418509000001")).toBe(true)
+    expect(mayBeComboId("1260418509000000")).toBe(false)
   })
 })
 

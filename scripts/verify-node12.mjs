@@ -33,7 +33,7 @@ try {
   console.log("打包发布产物...")
   execFileSync("npm", ["pack", "--pack-destination", workDir], { cwd: repoRoot, stdio: "pipe", shell: true })
 
-  const tarball = readdirSync(workDir).find(f => f.endsWith(".tgz"))
+  const tarball = readdirSync(workDir).find((f) => f.endsWith(".tgz"))
   if (!tarball) throw new Error("npm pack 未产出 tarball")
   console.log(`已打包 ${tarball}`)
 

@@ -28,6 +28,7 @@ const EXPECTED_EXPORTS = [
   "getNotificationHandlerForKoa",
   "getNotificationMiddlewareForExpress",
   "getNotificationMiddlewareForKoa",
+  "mayBeComboId",
   "parseAuthorizationHeader",
 ]
 
@@ -95,6 +96,16 @@ function runChecks(sdk, jwt, label) {
     assert.strictEqual(typeof header, "string")
     assert.ok(header.length > 0)
     assert.strictEqual(sdk.genSessionID("").length, 32)
+  })
+
+  // mayBeComboId 依赖 Date.UTC / getUTC* 的真实行为，需在 Node 12 运行时确认
+  check("mayBeComboId 校验 comboId 格式", function () {
+    assert.strictEqual(sdk.mayBeComboId("1260418509000005"), true)
+    assert.strictEqual(sdk.mayBeComboId("95231223346130001"), true)
+    assert.strictEqual(sdk.mayBeComboId("1260418509000000"), false)
+    assert.strictEqual(sdk.mayBeComboId("1250229123450001"), false)
+    assert.strictEqual(sdk.mayBeComboId("1201231123450001"), false)
+    assert.strictEqual(sdk.mayBeComboId(1260418509000005), false)
   })
 
   check("配置校验仍会拒绝非法 secret", function () {

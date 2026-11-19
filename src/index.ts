@@ -34,4 +34,4 @@ export { RedisIdempotencyStore, MemoryIdempotencyStore } from "./gm/utils"
 
 export type { SDKBaseConfig } from "./utils"
 export { Endpoint, Platform, IdP, GMError } from "./const"
-export { genSessionID, parseAuthorizationHeader, calcAuthorizationHeader, checkHttpAuthInfo } from "./utils"
+export { genSessionID, parseAuthorizationHeader, calcAuthorizationHeader, checkHttpAuthInfo, mayBeComboId } from "./utils"

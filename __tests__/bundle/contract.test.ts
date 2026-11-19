@@ -40,6 +40,7 @@ const expectedExports = [
   "getNotificationHandlerForKoa",
   "getNotificationMiddlewareForExpress",
   "getNotificationMiddlewareForKoa",
+  "mayBeComboId",
   "parseAuthorizationHeader",
 ]
 
@@ -69,11 +70,19 @@ describe("产物导出面", () => {
   })
 
   test("ESM 导出与快照一致", () => {
-    expect(Object.keys(esm).filter(k => k !== "default").sort()).toEqual(expectedExports)
+    expect(
+      Object.keys(esm)
+        .filter((k) => k !== "default")
+        .sort()
+    ).toEqual(expectedExports)
   })
 
   test("两种格式导出面完全相同", () => {
-    expect(Object.keys(cjs).sort()).toEqual(Object.keys(esm).filter(k => k !== "default").sort())
+    expect(Object.keys(cjs).sort()).toEqual(
+      Object.keys(esm)
+        .filter((k) => k !== "default")
+        .sort()
+    )
   })
 
   test("内部枚举未泄漏到导出面", () => {
@@ -107,8 +116,8 @@ describe("枚举运行时取值", () => {
 
   test("GMError 与 IdP 为字符串枚举", () => {
     for (const mod of [cjs, esm]) {
-      expect(Object.values(mod.GMError).every(v => typeof v === "string")).toBe(true)
-      expect(Object.values(mod.IdP).every(v => typeof v === "string")).toBe(true)
+      expect(Object.values(mod.GMError).every((v) => typeof v === "string")).toBe(true)
+      expect(Object.values(mod.IdP).every((v) => typeof v === "string")).toBe(true)
       expect(mod.GMError.InternalError).toBe("internal_error")
       expect(mod.IdP.Seayoo).toBe("seayoo")
     }
@@ -155,7 +164,7 @@ describe("jsonwebtoken interop", () => {
 
 describe("版本一致性", () => {
   // preconvert.cjs 负责把 package.json 的 version 写进产物，漏跑会导致 UA 版本号错位
-  test.each(["index.js", "index.cjs"])("%s 内嵌版本号与 package.json 一致", file => {
+  test.each(["index.js", "index.cjs"])("%s 内嵌版本号与 package.json 一致", (file) => {
     const code = readFileSync(join(distDir, file), "utf8")
     const matched = code.match(/SDKVersion\s*=\s*"([^"]+)"/)
     expect(matched?.[1]).toBe(pkg.version)

@@ -6,7 +6,7 @@ export async function readBody(req: IncomingMessage, backup?: string): Promise<s
       console.error({
         type: "RequestUnReadable",
         url: req.url,
-        methe: req.method,
+        method: req.method,
         message: "Cannot read body, stream not readable",
       })
     return backup || ""
