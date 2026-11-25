@@ -39,6 +39,12 @@ export interface OrderMetaData {
   role_name?: string
   /** 游戏角色的等级 */
   role_level?: number
+  /**
+   * 是否为 App Store Offer Code 兑换订单。
+   *
+   * 为 true 时，本单只能通过 App Store Offer Code 兑换；为 false 或未赋值时，只能通过内购购买。
+   */
+  redeem_app_store_offer_code?: boolean
 }
 
 export interface CreateOrderResponse {
@@ -63,7 +69,7 @@ export interface SendOtpOption {
   meta?: SendOtpMetaData
 }
 
-export type SendOtpMetaData = OrderMetaData
+export type SendOtpMetaData = Omit<OrderMetaData, "redeem_app_store_offer_code">
 
 export interface SendOtpResponse {
   /** 掩码后的手机号，仅当 channel=sms 时有值。*/

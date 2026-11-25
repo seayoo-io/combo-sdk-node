@@ -83,6 +83,9 @@ const shipOrderMessagePayload: {
   amount: string | number
   context?: string
   is_sandbox?: boolean
+  paid_currency?: string | number
+  paid_amount?: string | number
+  app_store_offer_identifier?: string | number
 } = Object.freeze({
   order_id: Math.random().toString(32).slice(2) + Math.random().toString(32).slice(2),
   reference_id: "abc",
@@ -93,6 +96,9 @@ const shipOrderMessagePayload: {
   amount: 12000,
   context: "",
   is_sandbox: false,
+  paid_currency: "CNY",
+  paid_amount: 0,
+  app_store_offer_identifier: "vip666",
 })
 
 describe("Notification: Common", () => {
@@ -419,6 +425,9 @@ describe("Notification: shipOrder", () => {
     })
     const miniPayload = { ...payload }
     delete miniPayload.context
+    delete miniPayload.paid_currency
+    delete miniPayload.paid_amount
+    delete miniPayload.app_store_offer_identifier
     const { ok, status, data } = await post(serverNotifyUrl, {
       version: "0.1.2",
       notification_id: Math.random().toString(32).slice(2),
@@ -484,6 +493,26 @@ describe("Notification: shipOrder", () => {
   test("payload.quantity Must be Number", async () => {
     const fixPayload = { ...payload }
     fixPayload.quantity = "123123123"
+    await errorPayloadCheck(fixPayload)
+  })
+
+  test("payload.paid_currency Must be String", async () => {
+    const fixPayload = { ...payload }
+    fixPayload.paid_currency = 123
+    await errorPayloadCheck(fixPayload)
+  })
+
+  test("payload.paid_amount Must be Integer", async () => {
+    const fixPayload = { ...payload }
+    fixPayload.paid_amount = "0"
+    await errorPayloadCheck(fixPayload)
+    fixPayload.paid_amount = 1.5
+    await errorPayloadCheck(fixPayload)
+  })
+
+  test("payload.app_store_offer_identifier Must be String", async () => {
+    const fixPayload = { ...payload }
+    fixPayload.app_store_offer_identifier = 666
     await errorPayloadCheck(fixPayload)
   })
 
