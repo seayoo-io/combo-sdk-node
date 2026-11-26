@@ -55,6 +55,12 @@ interface ShipOrderNotification {
    * 预期此字段仅用于记录日志和数据埋点。无论是否是沙盒订单，游戏侧都应当发货。
    */
   is_sandbox?: boolean
+  /** 实付币种代码。例如 USD CNY。可能与订单币种 currency 不同 */
+  paid_currency?: string
+  /** 玩家实付金额，单位为分。可能与订单 amount 不同，例如免费兑换的 App Store Offer Code 订单为 0 */
+  paid_amount?: number
+  /** 交易实际使用的 App Store Offer 标识（offerIdentifier），只在 App Store Offer Code 兑换订单中出现 */
+  app_store_offer_identifier?: string
 }
 
 interface RefundNotification {
