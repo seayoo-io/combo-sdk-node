@@ -18,11 +18,15 @@ export const endpoint = "https://api.seayoo.com"
 
 const serverBaseUrl = "/v1/server"
 
+/** 已收到的 create-order 请求 body，供用例断言请求数据格式 */
+export const createOrderRequestBodies: Partial<CreateOrderOption>[] = []
+
 export function runSeayooMockServer() {
   const server = setupServer(
     http.post<object, Partial<CreateOrderOption>>(endpoint + serverBaseUrl + "/create-order", async function ({ request }) {
       const rawBody = await request.clone().text()
       const body = await request.json()
+      createOrderRequestBodies.push(body)
       if (!body.combo_id || !body.notify_url || !body.platform || !body.product_id || !body.reference_id || !body.quantity) {
         return HttpResponse.json({ message: "Missing required parameters" }, { status: 400 })
       }
