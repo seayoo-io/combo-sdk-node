@@ -425,6 +425,29 @@ describe("Notification: shipOrder", () => {
     })
     const miniPayload = { ...payload }
     delete miniPayload.context
+    const { ok, status, data } = await post(serverNotifyUrl, {
+      version: "0.1.2",
+      notification_id: Math.random().toString(32).slice(2),
+      notification_type: NotificationType.ShipOrder,
+      data: miniPayload,
+    })
+    console.log("====================", ok, status, data)
+    stop()
+    expect(ok).toBe(true)
+    expect(status).toEqual(200)
+    expect(data).toEqual("OK")
+    expect(receiveData.message).toEqual(NotificationType.ShipOrder)
+    expect(receiveData.payload).toEqual(miniPayload)
+  })
+
+  test("Normal: Without Paid Fields", async () => {
+    const receiveData = { message: "", payload: null }
+    const { stop } = await runGameMockServer(baseConfig, function (message, payload) {
+      receiveData.message = message
+      // @ts-expect-error test
+      receiveData.payload = payload
+    })
+    const miniPayload = { ...payload }
     delete miniPayload.paid_currency
     delete miniPayload.paid_amount
     delete miniPayload.app_store_offer_identifier
@@ -434,7 +457,6 @@ describe("Notification: shipOrder", () => {
       notification_type: NotificationType.ShipOrder,
       data: miniPayload,
     })
-    console.log("====================", ok, status, data)
     stop()
     expect(ok).toBe(true)
     expect(status).toEqual(200)
@@ -502,10 +524,14 @@ describe("Notification: shipOrder", () => {
     await errorPayloadCheck(fixPayload)
   })
 
-  test("payload.paid_amount Must be Integer", async () => {
+  test("payload.paid_amount Must be Number", async () => {
     const fixPayload = { ...payload }
     fixPayload.paid_amount = "0"
     await errorPayloadCheck(fixPayload)
+  })
+
+  test("payload.paid_amount Must be Integer", async () => {
+    const fixPayload = { ...payload }
     fixPayload.paid_amount = 1.5
     await errorPayloadCheck(fixPayload)
   })

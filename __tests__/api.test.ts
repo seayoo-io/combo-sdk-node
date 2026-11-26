@@ -1,7 +1,7 @@
 import { ApiClient, Platform } from "../src"
 import type { GetMiniGameWeixinAccessTokenOption, SendOtpOption, VerifyOtpOption, VoiceModerationRequestOption } from "../src"
 import { describe, expect, test, vi, afterEach } from "vitest"
-import { runSeayooMockServer, endpoint, game, secret } from "./mock.seayoo"
+import { runSeayooMockServer, createOrderRequestBodies, endpoint, game, secret } from "./mock.seayoo"
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -103,6 +103,15 @@ describe("CreateOrder", () => {
     expect("order_id" in order).toBe(true)
     expect("order_token" in order).toBe(true)
     expect("expires_at" in order ? order.expires_at : null).toBeTypeOf("number")
+  })
+
+  test("Meta Passthrough", async () => {
+    const client = new ApiClient({ endpoint, game, secret })
+    const order = await client.createOrder({ ...baseOption, meta: { redeem_app_store_offer_code: true } }).catch((e) => <Error>e)
+    expect(order instanceof Error).toBe(false)
+    expect(createOrderRequestBodies[createOrderRequestBodies.length - 1]?.meta).toEqual({
+      redeem_app_store_offer_code: true,
+    })
   })
 
   test("SeayooServerError", async () => {

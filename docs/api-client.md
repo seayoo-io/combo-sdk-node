@@ -125,7 +125,7 @@ const sendResult = await client.sendOtp({
   action: "<Action>",
   /**
    * [可选] 发送方元数据，主要用于数据分析，游戏服务端应当尽量提供
-   * 字段定义同 OrderMetaData
+   * 字段定义同 OrderMetaData，但不包含仅对创建订单有意义的 redeem_app_store_offer_code
    */
   meta: { ... },
 })

@@ -69,6 +69,11 @@ export interface SendOtpOption {
   meta?: SendOtpMetaData
 }
 
+/**
+ * 发送验证码时附带的元数据。
+ *
+ * 字段定义同 OrderMetaData，但不包含仅对创建订单有意义的 redeem_app_store_offer_code。
+ */
 export type SendOtpMetaData = Omit<OrderMetaData, "redeem_app_store_offer_code">
 
 export interface SendOtpResponse {
